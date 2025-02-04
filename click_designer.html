@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Sequence</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #FFE6CC;
+      flex-direction: column;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, auto);
+      grid-template-rows: repeat(7, auto);
+      gap: 0px;
+      margin-top: 100px;
+    }
+
+    .grid div div {
+      width: 36px;
+      height: 36px;
+      border: 2px solid #2D2A2A;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      user-select: none;
+      background-color: #FFE6CC;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+    }
+
+    .grid div[data-layer="2"],
+    .grid div[data-layer="3"] {
+      position: relative;
+    }
+
+    .grid div[data-layer="2"] div,
+    .grid div[data-layer="3"] div {
+      position: absolute;
+    }
+
+    .grid div[data-layer="1"][data-audio="1"] div {
+      margin: 30px 0px 0px 30px;
+    }
+
+    .grid div[data-layer="1"][data-audio="2"] div {
+      margin: 0px 30px 30px 30px;
+    }
+
+    .grid div[data-layer="1"][data-audio="3"] div {
+      margin: 30px 30px 0px 0px;
+    }
+
+    .grid div[data-layer="1"][data-audio="4"] div {
+      margin: 30px 30px 30px 0px;
+    }
+
+    .grid div[data-layer="1"][data-audio="6"] div {
+      margin: 30px 0px 30px 30px;
+    }
+
+    .grid div[data-layer="1"][data-audio="7"] div {
+      margin: 0px 0px 30px 30px;
+    }
+
+    .grid div[data-layer="1"][data-audio="8"] div {
+      margin: 30px 30px 0px 30px;
+    }
+
+    .grid div[data-layer="1"][data-audio="9"] div {
+      margin: 0px 30px 30px 0px;
+    }
+
+    .grid div[data-layer="2"][data-audio="1"] div {
+      bottom: -15px;
+      right: -15px;
+    }
+
+    .grid div[data-layer="2"][data-audio="2"] div {
+      left: 30px;
+      bottom: 30px;
+    }
+
+    .grid div[data-layer="2"][data-audio="3"] div {
+      left: -15px;
+      bottom: -15px;
+    }
+
+    .grid div[data-layer="2"][data-audio="4"] div {
+      top: 30px;
+      right: 30px;
+    }
+
+    .grid div[data-layer="2"][data-audio="6"] div {
+      top: 30px;
+      left: 30px;
+    }
+
+    .grid div[data-layer="2"][data-audio="7"] div {
+      top: -15px;
+      right: -15px;
+    }
+
+    .grid div[data-layer="2"][data-audio="8"] div {
+      top: 30px;
+      left: 30px;
+    }
+
+    .grid div[data-layer="2"][data-audio="9"] div {
+      top: -15px;
+      left: -15px;
+    }
+
+    .grid div[data-layer="3"][data-audio="1"] div {
+      bottom: 45px;
+      right: 45px;
+    }
+
+    .grid div[data-layer="3"][data-audio="2"] div {
+      left: 30px;
+      bottom: 105px;
+    }
+
+    .grid div[data-layer="3"][data-audio="3"] div {
+      left: 45px;
+      bottom: 45px;
+    }
+
+    .grid div[data-layer="3"][data-audio="4"] div {
+      top: 30px;
+      right: 105px;
+    }
+
+    .grid div[data-layer="3"][data-audio="6"] div {
+      top: 30px;
+      left: 105px;
+    }
+
+    .grid div[data-layer="3"][data-audio="7"] div {
+      top: 45px;
+      right: 45px;
+    }
+
+    .grid div[data-layer="3"][data-audio="8"] div {
+      top: 105px;
+      left: 30px;
+    }
+
+    .grid div[data-layer="3"][data-audio="9"] div {
+      top: 45px;
+      left: 45px;
+    }
+
+    .grid .droplet {
+      height: 60px;
+      width: 60px;
+      border: 20px solid #2D2A2A;
+      background-color: #FFE6CC;
+      display: flex;
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+    }
+
+    .droplet:hover {
+      background-color: #FFF3E0;
+    }
+
+    .grid div[data-audio="0"] {
+      z-index: -100;
+      opacity: 0;
+    }
+
+    .grid div.clicked {
+      background-color: black;
+    }
+
+    .save-button {
+      padding: 10px 20px;
+      margin-top: 220px;
+      font-size: 18px;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .save-button:hover {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid" id="grid">
+    <div data-row="0" data-col="0" data-layer="3" data-audio="1"><div></div></div>
+    <div data-row="0" data-col="1" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="0" data-col="2" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="0" data-col="3" data-layer="3" data-audio="2"><div></div></div>
+    <div data-row="0" data-col="4" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="0" data-col="5" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="0" data-col="6" data-layer="3" data-audio="3"><div></div></div>
+    <div data-row="1" data-col="0" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="1" data-col="1" data-layer="2" data-audio="1"><div></div></div>
+    <div data-row="1" data-col="2" data-layer="2" data-audio="0"><div></div></div>
+    <div data-row="1" data-col="3" data-layer="2" data-audio="2"><div></div></div>
+    <div data-row="1" data-col="4" data-layer="2" data-audio="0"><div></div></div>
+    <div data-row="1" data-col="5" data-layer="2" data-audio="3"><div></div></div>
+    <div data-row="1" data-col="6" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="2" data-col="0" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="2" data-col="1" data-layer="2" data-audio="0"><div></div></div>
+    <div data-row="2" data-col="2" data-layer="1" data-audio="1"><div></div></div>
+    <div data-row="2" data-col="3" data-layer="1" data-audio="2"><div></div></div>
+    <div data-row="2" data-col="4" data-layer="1" data-audio="3"><div></div></div>
+    <div data-row="2" data-col="5" data-layer="2" data-audio="0"><div></div></div>
+    <div data-row="2" data-col="6" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="3" data-col="0" data-layer="3" data-audio="4"><div></div></div>
+    <div data-row="3" data-col="1" data-layer="2" data-audio="4"><div></div></div>
+    <div data-row="3" data-col="2" data-layer="1" data-audio="4"><div></div></div>
+    <div data-row="3" data-col="3" data-layer="0" data-audio="5" class="droplet clickableCircle" id="clickableCircle"></div>
+    <div data-row="3" data-col="4" data-layer="1" data-audio="6"><div></div></div>
+    <div data-row="3" data-col="5" data-layer="2" data-audio="6"><div></div></div>
+    <div data-row="3" data-col="6" data-layer="3" data-audio="6"><div></div></div>
+    <div data-row="4" data-col="0" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="4" data-col="1" data-layer="2" data-audio="0"><div></div></div>
+    <div data-row="4" data-col="2" data-layer="1" data-audio="7"><div></div></div>
+    <div data-row="4" data-col="3" data-layer="1" data-audio="8"><div></div></div>
+    <div data-row="4" data-col="4" data-layer="1" data-audio="9"><div></div></div>
+    <div data-row="4" data-col="5" data-layer="2" data-audio="0"><div></div></div>
+    <div data-row="4" data-col="6" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="5" data-col="0" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="5" data-col="1" data-layer="2" data-audio="7"><div></div></div>
+    <div data-row="5" data-col="2" data-layer="2" data-audio="0"><div></div></div>
+    <div data-row="5" data-col="3" data-layer="2" data-audio="8"><div></div></div>
+    <div data-row="5" data-col="4" data-layer="2" data-audio="0"><div></div></div>
+    <div data-row="5" data-col="5" data-layer="2" data-audio="9"><div></div></div>
+    <div data-row="5" data-col="6" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="6" data-col="0" data-layer="3" data-audio="7"><div></div></div>
+    <div data-row="6" data-col="1" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="6" data-col="2" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="6" data-col="3" data-layer="3" data-audio="8"><div></div></div>
+    <div data-row="6" data-col="4" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="6" data-col="5" data-layer="3" data-audio="0"><div></div></div>
+    <div data-row="6" data-col="6" data-layer="3" data-audio="9"><div></div></div>
+  </div>
+  <button class="save-button" id="save">Save</button>
+
+  <script>
+    const grid = document.getElementById("grid");
+    const saveButton = document.getElementById("save");
+
+    // Grid structure based on the original document (7x7)
+    const gridStructure = [
+      ["3-1", "3-0", "3-0", "3-2", "3-0", "3-0", "3-3"],
+      ["3-0", "2-1", "2-0", "2-2", "2-0", "2-3", "3-0"],
+      ["3-0", "2-0", "1-1", "1-2", "1-3", "2-0", "3-4"],
+      ["3-0", "2-4", "1-4", "0-5", "1-6", "2-6", "3-6"],
+      ["3-0", "2-0", "1-7", "1-8", "1-9", "2-0", "3-0"],
+      ["3-0", "2-7", "2-0", "2-8", "2-0", "2-9", "3-0"],
+      ["3-7", "3-0", "3-0", "3-8", "3-0", "3-0", "3-9"]
+    ];
+
+    // Generate the 7x7 grid based on the predefined structure
+    for (let row = 0; row < 7; row++) {
+      for (let col = 0; col < 7; col++) {
+        const cell = document.querySelector(`#grid div[data-row="${row}"][data-col="${col}"]`)
+
+        cell.addEventListener("click", toggleClick);
+      }
+    }
+
+    function toggleClick(event) {
+      const cell = event.target;
+      if (cell.classList.contains("clicked")) {
+        cell.classList.remove("clicked");
+      } else {
+        cell.classList.add("clicked");
+      }
+    }
+
+    function saveClickWords() {
+      const clickWords = JSON.parse(localStorage.getItem("clickWords")) || [];
+
+      const newSequence = [];
+      newSequence.push(["5"]); // Ensure "5" is always in the first layer
+
+      const layerData = {};
+
+      document.querySelectorAll(".grid div.clicked").forEach(cell => {
+        let layer = cell.dataset.layer;
+        let audio = cell.dataset.audio;
+        if (audio !== "0") {
+          if (!layerData[layer]) {
+            layerData[layer] = [];
+          }
+          if (!layerData[layer].includes(audio)) {
+            layerData[layer].push(audio);
+          }
+        }
+      });
+
+      // Sort layers numerically and add to newSequence
+      Object.keys(layerData).sort((a, b) => a - b).forEach(layer => {
+        newSequence.push(layerData[layer]);
+      });
+
+      clickWords.push(newSequence);
+      localStorage.setItem("clickWords", JSON.stringify(clickWords));
+
+      alert("Sequence saved!");
+    }
+
+    saveButton.addEventListener("click", saveClickWords);
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Grid</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(7, 100px);
+            grid-template-rows: repeat(7, 100px);
+            gap: 10px;
+        }
+        .grid div {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 5px;
+        }
+        .grid div:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid">
+        <div data-audio="1">1</div><div data-audio="0"></div><div data-audio="0"></div><div data-audio="2">2</div><div data-audio="0"></div><div data-audio="0"></div><div data-audio="3">3</div>
+        <div data-audio="0"></div><div data-audio="1">1</div><div data-audio="0"></div><div data-audio="2">2</div><div data-audio="0"></div><div data-audio="3">3</div><div data-audio="0"></div>
+        <div data-audio="0"></div><div data-audio="0"></div><div data-audio="1">1</div><div data-audio="2">2</div><div data-audio="3">3</div><div data-audio="0"></div><div data-audio="0"></div>
+        <div data-audio="4">4</div><div data-audio="4">4</div><div data-audio="4">4</div><div data-audio="5">5</div><div data-audio="6">6</div><div data-audio="6">6</div><div data-audio="6">6</div>
+        <div data-audio="0"></div><div data-audio="0"></div><div data-audio="7">7</div><div data-audio="8">8</div><div data-audio="9">9</div><div data-audio="0"></div><div data-audio="0"></div>
+        <div data-audio="0"></div><div data-audio="7">7</div><div data-audio="0"></div><div data-audio="8">8</div><div data-audio="0"></div><div data-audio="9">9</div><div data-audio="0"></div>
+        <div data-audio="7">7</div><div data-audio="0"></div><div data-audio="0"></div><div data-audio="8">8</div><div data-audio="0"></div><div data-audio="0"></div><div data-audio="9">9</div>
+    </div>
+
+    <!-- Preload all audio elements -->
+    <audio id="audio-1" src="./clicks_plain_integer/1.mp3"></audio>
+    <audio id="audio-2" src="./clicks_plain_integer/2.mp3"></audio>
+    <audio id="audio-3" src="./clicks_plain_integer/3.mp3"></audio>
+    <audio id="audio-4" src="./clicks_plain_integer/4.mp3"></audio>
+    <audio id="audio-5" src="./clicks_plain_integer/5.mp3"></audio>
+    <audio id="audio-6" src="./clicks_plain_integer/6.mp3"></audio>
+    <audio id="audio-7" src="./clicks_plain_integer/7.mp3"></audio>
+    <audio id="audio-8" src="./clicks_plain_integer/8.mp3"></audio>
+    <audio id="audio-9" src="./clicks_plain_integer/9.mp3"></audio>
+
+    <script>
+        const layers = [
+            ["5"],
+            ["1", "2", "3", "4", "6", "7", "8", "9"],
+            ["1", "2", "3", "4", "6", "7", "8", "9"],
+            ["1", "2", "3", "4", "6", "7", "8", "9"]
+        ];
+
+        document.querySelectorAll('.grid div').forEach(square => {
+            square.addEventListener('click', () => {
+                let audioId = `audio-${square.dataset.audio}`;
+                let audioElement = document.getElementById(audioId);
+
+                if (square.dataset.audio === "5") {
+                    audioElement.play();
+                    layers.forEach((layer, index) => {
+                      if (layer[0] !== "5") {
+                        setTimeout(() => {
+                            layer.forEach(num => {
+                                let audioToPlay = document.getElementById(`audio-${num}`);
+                                if (audioToPlay) {
+                                    audioToPlay.currentTime = 0;
+                                    audioToPlay.play();
+                                }
+                            });
+                        }, (index + 1) * 1000);
+                      }
+                    });
+                } else {
+                    audioElement.currentTime = 0;
+                    audioElement.play();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
