@@ -274,9 +274,8 @@
     // Generate the 7x7 grid based on the predefined structure
     for (let row = 0; row < 7; row++) {
       for (let col = 0; col < 7; col++) {
-        const cell = document.querySelector(`#grid div[data-row="${row}"][data-col="${col}"]`)
-
-        cell.addEventListener("click", toggleClick);
+        const cell = document.querySelector(`#grid div[data-row="${row}"][data-col="${col}"] div`)
+        if (cell !== null) cell.addEventListener("click", toggleClick);
       }
     }
 
@@ -297,7 +296,8 @@
 
       const layerData = {};
 
-      document.querySelectorAll(".grid div.clicked").forEach(cell => {
+      document.querySelectorAll(".grid div div.clicked").forEach(cell => {
+        cell = cell.parentElement;
         let layer = cell.dataset.layer;
         let audio = cell.dataset.audio;
         if (audio !== "0") {
