@@ -186,19 +186,22 @@
     }
 
     .save-button {
-      padding: 10px 20px;
+      cursor: pointer;
       margin-top: 220px;
-      font-size: 18px;
-      background-color: black;
+      width: auto;
+      padding: 10px 20px;
+      background: #6B484A;
+      text-decoration: none;
+      font-weight: 200;
+      font-size: 17px;
       color: white;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      border-radius: 10px;
       transition: background-color 0.2s;
     }
 
     .save-button:hover {
-      background-color: #333;
+      background: #471F21;
     }
   </style>
 </head>
@@ -254,7 +257,7 @@
     <div data-row="6" data-col="5" data-layer="3" data-audio="0"><div></div></div>
     <div data-row="6" data-col="6" data-layer="3" data-audio="9"><div></div></div>
   </div>
-  <button class="save-button" id="save">Save</button>
+  <button class="save-button" id="save">Save Sequence</button>
 
   <script>
     const grid = document.getElementById("grid");
@@ -294,7 +297,7 @@
       const newSequence = [];
       newSequence.push(["5"]); // Ensure "5" is always in the first layer
 
-      const layerData = {};
+      const layerData = {1: [], 2: [], 3: []};
 
       document.querySelectorAll(".grid div div.clicked").forEach(cell => {
         cell = cell.parentElement;
@@ -318,7 +321,7 @@
       clickWords.push(newSequence);
       localStorage.setItem("clickWords", JSON.stringify(clickWords));
 
-      alert("Sequence saved!");
+      window.location.href = '/';
     }
 
     saveButton.addEventListener("click", saveClickWords);

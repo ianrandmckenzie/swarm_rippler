@@ -40,6 +40,7 @@
       background-size: contain;
       background-repeat: no-repeat;
       padding-right: 50%;
+      font-family: sans-serif;
     }
 
     .ripple {
@@ -252,6 +253,35 @@
       white-space: nowrap;
     }
 
+    .bottom-bar .mini-grid {
+      border: 2px dotted #CCC9C8;
+      background-color: #2D2A2A;
+      border-radius: 100%;
+      padding: 30px 25px;
+      border-top: none;
+      border-bottom: none;
+    }
+
+    .new-sequence-button {
+      display: flex;
+      position: fixed;
+      bottom: 215px;
+      left: 30px;
+      width: auto;
+      padding: 10px 20px;
+      background: #6B484A;
+      text-decoration: none;
+      font-weight: 200;
+      font-size: 17px;
+      color: white;
+      border-radius: 10px;
+      transition: background-color 0.2s;
+    }
+
+    .new-sequence-button:hover {
+      background: #471F21;
+    }
+
     .mini-grid {
       display: grid;
       grid-template-columns: repeat(7, auto);
@@ -263,7 +293,7 @@
     }
 
     .mini-grid:hover {
-      background-color: #EDF0EB;
+      background-color: black;
     }
 
 
@@ -271,7 +301,7 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background-color: #2D2A2A;
+      background-color: white;
       opacity: 0;
       transition: opacity 0.3s;
     }
@@ -559,6 +589,7 @@
   <audio id="audio-8" src="./clicks_plain_integer/8.mp3"></audio>
   <audio id="audio-9" src="./clicks_plain_integer/9.mp3"></audio>
 
+  <a class="new-sequence-button" href="./new_word">Create New Word</a>
   <div class="bottom-bar" id="bottomBar"></div>
 
   <div class="mobile-warning">
