@@ -61,6 +61,37 @@ Make a tongue clicking noise by pressing the tip of your tongue to the top of yo
 🟨🟨🟨
 ```
 
+
+#### Number 3, plosive glottal stop (grid:top middle)
+
+[Wikipedia explains a "glottal stop" better than I ever will.](https://en.wikipedia.org/wiki/Glottal_stop)
+
+Yes, I spelled "plosive" correctly.
+
+"Plosive" refers to a stop consonant that is typically egressive—meaning air is pushed out from the lungs. It is a general term that includes sounds like [p], [t], [k], [b], [d], [g], where airflow is momentarily blocked and then released.
+
+So, in contrast:
+
+Explosive (not a technical linguistic term) implies a strong outward release.
+Implosive involves inward airflow due to glottalic ingression. [Speaking of implosive, see: Number 7, implosive glottal stop (grid:top middle)](#number-7-implosive-glottal-stop-gridtop-middle)
+Plosive is neutral regarding airflow direction but usually refers to egressive stops.
+
+```
+🟨🟨🟥
+🟨🟨🟨
+🟨🟨🟨
+```
+
+#### Number 7, implosive glottal stop (grid:top middle)
+
+[Wikipedia explains a "glottal stop" better than I ever will.](https://en.wikipedia.org/wiki/Glottal_stop)
+
+```
+🟨🟨🟨
+🟨🟨🟨
+🟥🟨🟨
+```
+
 #### Number 8, "ahh" click (grid: bottom middle)
 
 Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "ahhh" noise.
