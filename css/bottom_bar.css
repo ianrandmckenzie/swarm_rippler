@@ -1,11 +1,43 @@
 .bottom-bar {
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  left: 30px;
+  width: 45%;
+}
+
+#scrollLeft {
+  left: 1px;
+  border-radius: 9px 0 0 9px;
+}
+
+#scrollRight {
+  right: -53px;
+  border-radius: 0 9px 9px 0;
+}
+
+#scrollLeft,
+#scrollRight {
+  cursor: pointer;
+  position: absolute;
+  width: 35px;
+  height: 202px;
+  background-color: rgba(45, 45, 42, 0.2);
+  border: none;
+  color: white;
+  bottom: 1px;
+  z-index: 20;
+}
+
+#bottomBar {
   display: flex;
   position: fixed;
   bottom: 0;
   left: 30px;
   overflow-x: auto;
-  width: 45%;
-  padding: 20px;
+  width: 43%;
+  height: 162px;
+  padding: 20px 40px;
   margin-top: 20px;
   background: #FFF3E0;
   border: 1px solid #FED3B5;
@@ -14,7 +46,7 @@
   white-space: nowrap;
 }
 
-.bottom-bar .mini-grid {
+#bottomBar .mini-grid {
   border: 2px dotted #CCC9C8;
   background-color: #2D2A2A;
   border-radius: 100%;
@@ -182,4 +214,13 @@
 .mini-grid div[data-layer="3"][data-audio="9"] {
   top: -5px;
   left: -5px;
+}
+
+/* Hide scrollbar for better aesthetics */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

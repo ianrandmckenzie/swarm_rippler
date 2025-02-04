@@ -1,4 +1,15 @@
 const bottomBar = document.getElementById("bottomBar");
+const scrollLeft = document.getElementById("scrollLeft");
+const scrollRight = document.getElementById("scrollRight");
+const scrollAmount = 150; // Adjust scroll speed
+
+scrollLeft.addEventListener("click", () => {
+  bottomBar.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+});
+
+scrollRight.addEventListener("click", () => {
+  bottomBar.scrollBy({ left: scrollAmount, behavior: "smooth" });
+});
 
 const layers = [
   ["5"],
@@ -42,7 +53,7 @@ function playLayers(layers) {
 function loadSavedSequences() {
   const savedSequences = JSON.parse(localStorage.getItem("clickWords")) || [];
 
-  bottomBar.innerHTML = ""; // Clear the bottom bar before adding new grids
+  // bottomBar.innerHTML = ""; // Clear the bottom bar before adding new grids
 
   savedSequences.forEach((sequence, index) => {
     const miniGrid = document.createElement("div");
