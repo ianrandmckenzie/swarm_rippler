@@ -38,9 +38,11 @@ To produce this noise with your mouth may take some practice. There are two simu
 
 ### Layer 1
 
-#### Number 1, "oooh" click (top left)
+#### Number 1, "oooh" left-click (top left)
 
 Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "oooh" noise.
+
+**Releasing the tongue:** For this click, you want to release the tongue from the left side, meaning when you use your muscles to release and make the clicking noise, you are pulling your tongue to the right.
 
 ```
 🟥🟨🟨
@@ -48,12 +50,37 @@ Make a tongue clicking noise by pressing the tip of your tongue to the top of yo
 🟨🟨🟨
 ```
 
-#### Number 8, "ahh" click (bottom right)
+
+#### Number 2, "oooh" click (grid:top middle)
+
+Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "oooh" noise.
+
+```
+🟨🟥🟨
+🟨🟨🟨
+🟨🟨🟨
+```
+
+#### Number 8, "ahh" click (grid: bottom middle)
 
 Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "ahhh" noise.
 
 ```
 🟨🟨🟨
 🟨🟨🟨
-🟥🟨🟨
+🟨🟥🟨
+```
+
+
+
+#### Number 9, "oooh" right click (grid: bottom right)
+
+Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "oooh" noise.
+
+**Releasing the tongue:** For this click, you want to release the tongue from the right side, meaning when you use your muscles to release and make the clicking noise, you are pulling your tongue to the left.
+
+```
+🟨🟨🟨
+🟨🟨🟨
+🟨🟨🟥
 ```
