@@ -6,12 +6,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Click Ripple</title>
   <style>
+    .mobile-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: white;
+      font-size: 1.5rem;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      display: none;
+    }
+
+    @media screen and (max-width: 1200px) {
+      .mobile-warning {
+        display: flex;
+      }
+    }
+
     body {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       background-color: #FFE6CC;
+      margin: 0;
+      background-image: url(./process_work/artwork_that_started_this.jpeg);
+      background-position: top right;
+      background-size: contain;
+      background-repeat: no-repeat;
+      padding-right: 50%;
     }
 
     .ripple {
@@ -212,8 +240,9 @@
       display: flex;
       position: fixed;
       bottom: 0;
+      left: 30px;
       overflow-x: auto;
-      width: 90%;
+      width: 45%;
       padding: 20px;
       margin-top: 20px;
       background: #FFF3E0;
@@ -323,11 +352,6 @@
       top: -5px;
       left: -5px;
     }
-
-
-
-
-
 
     .mini-grid div[data-layer="3"][data-audio="1"] {
       bottom: -5px;
@@ -536,6 +560,10 @@
   <audio id="audio-9" src="./clicks_plain_integer/9.mp3"></audio>
 
   <div class="bottom-bar" id="bottomBar"></div>
+
+  <div class="mobile-warning">
+    yo sorry dawg I haven't designed for mobile yet, this is just a personal project
+  </div>
 
   <script>
     const bottomBar = document.getElementById("bottomBar");
