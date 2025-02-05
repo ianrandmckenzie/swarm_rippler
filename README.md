@@ -142,6 +142,3 @@ Make a tongue clicking noise by pressing the tip of your tongue to the top of yo
 🟨🟨🟨
 🟨🟨🟥
 ```
-
-## TODO
-* Finish tooltips

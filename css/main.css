@@ -5,11 +5,10 @@ body {
   height: 100vh;
   background-color: #FFE6CC;
   margin: 0;
-  background-image: url(../process_work/artwork_that_started_this.jpeg);
+  /* background-image: url(../process_work/artwork_that_started_this.jpeg);
   background-position: top right;
   background-size: contain;
-  background-repeat: no-repeat;
-  padding-right: 50%;
+  background-repeat: no-repeat; */
   font-family: sans-serif;
 }
 

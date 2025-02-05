@@ -3,7 +3,7 @@
   display: flex;
   bottom: 0;
   left: 30px;
-  width: 45%;
+  width: 90%;
 }
 
 #scrollLeft {
@@ -35,7 +35,7 @@
   bottom: 0;
   left: 30px;
   overflow-x: auto;
-  width: 43%;
+  width: 88%;
   height: 162px;
   padding: 20px 40px;
   margin-top: 20px;
