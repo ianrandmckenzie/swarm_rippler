@@ -84,7 +84,7 @@ Plosive is neutral regarding airflow direction but usually refers to egressive s
 
 #### Number 4, snarl left click (grid: center left)
 
-Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "ahhh" noise.
+Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "eeeh" noise.
 
 **Releasing the tongue:** For this click, you want to release the tongue from the left side, meaning when you use your muscles to release and make the clicking noise, you are pulling your tongue to the right.
 
@@ -99,7 +99,7 @@ Make a tongue clicking noise by pressing the tip of your tongue to the top of yo
 
 #### Number 6, snarl right click (grid: center right)
 
-Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "ahhh" noise.
+Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "eeeh" noise.
 
 **Releasing the tongue:** For this click, you want to release the tongue from the right side, meaning when you use your muscles to release and make the clicking noise, you are pulling your tongue to the left.
 

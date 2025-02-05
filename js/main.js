@@ -1,7 +1,7 @@
 const bottomBar = document.getElementById("bottomBar");
 const scrollLeft = document.getElementById("scrollLeft");
 const scrollRight = document.getElementById("scrollRight");
-const scrollAmount = 150; // Adjust scroll speed
+const scrollAmount = 300; // Adjust scroll speed
 
 scrollLeft.addEventListener("click", () => {
   bottomBar.scrollBy({ left: -scrollAmount, behavior: "smooth" });
