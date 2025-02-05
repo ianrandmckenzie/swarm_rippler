@@ -140,16 +140,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const tooltip = document.getElementById("tooltip");
   let activeElement = null;
 
-  document.addEventListener("mouseover", (event) => {
+  document.addEventListener("click", (event) => {
     const target = event.target.closest("[data-tooltip]");
-    if (target) {
-      activeElement = target;
-      showTooltip(target);
-    }
-  });
 
-  document.addEventListener("mouseout", (event) => {
-    if (!event.relatedTarget || (!tooltip.contains(event.relatedTarget) && activeElement !== event.relatedTarget)) {
+    if (target) {
+      event.stopPropagation(); // Prevent immediate closing when clicking the tooltip trigger
+      if (activeElement === target && tooltip.classList.contains("visible")) {
+        hideTooltip();
+      } else {
+        activeElement = target;
+        showTooltip(target);
+      }
+    } else if (!tooltip.contains(event.target)) {
       hideTooltip();
     }
   });
@@ -160,10 +162,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const [title, content] = tooltipData.split("||");
 
-    tooltip.innerHTML = `<h4>${title || "Tooltip"}</h4>${content || ""}`;
-    tooltip.classList.add("visible");
+    tooltip.innerHTML = `
+      <div style="position: relative;">
+        <button id="close-tooltip" style="position: absolute; top: 5px; right: 5px; border: none; background: transparent; font-size: 16px; cursor: pointer; color: white;">&times;</button>
+        <h4>${title || "Tooltip"}</h4>
+        ${content || ""}
+      </div>
+    `;
 
+    tooltip.classList.add("visible");
     positionTooltip(target);
+
+    document.getElementById("close-tooltip").addEventListener("click", (event) => {
+      event.stopPropagation();
+      hideTooltip();
+    });
   }
 
   function positionTooltip(target) {
@@ -181,5 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function hideTooltip() {
     tooltip.classList.remove("visible");
+    activeElement = null;
   }
 });
