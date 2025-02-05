@@ -1,12 +1,14 @@
 .tooltip {
   position: absolute;
-  background: rgba(0, 0, 0, 0.8);
+  top: 30px;
+  background: rgba(71, 31, 33, 0.9);
   color: white;
   padding: 10px;
   border-radius: 5px;
   display: none;
-  max-width: 250px;
+  max-width: 350px;
   pointer-events: none;
+  height: auto;
   /* Initially prevent it from blocking hover */
 }
 

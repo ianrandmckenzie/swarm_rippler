@@ -47,7 +47,7 @@ function playLayers(layers) {
         }, index * 750);
       }
     });
-  }, 500);
+  }, 0);
 }
 
 function loadSavedSequences() {
@@ -129,7 +129,7 @@ document.querySelectorAll(".clickableCircle").forEach(clickableCircle => {
       ripple.style.top = `-75px`;
 
       circle.appendChild(ripple);
-    }, 1000);
+    }, 500);
     setTimeout(() => {
       ripple.remove();
     }, 3000);
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const [title, content] = tooltipData.split("||");
 
-    tooltip.innerHTML = `<h4>${title || "Tooltip"}</h4><p>${content || ""}</p>`;
+    tooltip.innerHTML = `<h4>${title || "Tooltip"}</h4>${content || ""}`;
     tooltip.classList.add("visible");
 
     positionTooltip(target);
