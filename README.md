@@ -21,9 +21,9 @@ In a 2-layer system, the number 5 is "layer 0." 1, 2, 3, 4, 6, 7, 8, 9 are "laye
 
 ## How sounds are produced
 
-### Layer 0: The "Droplet"
+### Center Layer
 
-Position: Absolute Center
+#### Number 5: The "Droplet" - Position: Absolute Center
 
 To produce this noise with your mouth may take some practice. There are two simultaneous movements happening with your mouth:
 1. Positioning your lips to make an "oooh" sound, without making the "oooh" sound. During your click, you expand your lips to make the "ahhh" sound - again, without actually making the sound. In a sensem you are going, "oooowah!" in silence.
@@ -36,7 +36,7 @@ To produce this noise with your mouth may take some practice. There are two simu
 🟨🟨🟨
 ```
 
-### Layer 1
+### Outer Layers
 
 #### Number 1, "oooh" left-click (top left)
 
@@ -82,6 +82,33 @@ Plosive is neutral regarding airflow direction but usually refers to egressive s
 🟨🟨🟨
 ```
 
+#### Number 4, snarl left click (grid: center left)
+
+Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "ahhh" noise.
+
+**Releasing the tongue:** For this click, you want to release the tongue from the left side, meaning when you use your muscles to release and make the clicking noise, you are pulling your tongue to the right.
+
+```
+🟨🟨🟨
+🟥🟨🟨
+🟨🟨🟨
+```
+
+#### Number 5 (see Layer 0 info)
+[See here](#center-layer)
+
+#### Number 6, snarl right click (grid: center right)
+
+Make a tongue clicking noise by pressing the tip of your tongue to the top of your mouth. Create a seal so that you are attempting to suck in air, but instead there is now pressure on your tongue because of the seal. Use the muscle of your tongue to release the pressure and produce the clicking noise. While doing this, your lips should be positioned as if you are making an "ahhh" noise.
+
+**Releasing the tongue:** For this click, you want to release the tongue from the right side, meaning when you use your muscles to release and make the clicking noise, you are pulling your tongue to the left.
+
+```
+🟨🟨🟨
+🟨🟨🟥
+🟨🟨🟨
+```
+
 #### Number 7, implosive glottal stop (grid:top middle)
 
 [Wikipedia explains a "glottal stop" better than I ever will.](https://en.wikipedia.org/wiki/Glottal_stop)
@@ -117,5 +144,4 @@ Make a tongue clicking noise by pressing the tip of your tongue to the top of yo
 ```
 
 ## TODO
-* Finish above docs
 * Finish tooltips
