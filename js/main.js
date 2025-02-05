@@ -125,8 +125,8 @@ document.querySelectorAll(".clickableCircle").forEach(clickableCircle => {
     setTimeout(() => {
       ripple.classList.add("ripple");
 
-      ripple.style.left = `-75px`;
-      ripple.style.top = `-75px`;
+      ripple.style.left = `-70px`;
+      ripple.style.top = `-70px`;
 
       circle.appendChild(ripple);
     }, 500);
