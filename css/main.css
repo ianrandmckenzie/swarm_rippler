@@ -1,3 +1,10 @@
+html, body {
+  overflow-y: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  width: 100%;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -5,17 +12,19 @@ body {
   height: 100vh;
   background-color: #FFE6CC;
   margin: 0;
-  /* background-image: url(../process_work/artwork_that_started_this.jpeg);
-  background-position: top right;
-  background-size: contain;
-  background-repeat: no-repeat; */
   font-family: sans-serif;
+}
+
+.grid {
+  max-height: 156px;
 }
 
 .ripple {
   position: absolute;
   width: 200px;
   height: 200px;
+  left: -70px;
+  top: -70px;
   background: rgba(120, 89, 91, 0.1);
   border-radius: 50%;
   transform: scale(1);

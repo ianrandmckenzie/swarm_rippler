@@ -31,7 +31,7 @@ function playLayers(layers) {
             let audioToPlay = document.getElementById(`audio-${num}`);
             let square = document.querySelector(`[data-layer="${index}"] div[data-audio="${num}"]`);
             if (audioToPlay && square) {
-              square.style.backgroundColor = "#C3D9B4";
+              square.style.backgroundColor = "#ffffff";
               audioToPlay.currentTime = 0;
               audioToPlay.play();
             }
@@ -124,9 +124,6 @@ document.querySelectorAll(".clickableCircle").forEach(clickableCircle => {
     const ripple = document.createElement("span");
     setTimeout(() => {
       ripple.classList.add("ripple");
-
-      ripple.style.left = `-70px`;
-      ripple.style.top = `-70px`;
 
       circle.appendChild(ripple);
     }, 500);
