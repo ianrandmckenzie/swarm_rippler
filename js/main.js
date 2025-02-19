@@ -53,13 +53,31 @@ function playLayers(layers) {
 function loadSavedSequences() {
   const savedSequences = JSON.parse(localStorage.getItem("clickWords")) || [];
 
-  // bottomBar.innerHTML = ""; // Clear the bottom bar before adding new grids
-
   savedSequences.forEach((sequence, index) => {
     const miniGrid = document.createElement("div");
-    miniGrid.classList.add("mini-grid", "clickableCircle");
+    miniGrid.classList.add("mini-grid", "clickableCircle", "relative");
     miniGrid.dataset.index = index;
     miniGrid.addEventListener("click", () => playLayers(sequence));
+
+    const deleteBtn = document.createElement('a');
+    deleteBtn.className = 'delBtn';
+    deleteBtn.textContent = 'ⅹ';
+    deleteBtn.addEventListener('click', function(){
+      bottomBar.removeChild(miniGrid);
+      const sequenceString = JSON.stringify(sequence);
+      let storageString = localStorage.getItem("clickWords");
+      if (storageString) {
+        storageString = storageString.replace(sequenceString, '');
+        // Optionally, trim any leading/trailing whitespace
+        storageString = storageString.trim();
+        // Also, delete double commas
+        storageString = storageString.replace(',,', ',');
+        storageString = storageString.replace('],]', ']]');
+        
+        // Save the updated string back to localStorage
+        localStorage.setItem("clickWords", storageString);
+      }
+    });
 
     // Define the correct structure, mirroring the original grid
     const gridStructure = [
@@ -105,6 +123,7 @@ function loadSavedSequences() {
     }
 
     bottomBar.appendChild(miniGrid);
+    miniGrid.appendChild(deleteBtn);
   });
 }
 

@@ -54,6 +54,30 @@
   border-bottom: none;
 }
 
+.relative {
+  position: relative;
+}
+
+.mini-grid:hover .delBtn {
+  display: block;
+}
+
+.delBtn {
+  background: #6B484A;
+  display: none;
+  color: white;
+  position: absolute;
+  opacity: 0.7;
+  top: 0;
+  left: 0;
+  padding-left: 9px;
+  padding-bottom: 5px;
+  padding-top: 2px;
+  height: 18px;
+  width: 18px;
+  border-radius: 100%;
+}
+
 .new-sequence-button {
   display: flex;
   position: fixed;
