@@ -1,16 +1,39 @@
 {
-  "name": "click_rippler",
+  "name": "psychoSounds",
   "version": "1.0.0",
   "description": "Craft simulated alien words for a MIDI-like music maker.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "package-ios": "electron-packager . psychoSounds --platform=darwin --arch=arm64 --out=dist --overwrite && cordova build ios",
+    "package-android": "electron-packager . psychoSounds --platform=android --arch=arm64 --out=dist --overwrite && cordova build android",
+    "build-ios": "electron-builder --mac --x64 --arm64 --publish never",
+    "build-android": "electron-builder --win --x64 --arm64 --publish never"
+  },
+  "build": {
+    "appId": "io.psychosage.sounds",
+    "productName": "psychoSounds",
+    "mac": {
+      "icon": "build/icons/icon.icns"
+    },
+    "win": {
+      "icon": "build/icons/icon.ico"
+    },
+    "linux": {
+      "icon": "build/icons/icon.png"
+    }
   },
   "keywords": [],
   "author": "",
   "license": "Copyright © Ian Rand McKenzie 2025, All Rights Reserved",
   "devDependencies": {
-    "electron": "^34.2.0"
+    "@electron-forge/cli": "^6.4.2",
+    "electron": "^34.2.0",
+    "electron-builder": "^24.13.3",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
   }
 }
