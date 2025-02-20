@@ -1,0 +1,16 @@
+{
+  "name": "click_rippler",
+  "version": "1.0.0",
+  "description": "Craft simulated alien words for a MIDI-like music maker.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Copyright © Ian Rand McKenzie 2025, All Rights Reserved",
+  "devDependencies": {
+    "electron": "^34.2.0"
+  }
+}
