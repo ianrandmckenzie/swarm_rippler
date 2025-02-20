@@ -73,6 +73,7 @@ function loadSavedSequences() {
         // Also, delete double commas
         storageString = storageString.replace(',,', ',');
         storageString = storageString.replace('],]', ']]');
+        storageString = storageString.replace('[,[', '[[');
         storageString = storageString.replace('[,]', '[]');
         
         // Save the updated string back to localStorage
