@@ -26,9 +26,11 @@
   .bottom-bar {
     width: 75%;
   }
-}
 
-@media screen and (max-width: 652px) {
+  #scrollRight {
+    right: -27%;
+  }
+
   .ripple {
     height: 133px;
     width: 133px;
@@ -183,5 +185,181 @@
   #scrollLeft,
   #scrollRight {
     border-radius: 0;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .ripple {
+    height: 106.4px;
+    width: 106.4px;
+    left: -37.6px;
+    top: -37.6px;
+  }
+
+  .grid {
+    margin-top: -160px;
+  }
+  
+  .grid div div {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .grid div[data-layer="1"] div[data-audio="1"] {
+    margin: 18.4px 0px 0px 18.4px;
+  }
+  
+  .grid div[data-layer="1"] div[data-audio="2"] {
+    margin: 0px 18.4px 18.4px 18.4px;
+  }
+  
+  .grid div[data-layer="1"] div[data-audio="3"] {
+    margin: 18.4px 18.4px 0px 0px;
+  }
+  
+  .grid div[data-layer="1"] div[data-audio="4"] {
+    margin: 18.4px 18.4px 18.4px 0px;
+  }
+  
+  .grid div[data-layer="1"] div[data-audio="6"] {
+    margin: 18.4px 0px 18.4px 18.4px;
+  }
+  
+  .grid div[data-layer="1"] div[data-audio="7"] {
+    margin: 0px 0px 18.4px 18.4px;
+  }
+  
+  .grid div[data-layer="1"] div[data-audio="8"] {
+    margin: 18.4px 18.4px 0px 18.4px;
+  }
+  
+  .grid div[data-layer="1"] div[data-audio="9"] {
+    margin: 0px 18.4px 18.4px 0px;
+  }
+  
+  .grid div[data-layer="2"] div[data-audio="1"] {
+    bottom: -11.2px;
+    right: -11.2px;
+  }
+  
+  .grid div[data-layer="2"] div[data-audio="2"] {
+    left: 18.4px;
+    bottom: 18.4px;
+  }
+  
+  .grid div[data-layer="2"] div[data-audio="3"] {
+    left: -11.2px;
+    bottom: -11.2px;
+  }
+  
+  .grid div[data-layer="2"] div[data-audio="4"] {
+    top: 18.4px;
+    right: 18.4px;
+  }
+  
+  .grid div[data-layer="2"] div[data-audio="6"] {
+    top: 18.4px;
+    left: 18.4px;
+  }
+  
+  .grid div[data-layer="2"] div[data-audio="7"] {
+    top: -11.2px;
+    right: -11.2px;
+  }
+  
+  .grid div[data-layer="2"] div[data-audio="8"] {
+    top: 18.4px;
+    left: 18.4px;
+  }
+  
+  .grid div[data-layer="2"] div[data-audio="9"] {
+    top: -11.2px;
+    left: -11.2px;
+  }
+  
+  .grid div[data-layer="3"] div[data-audio="1"] {
+    bottom: 13.6px;
+    right: 13.6px;
+  }
+  
+  .grid div[data-layer="3"] div[data-audio="2"] {
+    left: 18.4px;
+    bottom: 50.4px;
+  }
+  
+  .grid div[data-layer="3"] div[data-audio="3"] {
+    left: 13.6px;
+    bottom: 13.6px;
+  }
+  
+  .grid div[data-layer="3"] div[data-audio="4"] {
+    top: 18.4px;
+    right: 50.4px;
+  }
+  
+  .grid div[data-layer="3"] div[data-audio="6"] {
+    top: 18.4px;
+    left: 50.4px;
+  }
+  
+  .grid div[data-layer="3"] div[data-audio="7"] {
+    top: 13.6px;
+    right: 13.6px;
+  }
+  
+  .grid div[data-layer="3"] div[data-audio="8"] {
+    top: 50.4px;
+    left: 18.4px;
+  }
+  
+  .grid div[data-layer="3"] div[data-audio="9"] {
+    top: 13.6px;
+    left: 13.6px;
+  }
+  
+  .grid .droplet {
+    height: 32px;
+    width: 32px;
+    border: 12px solid #2D2A2A;
+    background-color: #FFE6CC;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+  }
+
+  #bottomBar {
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+  }
+
+  #scrollLeft {
+    left: -24px;
+  }
+
+  #scrollLeft,
+  #scrollRight {
+    border-radius: 0;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  #bottomBar,
+  .bottom-bar {
+    width: 79%;
+  }
+
+  #scrollRight {
+    right: -51px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #bottomBar,
+  .bottom-bar {
+    width: 71%;
   }
 }
