@@ -5,11 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron .",
-    "package-ios": "electron-packager . psychoSounds --platform=darwin --arch=arm64 --out=dist --overwrite && cordova build ios",
-    "package-android": "electron-packager . psychoSounds --platform=android --arch=arm64 --out=dist --overwrite && cordova build android",
-    "build-ios": "electron-builder --mac --x64 --arm64 --publish never",
-    "build-android": "electron-builder --win --x64 --arm64 --publish never"
+    "start": "electron ."
   },
   "build": {
     "appId": "io.psychosage.sounds",

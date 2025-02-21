@@ -1,0 +1,25 @@
+{
+  "name": "io.psychosage.sounds",
+  "displayName": "psychoSounds",
+  "version": "1.0.0",
+  "description": "Craft simulated alien words for a MIDI-like music maker.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "Ian Rand McKenzie",
+  "license": "Copyright © Ian Rand McKenzie 2025, All Rights Reserved",
+  "devDependencies": {
+    "cordova-android": "^13.0.0",
+    "cordova-ios": "^7.1.1"
+  },
+  "cordova": {
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  }
+}

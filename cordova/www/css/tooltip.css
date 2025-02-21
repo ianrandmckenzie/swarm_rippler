@@ -1,0 +1,46 @@
+.tooltip {
+  position: absolute;
+  background: rgba(71, 31, 33, 0.9);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+  max-width: 350px;
+  pointer-events: none;
+  height: auto;
+  /* Initially prevent it from blocking hover */
+}
+
+.tooltip.visible {
+  display: block;
+  pointer-events: auto;
+  /* Allow interactions when visible */
+}
+
+.tooltip h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.tooltip a {
+  color: #DBE8D1;
+}
+
+.tooltip p,
+.tooltip li {
+  margin: 5px 0 0;
+  font-size: 12px;
+}
+
+.tooltip-container {
+  display: inline-block;
+  position: relative;
+}
+
+.hover-target {
+  display: inline-block;
+  padding: 10px 15px;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
