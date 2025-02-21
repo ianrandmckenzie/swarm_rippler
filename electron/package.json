@@ -5,19 +5,26 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "build": {
     "appId": "io.psychosage.sounds",
     "productName": "psychoSounds",
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/icon.icns",
+      "artifactName": "${productName}.${ext}",
+      "target": "dmg"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "artifactName": "${productName}.${ext}",
+      "target": "nsis"
     },
     "linux": {
-      "icon": "build/icons/icon.png"
+      "icon": "build/icons/icon.png",
+      "artifactName": "${productName}.${ext}",
+      "target": "AppImage"
     }
   },
   "keywords": [],
