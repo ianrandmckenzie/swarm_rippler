@@ -5,7 +5,8 @@
   "description": "Craft simulated alien words for a MIDI-like music maker.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cordova build ios && cordova run ios --device --verbose"
   },
   "keywords": [
     "ecosystem:cordova"
