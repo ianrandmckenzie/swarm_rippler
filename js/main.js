@@ -1,3 +1,5 @@
+// main.js (2-space indentation)
+
 const bottomBar = document.getElementById("bottomBar");
 const scrollLeft = document.getElementById("scrollLeft");
 const scrollRight = document.getElementById("scrollRight");
@@ -11,6 +13,67 @@ scrollRight.addEventListener("click", () => {
   bottomBar.scrollBy({ left: scrollAmount, behavior: "smooth" });
 });
 
+// ----------------------------------------------------
+//          WEB AUDIO API SETUP
+// ----------------------------------------------------
+const audioContext = new (window.AudioContext || window.webkitAudioContext)({
+  latencyHint: "interactive" // helps reduce latency on mobile
+});
+const audioCache = {};
+
+// Map your audio IDs to file paths
+const audioFiles = {
+  "1": "./audio/1.mp3",
+  "2": "./audio/2.mp3",
+  "3": "./audio/3.mp3",
+  "4": "./audio/4.mp3",
+  "5": "./audio/5.mp3",
+  "6": "./audio/6.mp3",
+  "7": "./audio/7.mp3",
+  "8": "./audio/8.mp3",
+  "9": "./audio/9.mp3"
+};
+
+// Preload all audio files into memory
+Object.entries(audioFiles).forEach(([id, url]) => {
+  preloadAudio(id, url);
+});
+
+// Asynchronously fetch & decode each audio file
+async function preloadAudio(id, url) {
+  try {
+    if (audioCache[id]) return; // Skip if already in cache
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    audioCache[id] = audioBuffer;
+  } catch (err) {
+    console.error(`Error preloading audio ${id}:`, err);
+  }
+}
+
+// Create a function to play a specific audio buffer from our cache
+function playAudio(id, startDelay = 0) {
+  // If the file isn't ready yet, skip
+  if (!audioCache[id]) return;
+
+  // Need to resume the context if it's suspended (iOS Safari behavior)
+  if (audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+
+  const source = audioContext.createBufferSource();
+  source.buffer = audioCache[id];
+  source.connect(audioContext.destination);
+
+  // Start playback with a user-defined delay
+  const startTime = audioContext.currentTime + startDelay;
+  source.start(startTime);
+}
+
+// ----------------------------------------------------
+//           LAYER SEQUENCING LOGIC
+// ----------------------------------------------------
 const layers = [
   ["5"],
   ["1", "2", "3", "4", "6", "7", "8", "9"],
@@ -18,38 +81,51 @@ const layers = [
   ["1", "2", "3", "4", "6", "7", "8", "9"]
 ];
 
-function playLayers(layers) {
-  let audioId = `audio-5`;
-  let audioElement = document.getElementById(audioId);
-  audioElement.currentTime = 0;
-  audioElement.play();
-  setTimeout(() => {
-    layers.forEach((layer, index) => {
-      if (layer[0] !== "5") {
-        setTimeout(() => {
-          layer.forEach(num => {
-            let audioToPlay = document.getElementById(`audio-${num}`);
-            let square = document.querySelector(`[data-layer="${index}"] div[data-audio="${num}"]`);
-            if (audioToPlay && square) {
-              square.style.backgroundColor = "#ffffff";
-              audioToPlay.currentTime = 0;
-              audioToPlay.play();
-            }
-          });
-        }, index * 500);
-        setTimeout(() => {
-          layer.forEach(num => {
-            let square = document.querySelector(`[data-layer="${index}"] div[data-audio="${num}"]`);
-            if (square) {
-              square.style.backgroundColor = "#2D2A2A";
-            }
-          });
-        }, index * 750);
-      }
-    });
-  }, 0);
+// Sequencer: plays layers in a timed stagger
+function playLayers(layersSequence) {
+  // Immediately play audio-5 (if present)
+  playAudio("5", 0);
+
+  // Use setTimeout or scheduled offsets to color squares
+  // The below uses 0.5s increments for each layer
+  layersSequence.forEach((layer, index) => {
+    // If a layer includes '5', we skip scheduling it again
+    if (layer[0] !== "5") {
+      layer.forEach(audioId => {
+        const square = document.querySelector(
+          `[data-layer="${index}"] div[data-audio="${audioId}"]`
+        );
+
+        // Flash the square in white, then back to dark
+        if (square) {
+          setTimeout(() => {
+            square.style.backgroundColor = "#ffffff";
+          }, index * 500); // 500ms * layer index
+
+          setTimeout(() => {
+            square.style.backgroundColor = "#2D2A2A";
+          }, index * 750);
+        }
+
+        // Play each sound with a 0.5s offset per layer
+        playAudio(audioId, index * 0.5);
+      });
+    }
+  });
 }
 
+// Attach a click handler to squares that have data-audio="5"
+document.querySelectorAll(".grid div").forEach(square => {
+  square.addEventListener("click", () => {
+    if (square.dataset.audio === "5") {
+      playLayers(layers);
+    }
+  });
+});
+
+// ----------------------------------------------------
+//         LOADING & DELETING SAVED SEQUENCES
+// ----------------------------------------------------
 function loadSavedSequences() {
   const savedSequences = JSON.parse(localStorage.getItem("clickWords")) || [];
 
@@ -129,42 +205,43 @@ function loadSavedSequences() {
   });
 }
 
-document.querySelectorAll(".grid div").forEach(square => {
-  square.addEventListener("click", () => {
-    if (square.dataset.audio === "5") {
-      playLayers(layers);
-    }
-  });
-});
-
 loadSavedSequences();
 
+// ----------------------------------------------------
+//       RIPPLE CLICK EFFECT (for droplet circle)
+// ----------------------------------------------------
 document.querySelectorAll(".clickableCircle").forEach(clickableCircle => {
-  clickableCircle.addEventListener("click", function (event) {
-    const circle = document.getElementById('clickableCircle');
+  clickableCircle.addEventListener("click", function () {
+    const circle = document.getElementById("clickableCircle");
+    if (!circle) return;
     const ripple = document.createElement("span");
+
     setTimeout(() => {
       ripple.classList.add("ripple");
-
       circle.appendChild(ripple);
     }, 500);
+
     setTimeout(() => {
       ripple.remove();
     }, 3000);
   });
 });
 
+// ----------------------------------------------------
+//            TOOLTIP BEHAVIOR
+// ----------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const tooltip = document.getElementById("tooltip");
   let activeElement = null;
 
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", event => {
     const target = event.target.closest("[data-tooltip]");
 
     if (target) {
-      event.stopPropagation(); // Prevent immediate closing when clicking the tooltip trigger
+      event.stopPropagation();
+
       if (activeElement === target && tooltip.classList.contains("visible")) {
-        hideTooltip();
+        hideTooltip(); // toggle off if same element
       } else {
         activeElement = target;
         showTooltip(target);
@@ -178,11 +255,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const tooltipData = target.getAttribute("data-tooltip");
     if (!tooltipData) return;
 
+    // Split your data-tooltip into title||content
     const [title, content] = tooltipData.split("||");
 
     tooltip.innerHTML = `
       <div style="position: relative;">
-        <button id="close-tooltip" style="position: absolute; top: 5px; right: 5px; border: none; background: transparent; font-size: 16px; cursor: pointer; color: white;">&times;</button>
+        <button
+          id="close-tooltip"
+          style="position: absolute; top: 5px; right: 5px;
+                 border: none; background: transparent;
+                 font-size: 16px; cursor: pointer; color: white;"
+        >
+          &times;
+        </button>
         <h4>${title || "Tooltip"}</h4>
         ${content || ""}
       </div>
@@ -191,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tooltip.classList.add("visible");
     positionTooltip(target);
 
-    document.getElementById("close-tooltip").addEventListener("click", (event) => {
+    document.getElementById("close-tooltip").addEventListener("click", event => {
       event.stopPropagation();
       hideTooltip();
     });
@@ -204,7 +289,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let left = rect.left + window.scrollX + rect.width / 2 - tooltipRect.width / 2;
     let top = rect.top + window.scrollY - tooltipRect.height - 10;
 
-    if (top < window.scrollY) top = rect.bottom + window.scrollY + 10;
+    // If there's not enough room above, place it below
+    if (top < window.scrollY) {
+      top = rect.bottom + window.scrollY + 10;
+    }
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
