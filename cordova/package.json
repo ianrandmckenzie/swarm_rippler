@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cordova build ios && cordova run ios --device --verbose"
+    "start": "cordova build ios && cordova run ios --device --verbose",
+    "build": "cordova build ios",
+    "startdroid": "cordova build android && cordova run android --device --verbose"
   },
   "keywords": [
     "ecosystem:cordova"
