@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>New Sequence</title>
+  <link rel="stylesheet" href="css/colors.css">
   <style>
     body {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: #FFE6CC;
+      background-color: var(--color-background);
       flex-direction: column;
     }
 
@@ -25,14 +26,14 @@
     .grid div div {
       width: 36px;
       height: 36px;
-      border: 2px solid #2D2A2A;
+      border: 2px solid var(--color-primary);
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 24px;
       font-weight: bold;
       user-select: none;
-      background-color: #FFE6CC;
+      background-color: var(--color-background);
       border-radius: 50%;
       transition: background-color 0.3s;
     }
@@ -162,8 +163,8 @@
     .grid .droplet {
       height: 60px;
       width: 60px;
-      border: 20px solid #2D2A2A;
-      background-color: #FFE6CC;
+      border: 20px solid var(--color-primary);
+      background-color: var(--color-background);
       display: flex;
       position: relative;
       justify-content: center;
@@ -173,7 +174,7 @@
     }
 
     .droplet:hover {
-      background-color: #FFF3E0;
+      background-color: var(--color-surface);
     }
 
     .grid div[data-audio="0"] {
@@ -190,7 +191,7 @@
       margin-top: 220px;
       width: auto;
       padding: 10px 20px;
-      background: #6B484A;
+      background: var(--color-accent);
       text-decoration: none;
       font-weight: 200;
       font-size: 17px;
@@ -201,7 +202,7 @@
     }
 
     .save-button:hover {
-      background: #471F21;
+      background: var(--color-accent-dark);
     }
   </style>
 </head>

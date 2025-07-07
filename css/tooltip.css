@@ -1,6 +1,6 @@
 .tooltip {
   position: absolute;
-  background: rgba(71, 31, 33, 0.9);
+  background: var(--color-tooltip-bg);
   color: white;
   padding: 10px;
   border-radius: 5px;
@@ -23,7 +23,7 @@
 }
 
 .tooltip a {
-  color: #DBE8D1;
+  color: var(--color-text-link);
 }
 
 .tooltip p,

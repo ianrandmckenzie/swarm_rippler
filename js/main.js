@@ -99,11 +99,11 @@ function playLayers(layersSequence) {
         // Flash the square in white, then back to dark
         if (square) {
           setTimeout(() => {
-            square.style.backgroundColor = "#ffffff";
+            square.style.backgroundColor = "var(--color-text-white)";
           }, index * 500); // 500ms * layer index
 
           setTimeout(() => {
-            square.style.backgroundColor = "#2D2A2A";
+            square.style.backgroundColor = "var(--color-primary)";
           }, index * 750);
         }
 
@@ -151,7 +151,7 @@ function loadSavedSequences() {
         storageString = storageString.replace('],]', ']]');
         storageString = storageString.replace('[,[', '[[');
         storageString = storageString.replace('[,]', '[]');
-        
+
         // Save the updated string back to localStorage
         localStorage.setItem("clickWords", storageString);
       }

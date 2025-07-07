@@ -10,7 +10,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #FFE6CC;
+  background-color: var(--color-background);
   margin: 0;
   font-family: sans-serif;
 }
@@ -25,7 +25,7 @@ body {
   height: 200px;
   left: -70px;
   top: -70px;
-  background: rgba(120, 89, 91, 0.1);
+  background: var(--color-ripple);
   border-radius: 50%;
   transform: scale(1);
   animation: rippleEffect 2.0s linear;
@@ -54,14 +54,14 @@ body {
 .grid div div {
   width: 30px;
   height: 30px;
-  background-color: #2D2A2A;
+  background-color: var(--color-primary);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 24px;
   font-weight: bold;
   user-select: none;
-  color: #FFE6CC;
+  color: var(--color-text-light);
   border-radius: 50%;
   transition: background-color 0.3s;
 }
@@ -195,8 +195,8 @@ body {
 .grid .droplet {
   height: 60px;
   width: 60px;
-  border: 20px solid #2D2A2A;
-  background-color: #FFE6CC;
+  border: 20px solid var(--color-primary);
+  background-color: var(--color-background);
   display: flex;
   position: relative;
   justify-content: center;
@@ -206,7 +206,7 @@ body {
 }
 
 .droplet:hover {
-  background-color: #FFF3E0;
+  background-color: var(--color-surface);
 }
 
 .grid div[data-audio="0"],

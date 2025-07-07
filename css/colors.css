@@ -1,0 +1,26 @@
+:root {
+  /* Primary brand colors */
+  --color-background: #FFE6CC;        /* Main background color */
+  --color-surface: #FFF3E0;           /* Lighter surface color for panels */
+  --color-primary: #2D2A2A;           /* Dark primary color for buttons/borders */
+  --color-accent: #6B484A;            /* Medium accent color */
+  --color-accent-dark: #471F21;       /* Dark accent color for hover states */
+
+  /* Border and outline colors */
+  --color-border: #FED3B5;            /* Light border color */
+  --color-border-dotted: #CCC9C8;     /* Dotted border color */
+
+  /* Text colors */
+  --color-text-light: #FFE6CC;        /* Light text on dark backgrounds */
+  --color-text-white: #ffffff;        /* Pure white text */
+  --color-text-link: #DBE8D1;         /* Link color in tooltips */
+
+  /* Interactive colors */
+  --color-ripple: rgba(120, 89, 91, 0.1);  /* Ripple effect color */
+  --color-scroll-overlay: rgba(45, 45, 42, 0.2);  /* Scroll button overlay */
+  --color-tooltip-bg: rgba(71, 31, 33, 0.9);      /* Tooltip background */
+
+  /* State colors */
+  --color-white: white;               /* Pure white for various elements */
+  --color-black: black;               /* Pure black for hover states */
+}
