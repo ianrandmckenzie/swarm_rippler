@@ -1,5 +1,214 @@
 // main.js (2-space indentation)
 
+// ----------------------------------------------------
+//          THEME TOGGLE FUNCTIONALITY (dark | system | light)
+// ----------------------------------------------------
+
+// IndexedDB setup for theme storage
+class ThemeStorage {
+  constructor() {
+    this.dbName = 'ClickingGlossaliaDB';
+    this.dbVersion = 1;
+    this.storeName = 'preferences';
+    this.db = null;
+  }
+
+  async init() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, this.dbVersion);
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        this.db = request.result;
+        resolve(this.db);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          const store = db.createObjectStore(this.storeName, { keyPath: 'key' });
+        }
+      };
+    });
+  }
+
+  async setTheme(theme) {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.put({ key: 'themePreference', value: theme });
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
+  }
+
+  async getTheme() {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.get('themePreference');
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const result = request.result;
+        resolve(result ? result.value : 'system');
+      };
+    });
+  }
+}
+
+// Create global theme storage instance
+const themeStorage = new ThemeStorage();
+
+async function initializeTheme() {
+  try {
+    // Get saved theme preference from IndexedDB
+    const savedTheme = await themeStorage.getTheme();
+    applyTheme(savedTheme);
+  } catch (error) {
+    console.warn('Failed to load theme from IndexedDB, falling back to system:', error);
+    // Fallback to localStorage if IndexedDB fails
+    const fallbackTheme = localStorage.getItem('themePreference') || 'system';
+    applyTheme(fallbackTheme);
+  }
+}
+
+function applyTheme(theme) {
+  const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  // Remove existing theme classes
+  document.body.classList.remove('dark-mode', 'light-mode');
+
+  switch(theme) {
+    case 'dark':
+      document.body.classList.add('dark-mode');
+      break;
+    case 'light':
+      document.body.classList.add('light-mode');
+      break;
+    case 'system':
+    default:
+      // Follow system preference
+      if (prefersDarkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.add('light-mode');
+      }
+      break;
+  }
+
+  updateToggleIcon(theme);
+}
+
+async function toggleTheme() {
+  try {
+    const currentTheme = await themeStorage.getTheme();
+    let nextTheme;
+
+    // Cycle through: system → light → dark → system
+    switch(currentTheme) {
+      case 'system':
+        nextTheme = 'light';
+        break;
+      case 'light':
+        nextTheme = 'dark';
+        break;
+      case 'dark':
+        nextTheme = 'system';
+        break;
+      default:
+        nextTheme = 'system';
+    }
+
+    // Save to IndexedDB
+    await themeStorage.setTheme(nextTheme);
+
+    // Also save to localStorage as backup
+    localStorage.setItem('themePreference', nextTheme);
+
+    applyTheme(nextTheme);
+
+    // Dispatch custom event for other components
+    window.dispatchEvent(new CustomEvent('themeToggled', { detail: { theme: nextTheme } }));
+  } catch (error) {
+    console.warn('Failed to save theme to IndexedDB:', error);
+    // Fallback to localStorage-only operation
+    const currentTheme = localStorage.getItem('themePreference') || 'system';
+    let nextTheme;
+
+    switch(currentTheme) {
+      case 'system':
+        nextTheme = 'light';
+        break;
+      case 'light':
+        nextTheme = 'dark';
+        break;
+      case 'dark':
+        nextTheme = 'system';
+        break;
+      default:
+        nextTheme = 'system';
+    }
+
+    localStorage.setItem('themePreference', nextTheme);
+    applyTheme(nextTheme);
+  }
+}
+
+function updateToggleIcon(theme) {
+  const toggleButton = document.getElementById('themeToggle');
+  if (toggleButton) {
+    const toggleIcon = toggleButton.querySelector('.toggle-icon');
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    switch(theme) {
+      case 'dark':
+        toggleIcon.textContent = '☀️';
+        toggleButton.title = 'Switch to system theme';
+        break;
+      case 'light':
+        toggleIcon.textContent = '🌙';
+        toggleButton.title = 'Switch to dark theme';
+        break;
+      case 'system':
+      default:
+        toggleIcon.textContent = prefersDarkMode ? '🔄' : '🔄';
+        toggleButton.title = 'Switch to light theme';
+        break;
+    }
+  }
+}
+
+// Initialize theme on page load
+document.addEventListener('DOMContentLoaded', async () => {
+  await initializeTheme();
+});
+
+// Listen for system theme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async (e) => {
+  try {
+    // Only auto-switch if user is using system preference
+    const currentTheme = await themeStorage.getTheme();
+    if (currentTheme === 'system') {
+      applyTheme('system');
+    }
+  } catch (error) {
+    // Fallback to localStorage check
+    const currentTheme = localStorage.getItem('themePreference') || 'system';
+    if (currentTheme === 'system') {
+      applyTheme('system');
+    }
+  }
+});
+
+// ----------------------------------------------------
+//          SCROLL FUNCTIONALITY
+// ----------------------------------------------------
 const bottomBar = document.getElementById("bottomBar");
 const scrollLeft = document.getElementById("scrollLeft");
 const scrollRight = document.getElementById("scrollRight");

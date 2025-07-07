@@ -3,6 +3,7 @@
   --color-background: #FFE6CC;        /* Main background color */
   --color-surface: #FFF3E0;           /* Lighter surface color for panels */
   --color-primary: #2D2A2A;           /* Dark primary color for buttons/borders */
+  --color-caveat-dark: #2D2D2D;       /* Needs to be dark in both themes */
   --color-accent: #6B484A;            /* Medium accent color */
   --color-accent-dark: #471F21;       /* Dark accent color for hover states */
 

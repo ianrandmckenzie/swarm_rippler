@@ -47,7 +47,7 @@
 
 #bottomBar .mini-grid {
   border: 2px dotted var(--color-border-dotted);
-  background-color: var(--color-primary);
+  background-color: var(--color-caveat-dark);
   border-radius: 100%;
   padding: 30px 25px;
   border-top: none;
