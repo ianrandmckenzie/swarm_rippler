@@ -265,7 +265,7 @@ function updateToggleIcon(theme) {
         break;
       case 'system':
       default:
-        toggleIcon.textContent = prefersDarkMode ? '🔄' : '🔄';
+        toggleIcon.textContent = prefersDarkMode ? '⚙️' : '⚙️';
         toggleButton.title = 'Switch to light theme';
         break;
     }
