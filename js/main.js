@@ -613,7 +613,7 @@ function triggerRipple() {
 
   setTimeout(() => {
     ripple.remove();
-  }, 3000);
+  }, 2500);
 }
 
 document.querySelectorAll(".clickableCircle").forEach(clickableCircle => {
