@@ -1,3 +1,51 @@
+// IndexedDB storage for sequences
+class SequenceStorage {
+  constructor() {
+    this.dbName = 'ClickingGlossaliaDB';
+    this.dbVersion = 2;
+    this.sequencesStore = 'sequences';
+    this.db = null;
+  }
+
+  async init() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, this.dbVersion);
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        this.db = request.result;
+        resolve(this.db);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(this.sequencesStore)) {
+          const sequencesStore = db.createObjectStore(this.sequencesStore, { keyPath: 'id', autoIncrement: true });
+          sequencesStore.createIndex('timestamp', 'timestamp', { unique: false });
+        }
+      };
+    });
+  }
+
+  async saveSequence(sequence) {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.sequencesStore], 'readwrite');
+      const store = transaction.objectStore(this.sequencesStore);
+      const request = store.add({
+        sequence: sequence,
+        timestamp: Date.now()
+      });
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+    });
+  }
+}
+
+const sequenceStorage = new SequenceStorage();
+
 const grid = document.getElementById("grid");
 const saveButton = document.getElementById("save");
 
@@ -29,37 +77,71 @@ function toggleClick(event) {
   }
 }
 
-function saveClickWords() {
-  const clickWords = JSON.parse(localStorage.getItem("clickWords")) || [];
+async function saveClickWords() {
+  try {
+    const newSequence = [];
+    newSequence.push(["5"]); // Ensure "5" is always in the first layer
 
-  const newSequence = [];
-  newSequence.push(["5"]); // Ensure "5" is always in the first layer
+    const layerData = { 1: [], 2: [], 3: [] };
 
-  const layerData = { 1: [], 2: [], 3: [] };
-
-  document.querySelectorAll(".grid div div.clicked").forEach(cell => {
-    cell = cell.parentElement;
-    let layer = cell.dataset.layer;
-    let audio = cell.dataset.audio;
-    if (audio !== "0") {
-      if (!layerData[layer]) {
-        layerData[layer] = [];
+    document.querySelectorAll(".grid div div.clicked").forEach(cell => {
+      cell = cell.parentElement;
+      let layer = cell.dataset.layer;
+      let audio = cell.dataset.audio;
+      if (audio !== "0") {
+        if (!layerData[layer]) {
+          layerData[layer] = [];
+        }
+        if (!layerData[layer].includes(audio)) {
+          layerData[layer].push(audio);
+        }
       }
-      if (!layerData[layer].includes(audio)) {
-        layerData[layer].push(audio);
+    });
+
+    // Sort layers numerically and add to newSequence
+    Object.keys(layerData).sort((a, b) => a - b).forEach(layer => {
+      newSequence.push(layerData[layer]);
+    });
+
+    // Save to IndexedDB
+    await sequenceStorage.saveSequence(newSequence);
+
+    window.location.href = '/';
+  } catch (error) {
+    console.warn('Failed to save sequence to IndexedDB, falling back to localStorage:', error);
+
+    // Fallback to localStorage
+    const clickWords = JSON.parse(localStorage.getItem("clickWords")) || [];
+
+    const newSequence = [];
+    newSequence.push(["5"]); // Ensure "5" is always in the first layer
+
+    const layerData = { 1: [], 2: [], 3: [] };
+
+    document.querySelectorAll(".grid div div.clicked").forEach(cell => {
+      cell = cell.parentElement;
+      let layer = cell.dataset.layer;
+      let audio = cell.dataset.audio;
+      if (audio !== "0") {
+        if (!layerData[layer]) {
+          layerData[layer] = [];
+        }
+        if (!layerData[layer].includes(audio)) {
+          layerData[layer].push(audio);
+        }
       }
-    }
-  });
+    });
 
-  // Sort layers numerically and add to newSequence
-  Object.keys(layerData).sort((a, b) => a - b).forEach(layer => {
-    newSequence.push(layerData[layer]);
-  });
+    // Sort layers numerically and add to newSequence
+    Object.keys(layerData).sort((a, b) => a - b).forEach(layer => {
+      newSequence.push(layerData[layer]);
+    });
 
-  clickWords.push(newSequence);
-  localStorage.setItem("clickWords", JSON.stringify(clickWords));
+    clickWords.push(newSequence);
+    localStorage.setItem("clickWords", JSON.stringify(clickWords));
 
-  window.location.href = '/';
+    window.location.href = '/';
+  }
 }
 
 saveButton.addEventListener("click", saveClickWords);

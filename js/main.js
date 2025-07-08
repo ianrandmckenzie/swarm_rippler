@@ -4,12 +4,13 @@
 //          THEME TOGGLE FUNCTIONALITY (dark | system | light)
 // ----------------------------------------------------
 
-// IndexedDB setup for theme storage
-class ThemeStorage {
+// IndexedDB setup for persistent storage
+class PersistentStorage {
   constructor() {
     this.dbName = 'ClickingGlossaliaDB';
-    this.dbVersion = 1;
-    this.storeName = 'preferences';
+    this.dbVersion = 2; // Increment version for new object store
+    this.preferencesStore = 'preferences';
+    this.sequencesStore = 'sequences';
     this.db = null;
   }
 
@@ -25,19 +26,28 @@ class ThemeStorage {
 
       request.onupgradeneeded = (event) => {
         const db = event.target.result;
-        if (!db.objectStoreNames.contains(this.storeName)) {
-          const store = db.createObjectStore(this.storeName, { keyPath: 'key' });
+
+        // Create preferences store if it doesn't exist
+        if (!db.objectStoreNames.contains(this.preferencesStore)) {
+          const preferencesStore = db.createObjectStore(this.preferencesStore, { keyPath: 'key' });
+        }
+
+        // Create sequences store if it doesn't exist
+        if (!db.objectStoreNames.contains(this.sequencesStore)) {
+          const sequencesStore = db.createObjectStore(this.sequencesStore, { keyPath: 'id', autoIncrement: true });
+          sequencesStore.createIndex('timestamp', 'timestamp', { unique: false });
         }
       };
     });
   }
 
+  // Theme methods
   async setTheme(theme) {
     if (!this.db) await this.init();
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction([this.storeName], 'readwrite');
-      const store = transaction.objectStore(this.storeName);
+      const transaction = this.db.transaction([this.preferencesStore], 'readwrite');
+      const store = transaction.objectStore(this.preferencesStore);
       const request = store.put({ key: 'themePreference', value: theme });
 
       request.onerror = () => reject(request.error);
@@ -49,8 +59,8 @@ class ThemeStorage {
     if (!this.db) await this.init();
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction([this.storeName], 'readonly');
-      const store = transaction.objectStore(this.storeName);
+      const transaction = this.db.transaction([this.preferencesStore], 'readonly');
+      const store = transaction.objectStore(this.preferencesStore);
       const request = store.get('themePreference');
 
       request.onerror = () => reject(request.error);
@@ -60,15 +70,93 @@ class ThemeStorage {
       };
     });
   }
+
+  // Sequence methods
+  async saveSequence(sequence) {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.sequencesStore], 'readwrite');
+      const store = transaction.objectStore(this.sequencesStore);
+      const request = store.add({
+        sequence: sequence,
+        timestamp: Date.now()
+      });
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+    });
+  }
+
+  async getSequences() {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.sequencesStore], 'readonly');
+      const store = transaction.objectStore(this.sequencesStore);
+      const request = store.getAll();
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const sequences = request.result.map(item => ({
+          id: item.id,
+          sequence: item.sequence,
+          timestamp: item.timestamp
+        }));
+        resolve(sequences);
+      };
+    });
+  }
+
+  async deleteSequence(id) {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.sequencesStore], 'readwrite');
+      const store = transaction.objectStore(this.sequencesStore);
+      const request = store.delete(id);
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
+  }
+
+  // Migration method to transfer localStorage data to IndexedDB
+  async migrateFromLocalStorage() {
+    try {
+      // Migrate theme preference
+      const themePreference = localStorage.getItem('themePreference');
+      if (themePreference) {
+        await this.setTheme(themePreference);
+        localStorage.removeItem('themePreference');
+      }
+
+      // Migrate sequences
+      const clickWords = localStorage.getItem('clickWords');
+      if (clickWords) {
+        const sequences = JSON.parse(clickWords);
+        for (const sequence of sequences) {
+          await this.saveSequence(sequence);
+        }
+        localStorage.removeItem('clickWords');
+      }
+    } catch (error) {
+      console.warn('Migration from localStorage failed:', error);
+    }
+  }
 }
 
-// Create global theme storage instance
-const themeStorage = new ThemeStorage();
+// Create global storage instance
+const storage = new PersistentStorage();
 
 async function initializeTheme() {
   try {
+    // Initialize storage and migrate if needed
+    await storage.init();
+    await storage.migrateFromLocalStorage();
+
     // Get saved theme preference from IndexedDB
-    const savedTheme = await themeStorage.getTheme();
+    const savedTheme = await storage.getTheme();
     applyTheme(savedTheme);
   } catch (error) {
     console.warn('Failed to load theme from IndexedDB, falling back to system:', error);
@@ -107,7 +195,7 @@ function applyTheme(theme) {
 
 async function toggleTheme() {
   try {
-    const currentTheme = await themeStorage.getTheme();
+    const currentTheme = await storage.getTheme();
     let nextTheme;
 
     // Cycle through: system → light → dark → system
@@ -126,7 +214,7 @@ async function toggleTheme() {
     }
 
     // Save to IndexedDB
-    await themeStorage.setTheme(nextTheme);
+    await storage.setTheme(nextTheme);
 
     // Also save to localStorage as backup
     localStorage.setItem('themePreference', nextTheme);
@@ -193,7 +281,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async (e) => {
   try {
     // Only auto-switch if user is using system preference
-    const currentTheme = await themeStorage.getTheme();
+    const currentTheme = await storage.getTheme();
     if (currentTheme === 'system') {
       applyTheme('system');
     }
@@ -335,104 +423,202 @@ document.querySelectorAll(".grid div").forEach(square => {
 // ----------------------------------------------------
 //         LOADING & DELETING SAVED SEQUENCES
 // ----------------------------------------------------
-function loadSavedSequences() {
-  const savedSequences = JSON.parse(localStorage.getItem("clickWords")) || [];
+async function loadSavedSequences() {
+  try {
+    const savedSequences = await storage.getSequences();
 
-  savedSequences.forEach((sequence, index) => {
-    const miniGrid = document.createElement("div");
-    miniGrid.classList.add("mini-grid", "clickableCircle", "relative");
-    miniGrid.dataset.index = index;
-    miniGrid.addEventListener("click", () => playLayers(sequence));
+    savedSequences.forEach((sequenceData) => {
+      const sequence = sequenceData.sequence;
+      const sequenceId = sequenceData.id;
 
-    const deleteBtn = document.createElement('a');
-    deleteBtn.className = 'delBtn';
-    deleteBtn.textContent = 'ⅹ';
-    deleteBtn.addEventListener('click', function(){
-      bottomBar.removeChild(miniGrid);
-      const sequenceString = JSON.stringify(sequence);
-      let storageString = localStorage.getItem("clickWords");
-      if (storageString) {
-        storageString = storageString.replace(sequenceString, '');
-        // Optionally, trim any leading/trailing whitespace
-        storageString = storageString.trim();
-        // Also, delete double commas
-        storageString = storageString.replace(',,', ',');
-        storageString = storageString.replace('],]', ']]');
-        storageString = storageString.replace('[,[', '[[');
-        storageString = storageString.replace('[,]', '[]');
+      const miniGrid = document.createElement("div");
+      miniGrid.classList.add("mini-grid", "clickableCircle", "relative");
+      miniGrid.dataset.sequenceId = sequenceId;
+      miniGrid.addEventListener("click", () => {
+        playLayers(sequence);
+        triggerRipple();
+      });
 
-        // Save the updated string back to localStorage
-        localStorage.setItem("clickWords", storageString);
-      }
-    });
+      const deleteBtn = document.createElement('a');
+      deleteBtn.className = 'delBtn';
+      deleteBtn.textContent = 'ⅹ';
+      deleteBtn.addEventListener('click', async function(event){
+        event.stopPropagation(); // Prevent triggering the play sequence
 
-    // Define the correct structure, mirroring the original grid
-    const gridStructure = [
-      ["3-1", "3-0", "3-0", "3-2", "3-0", "3-0", "3-3"],
-      ["3-0", "2-1", "2-0", "2-2", "2-0", "2-3", "3-0"],
-      ["3-0", "2-0", "1-1", "1-2", "1-3", "2-0", "3-0"],
-      ["3-4", "2-4", "1-4", "0-5", "1-6", "2-6", "3-6"],
-      ["3-0", "2-0", "1-7", "1-8", "1-9", "2-0", "3-0"],
-      ["3-0", "2-7", "2-0", "2-8", "2-0", "2-9", "3-0"],
-      ["3-7", "3-0", "3-0", "3-8", "3-0", "3-0", "3-9"]
-    ];
-
-    // Generate the correct grid structure
-    for (let row = 0; row < 7; row++) {
-      for (let col = 0; col < 7; col++) {
-        const cell = document.createElement("div");
-        const [layer, audio] = gridStructure[row][col].split("-");
-
-        cell.dataset.layer = layer;
-        cell.dataset.audio = audio;
-
-        // Make inactive circles (data-audio="0") transparent
-        if (audio === "0") {
-          cell.style.opacity = "0";
-        }
-
-        // Check if the audio is part of the saved sequence
-        sequence.forEach((sequenceLayer, sequenceIndex) => {
-          if (layer == sequenceIndex) {
-            sequenceLayer.forEach((layerAudio, audioIndex) => {
-              if (audio == layerAudio) {
-                cell.style.opacity = "1"; // Make active circles visible
-              }
-            })
+        try {
+          await storage.deleteSequence(sequenceId);
+          bottomBar.removeChild(miniGrid);
+        } catch (error) {
+          console.warn('Failed to delete sequence from IndexedDB:', error);
+          // Fallback to localStorage method
+          const sequenceString = JSON.stringify(sequence);
+          let storageString = localStorage.getItem("clickWords");
+          if (storageString) {
+            storageString = storageString.replace(sequenceString, '');
+            storageString = storageString.trim();
+            storageString = storageString.replace(',,', ',');
+            storageString = storageString.replace('],]', ']]');
+            storageString = storageString.replace('[,[', '[[');
+            storageString = storageString.replace('[,]', '[]');
+            localStorage.setItem("clickWords", storageString);
           }
-        });
+          bottomBar.removeChild(miniGrid);
+        }
+      });
 
-        if (col === 3 && row === 3) cell.style.opacity = "1";
-        if (col === 3 && row === 3) cell.classList.add("mini-droplet");
+      // Define the correct structure, mirroring the original grid
+      const gridStructure = [
+        ["3-1", "3-0", "3-0", "3-2", "3-0", "3-0", "3-3"],
+        ["3-0", "2-1", "2-0", "2-2", "2-0", "2-3", "3-0"],
+        ["3-0", "2-0", "1-1", "1-2", "1-3", "2-0", "3-0"],
+        ["3-4", "2-4", "1-4", "0-5", "1-6", "2-6", "3-6"],
+        ["3-0", "2-0", "1-7", "1-8", "1-9", "2-0", "3-0"],
+        ["3-0", "2-7", "2-0", "2-8", "2-0", "2-9", "3-0"],
+        ["3-7", "3-0", "3-0", "3-8", "3-0", "3-0", "3-9"]
+      ];
 
-        miniGrid.appendChild(cell);
+      // Generate the correct grid structure
+      for (let row = 0; row < 7; row++) {
+        for (let col = 0; col < 7; col++) {
+          const cell = document.createElement("div");
+          const [layer, audio] = gridStructure[row][col].split("-");
+
+          cell.dataset.layer = layer;
+          cell.dataset.audio = audio;
+
+          // Make inactive circles (data-audio="0") transparent
+          if (audio === "0") {
+            cell.style.opacity = "0";
+          }
+
+          // Check if the audio is part of the saved sequence
+          sequence.forEach((sequenceLayer, sequenceIndex) => {
+            if (layer == sequenceIndex) {
+              sequenceLayer.forEach((layerAudio, audioIndex) => {
+                if (audio == layerAudio) {
+                  cell.style.opacity = "1"; // Make active circles visible
+                }
+              })
+            }
+          });
+
+          if (col === 3 && row === 3) cell.style.opacity = "1";
+          if (col === 3 && row === 3) cell.classList.add("mini-droplet");
+
+          miniGrid.appendChild(cell);
+        }
       }
-    }
 
-    bottomBar.appendChild(miniGrid);
-    miniGrid.appendChild(deleteBtn);
-  });
+      bottomBar.appendChild(miniGrid);
+      miniGrid.appendChild(deleteBtn);
+    });
+  } catch (error) {
+    console.warn('Failed to load sequences from IndexedDB, falling back to localStorage:', error);
+    // Fallback to localStorage
+    const savedSequences = JSON.parse(localStorage.getItem("clickWords")) || [];
+
+    savedSequences.forEach((sequence, index) => {
+      const miniGrid = document.createElement("div");
+      miniGrid.classList.add("mini-grid", "clickableCircle", "relative");
+      miniGrid.dataset.index = index;
+      miniGrid.addEventListener("click", () => {
+        playLayers(sequence);
+        triggerRipple();
+      });
+
+      const deleteBtn = document.createElement('a');
+      deleteBtn.className = 'delBtn';
+      deleteBtn.textContent = 'ⅹ';
+      deleteBtn.addEventListener('click', function(){
+        bottomBar.removeChild(miniGrid);
+        const sequenceString = JSON.stringify(sequence);
+        let storageString = localStorage.getItem("clickWords");
+        if (storageString) {
+          storageString = storageString.replace(sequenceString, '');
+          storageString = storageString.trim();
+          storageString = storageString.replace(',,', ',');
+          storageString = storageString.replace('],]', ']]');
+          storageString = storageString.replace('[,[', '[[');
+          storageString = storageString.replace('[,]', '[]');
+          localStorage.setItem("clickWords", storageString);
+        }
+      });
+
+      // Define the correct structure, mirroring the original grid
+      const gridStructure = [
+        ["3-1", "3-0", "3-0", "3-2", "3-0", "3-0", "3-3"],
+        ["3-0", "2-1", "2-0", "2-2", "2-0", "2-3", "3-0"],
+        ["3-0", "2-0", "1-1", "1-2", "1-3", "2-0", "3-0"],
+        ["3-4", "2-4", "1-4", "0-5", "1-6", "2-6", "3-6"],
+        ["3-0", "2-0", "1-7", "1-8", "1-9", "2-0", "3-0"],
+        ["3-0", "2-7", "2-0", "2-8", "2-0", "2-9", "3-0"],
+        ["3-7", "3-0", "3-0", "3-8", "3-0", "3-0", "3-9"]
+      ];
+
+      // Generate the correct grid structure
+      for (let row = 0; row < 7; row++) {
+        for (let col = 0; col < 7; col++) {
+          const cell = document.createElement("div");
+          const [layer, audio] = gridStructure[row][col].split("-");
+
+          cell.dataset.layer = layer;
+          cell.dataset.audio = audio;
+
+          // Make inactive circles (data-audio="0") transparent
+          if (audio === "0") {
+            cell.style.opacity = "0";
+          }
+
+          // Check if the audio is part of the saved sequence
+          sequence.forEach((sequenceLayer, sequenceIndex) => {
+            if (layer == sequenceIndex) {
+              sequenceLayer.forEach((layerAudio, audioIndex) => {
+                if (audio == layerAudio) {
+                  cell.style.opacity = "1"; // Make active circles visible
+                }
+              })
+            }
+          });
+
+          if (col === 3 && row === 3) cell.style.opacity = "1";
+          if (col === 3 && row === 3) cell.classList.add("mini-droplet");
+
+          miniGrid.appendChild(cell);
+        }
+      }
+
+      bottomBar.appendChild(miniGrid);
+      miniGrid.appendChild(deleteBtn);
+    });
+  }
 }
 
-loadSavedSequences();
+// Load sequences on page load (async)
+(async () => {
+  await loadSavedSequences();
+})();
 
 // ----------------------------------------------------
 //       RIPPLE CLICK EFFECT (for droplet circle)
 // ----------------------------------------------------
+function triggerRipple() {
+  const circle = document.getElementById("clickableCircle");
+  if (!circle) return;
+  const ripple = document.createElement("span");
+
+  setTimeout(() => {
+    ripple.classList.add("ripple");
+    circle.appendChild(ripple);
+  }, 500);
+
+  setTimeout(() => {
+    ripple.remove();
+  }, 3000);
+}
+
 document.querySelectorAll(".clickableCircle").forEach(clickableCircle => {
   clickableCircle.addEventListener("click", function () {
-    const circle = document.getElementById("clickableCircle");
-    if (!circle) return;
-    const ripple = document.createElement("span");
-
-    setTimeout(() => {
-      ripple.classList.add("ripple");
-      circle.appendChild(ripple);
-    }, 500);
-
-    setTimeout(() => {
-      ripple.remove();
-    }, 3000);
+    triggerRipple();
   });
 });
 

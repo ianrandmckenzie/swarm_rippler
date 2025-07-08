@@ -289,13 +289,13 @@
     <div data-row="6" data-col="5" data-layer="3" data-audio="0"><div></div></div>
     <div data-row="6" data-col="6" data-layer="3" data-audio="9"><div></div></div>
   </div>
-  <button class="save-button" id="save">Save Sequence</button>  <script>
-    // Theme Storage using IndexedDB
-    class ThemeStorage {
+  <button class="save-button" id="save">Save Sequence</button>  <script>    // Persistent Storage using IndexedDB
+    class PersistentStorage {
       constructor() {
         this.dbName = 'ClickingGlossaliaDB';
-        this.dbVersion = 1;
-        this.storeName = 'preferences';
+        this.dbVersion = 2;
+        this.preferencesStore = 'preferences';
+        this.sequencesStore = 'sequences';
         this.db = null;
       }
 
@@ -311,8 +311,14 @@
 
           request.onupgradeneeded = (event) => {
             const db = event.target.result;
-            if (!db.objectStoreNames.contains(this.storeName)) {
-              const store = db.createObjectStore(this.storeName, { keyPath: 'key' });
+
+            if (!db.objectStoreNames.contains(this.preferencesStore)) {
+              const preferencesStore = db.createObjectStore(this.preferencesStore, { keyPath: 'key' });
+            }
+
+            if (!db.objectStoreNames.contains(this.sequencesStore)) {
+              const sequencesStore = db.createObjectStore(this.sequencesStore, { keyPath: 'id', autoIncrement: true });
+              sequencesStore.createIndex('timestamp', 'timestamp', { unique: false });
             }
           };
         });
@@ -322,8 +328,8 @@
         if (!this.db) await this.init();
 
         return new Promise((resolve, reject) => {
-          const transaction = this.db.transaction([this.storeName], 'readwrite');
-          const store = transaction.objectStore(this.storeName);
+          const transaction = this.db.transaction([this.preferencesStore], 'readwrite');
+          const store = transaction.objectStore(this.preferencesStore);
           const request = store.put({ key: 'themePreference', value: theme });
 
           request.onerror = () => reject(request.error);
@@ -335,8 +341,8 @@
         if (!this.db) await this.init();
 
         return new Promise((resolve, reject) => {
-          const transaction = this.db.transaction([this.storeName], 'readonly');
-          const store = transaction.objectStore(this.storeName);
+          const transaction = this.db.transaction([this.preferencesStore], 'readonly');
+          const store = transaction.objectStore(this.preferencesStore);
           const request = store.get('themePreference');
 
           request.onerror = () => reject(request.error);
@@ -346,15 +352,29 @@
           };
         });
       }
+
+      async migrateFromLocalStorage() {
+        try {
+          const themePreference = localStorage.getItem('themePreference');
+          if (themePreference) {
+            await this.setTheme(themePreference);
+            localStorage.removeItem('themePreference');
+          }
+        } catch (error) {
+          console.warn('Migration from localStorage failed:', error);
+        }
+      }
     }
 
-    // Create global theme storage instance
-    const themeStorage = new ThemeStorage();
+    // Create global storage instance
+    const storage = new PersistentStorage();
 
     // Theme Toggle Functionality (dark | system | light)
     async function initializeTheme() {
       try {
-        const savedTheme = await themeStorage.getTheme();
+        await storage.init();
+        await storage.migrateFromLocalStorage();
+        const savedTheme = await storage.getTheme();
         applyTheme(savedTheme);
       } catch (error) {
         console.warn('Failed to load theme from IndexedDB, falling back to system:', error);
@@ -386,11 +406,9 @@
       }
 
       updateToggleIcon(theme);
-    }
-
-    async function toggleTheme() {
+    }    async function toggleTheme() {
       try {
-        const currentTheme = await themeStorage.getTheme();
+        const currentTheme = await storage.getTheme();
         let nextTheme;
 
         switch(currentTheme) {
@@ -407,7 +425,7 @@
             nextTheme = 'system';
         }
 
-        await themeStorage.setTheme(nextTheme);
+        await storage.setTheme(nextTheme);
         localStorage.setItem('themePreference', nextTheme);
 
         applyTheme(nextTheme);
@@ -468,7 +486,7 @@
     // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async (e) => {
       try {
-        const currentTheme = await themeStorage.getTheme();
+        const currentTheme = await storage.getTheme();
         if (currentTheme === 'system') {
           applyTheme('system');
         }
