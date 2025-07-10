@@ -23,7 +23,7 @@
   --color-ripple: rgba(168, 124, 126, 0.2);  /* Ripple effect color - lighter and more visible */
   --color-scroll-overlay: rgba(200, 200, 200, 0.3);  /* Scroll button overlay - lighter */
   --color-tooltip-bg: rgba(45, 45, 45, 0.95);      /* Tooltip background - dark but visible */
-  --color-click-highlight: #D4A5A7;
+  --color-click-highlight: #6B484A;
 
   /* State colors */
   --color-white: #000000;             /* Off-white for various elements */
