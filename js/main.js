@@ -491,18 +491,18 @@ function playLayers(layersSequence) {
     // If a layer includes '5', we skip scheduling it again
     if (layer[0] !== "5") {
       layer.forEach(audioId => {
-        const square = document.querySelector(
-          `[data-layer="${index}"] div[data-audio="${audioId}"]`
+        const button = document.querySelector(
+          `[data-layer="${index}"] button[data-audio="${audioId}"]`
         );
 
-        // Flash the square in white, then back to dark
-        if (square) {
+        // Flash the button in white, then back to primary color
+        if (button) {
           setTimeout(() => {
-            square.style.backgroundColor = "var(--color-text-white)";
+            button.style.backgroundColor = "var(--color-click-highlight)";
           }, index * 500); // 500ms * layer index
 
           setTimeout(() => {
-            square.style.backgroundColor = "var(--color-primary)";
+            button.style.backgroundColor = "var(--color-primary)";
           }, index * 750);
         }
 
@@ -513,11 +513,14 @@ function playLayers(layersSequence) {
   });
 }
 
-// Attach a click handler to squares that have data-audio="5"
-document.querySelectorAll(".grid div").forEach(square => {
-  square.addEventListener("click", () => {
-    if (square.dataset.audio === "5") {
+// Attach a click handler to buttons that have data-audio="5"
+document.querySelectorAll(".grid button").forEach(button => {
+  button.addEventListener("click", () => {
+    if (button.dataset.audio === "5") {
       playLayers(layers);
+    } else if (button.dataset.audio && button.dataset.audio !== "0") {
+      // Play individual sounds for other buttons
+      playAudio(button.dataset.audio);
     }
   });
 });
@@ -707,9 +710,9 @@ function triggerRipple() {
   const circle = document.getElementById("clickableCircle");
   if (!circle) return;
   const ripple = document.createElement("span");
+  ripple.classList.add("ripple");
 
   setTimeout(() => {
-    ripple.classList.add("ripple");
     circle.appendChild(ripple);
   }, 500);
 
@@ -718,9 +721,13 @@ function triggerRipple() {
   }, 2500);
 }
 
-document.querySelectorAll(".clickableCircle").forEach(clickableCircle => {
-  clickableCircle.addEventListener("click", function () {
+document.querySelectorAll(".clickableCircle").forEach(clickableElement => {
+  clickableElement.addEventListener("click", function () {
     triggerRipple();
+    // If it's the main droplet button, also play the layers
+    if (clickableElement.dataset.audio === "5") {
+      playLayers(layers);
+    }
   });
 });
 

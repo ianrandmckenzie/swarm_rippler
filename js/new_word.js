@@ -63,17 +63,32 @@ const gridStructure = [
 // Generate the 7x7 grid based on the predefined structure
 for (let row = 0; row < 7; row++) {
   for (let col = 0; col < 7; col++) {
-    const cell = document.querySelector(`#grid div[data-row="${row}"][data-col="${col}"] div`)
-    if (cell !== null) cell.addEventListener("click", toggleClick);
+    const button = document.querySelector(`#grid div[data-row="${row}"][data-col="${col}"] button`)
+    if (button !== null) {
+      button.addEventListener("click", toggleClick);
+      button.addEventListener("keydown", (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleClick(e);
+        }
+      });
+    }
   }
 }
 
 function toggleClick(event) {
-  const cell = event.target;
-  if (cell.classList.contains("clicked")) {
-    cell.classList.remove("clicked");
+  const button = event.target;
+  if (button.classList.contains("clicked")) {
+    button.classList.remove("clicked");
   } else {
-    cell.classList.add("clicked");
+    button.classList.add("clicked");
+  }
+  
+  // Announce the change to screen readers
+  const ariaLabel = button.getAttribute('aria-label') || 'Sound button';
+  const action = button.classList.contains("clicked") ? 'selected' : 'deselected';
+  if (typeof AccessibilityUtils !== 'undefined') {
+    AccessibilityUtils.announce(`${ariaLabel} ${action}`);
   }
 }
 
@@ -84,10 +99,10 @@ async function saveClickWords() {
 
     const layerData = { 1: [], 2: [], 3: [] };
 
-    document.querySelectorAll(".grid div div.clicked").forEach(cell => {
-      cell = cell.parentElement;
-      let layer = cell.dataset.layer;
-      let audio = cell.dataset.audio;
+    document.querySelectorAll(".grid div button.clicked").forEach(button => {
+      const parentDiv = button.parentElement;
+      let layer = parentDiv.dataset.layer;
+      let audio = parentDiv.dataset.audio;
       if (audio !== "0") {
         if (!layerData[layer]) {
           layerData[layer] = [];
@@ -118,10 +133,10 @@ async function saveClickWords() {
 
     const layerData = { 1: [], 2: [], 3: [] };
 
-    document.querySelectorAll(".grid div div.clicked").forEach(cell => {
-      cell = cell.parentElement;
-      let layer = cell.dataset.layer;
-      let audio = cell.dataset.audio;
+    document.querySelectorAll(".grid div button.clicked").forEach(button => {
+      const parentDiv = button.parentElement;
+      let layer = parentDiv.dataset.layer;
+      let audio = parentDiv.dataset.audio;
       if (audio !== "0") {
         if (!layerData[layer]) {
           layerData[layer] = [];

@@ -23,12 +23,13 @@ body {
   position: absolute;
   width: 200px;
   height: 200px;
-  left: -70px;
-  top: -70px;
+  left: -60px;
+  top: -60px;
   background: var(--color-ripple);
   border-radius: 50%;
   transform: scale(1);
   animation: rippleEffect 2.0s linear;
+  z-index: 9999;
 }
 
 @keyframes rippleEffect {
@@ -51,7 +52,7 @@ body {
   margin-top: -200px;
 }
 
-.grid div div {
+.grid div .sound-button {
   width: 30px;
   height: 30px;
   background-color: var(--color-primary);
@@ -64,6 +65,8 @@ body {
   color: var(--color-text-light);
   border-radius: 50%;
   transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
 }
 
 .grid div[data-layer="2"],
@@ -73,128 +76,128 @@ body {
   position: relative;
 }
 
-.grid div[data-layer="2"] div,
-.mini-grid div[data-layer="2"] div,
-.grid div[data-layer="3"] div,
-.mini-grid div[data-layer="3"] div {
+.grid div[data-layer="2"] .sound-button,
+.mini-grid div[data-layer="2"] .sound-button,
+.grid div[data-layer="3"] .sound-button,
+.mini-grid div[data-layer="3"] .sound-button {
   position: absolute;
 }
 
-.grid div[data-layer="1"] div[data-audio="1"] {
+.grid div[data-layer="1"] .sound-button[data-audio="1"] {
   margin: 35px 0px 0px 35px;
 }
 
-.grid div[data-layer="1"] div[data-audio="2"] {
+.grid div[data-layer="1"] .sound-button[data-audio="2"] {
   margin: 0px 35px 35px 35px;
 }
 
-.grid div[data-layer="1"] div[data-audio="3"] {
+.grid div[data-layer="1"] .sound-button[data-audio="3"] {
   margin: 35px 35px 0px 0px;
 }
 
-.grid div[data-layer="1"] div[data-audio="4"] {
+.grid div[data-layer="1"] .sound-button[data-audio="4"] {
   margin: 35px 35px 35px 0px;
 }
 
-.grid div[data-layer="1"] div[data-audio="6"] {
+.grid div[data-layer="1"] .sound-button[data-audio="6"] {
   margin: 35px 0px 35px 35px;
 }
 
-.grid div[data-layer="1"] div[data-audio="7"] {
+.grid div[data-layer="1"] .sound-button[data-audio="7"] {
   margin: 0px 0px 35px 35px;
 }
 
-.grid div[data-layer="1"] div[data-audio="8"] {
+.grid div[data-layer="1"] .sound-button[data-audio="8"] {
   margin: 35px 35px 0px 35px;
 }
 
-.grid div[data-layer="1"] div[data-audio="9"] {
+.grid div[data-layer="1"] .sound-button[data-audio="9"] {
   margin: 0px 35px 35px 0px;
 }
 
-.grid div[data-layer="2"] div[data-audio="1"] {
+.grid div[data-layer="2"] .sound-button[data-audio="1"] {
   bottom: -20px;
   right: -20px;
 }
 
-.grid div[data-layer="2"] div[data-audio="2"] {
+.grid div[data-layer="2"] .sound-button[data-audio="2"] {
   left: 35px;
   bottom: 35px;
 }
 
-.grid div[data-layer="2"] div[data-audio="3"] {
+.grid div[data-layer="2"] .sound-button[data-audio="3"] {
   left: -20px;
   bottom: -20px;
 }
 
-.grid div[data-layer="2"] div[data-audio="4"] {
+.grid div[data-layer="2"] .sound-button[data-audio="4"] {
   top: 35px;
   right: 35px;
 }
 
-.grid div[data-layer="2"] div[data-audio="6"] {
+.grid div[data-layer="2"] .sound-button[data-audio="6"] {
   top: 35px;
   left: 35px;
 }
 
-.grid div[data-layer="2"] div[data-audio="7"] {
+.grid div[data-layer="2"] .sound-button[data-audio="7"] {
   top: -20px;
   right: -20px;
 }
 
-.grid div[data-layer="2"] div[data-audio="8"] {
+.grid div[data-layer="2"] .sound-button[data-audio="8"] {
   top: 35px;
   left: 35px;
 }
 
-.grid div[data-layer="2"] div[data-audio="9"] {
+.grid div[data-layer="2"] .sound-button[data-audio="9"] {
   top: -20px;
   left: -20px;
 }
 
-.grid div[data-layer="3"] div[data-audio="1"] {
+.grid div[data-layer="3"] .sound-button[data-audio="1"] {
   bottom: 25px;
   right: 25px;
 }
 
-.grid div[data-layer="3"] div[data-audio="2"] {
+.grid div[data-layer="3"] .sound-button[data-audio="2"] {
   left: 35px;
   bottom: 95px;
 }
 
-.grid div[data-layer="3"] div[data-audio="3"] {
+.grid div[data-layer="3"] .sound-button[data-audio="3"] {
   left: 25px;
   bottom: 25px;
 }
 
-.grid div[data-layer="3"] div[data-audio="4"] {
+.grid div[data-layer="3"] .sound-button[data-audio="4"] {
   top: 35px;
   right: 95px;
 }
 
-.grid div[data-layer="3"] div[data-audio="6"] {
+.grid div[data-layer="3"] .sound-button[data-audio="6"] {
   top: 35px;
   left: 95px;
 }
 
-.grid div[data-layer="3"] div[data-audio="7"] {
+.grid div[data-layer="3"] .sound-button[data-audio="7"] {
   top: 25px;
   right: 25px;
 }
 
-.grid div[data-layer="3"] div[data-audio="8"] {
+.grid div[data-layer="3"] .sound-button[data-audio="8"] {
   top: 95px;
   left: 35px;
 }
 
-.grid div[data-layer="3"] div[data-audio="9"] {
+.grid div[data-layer="3"] .sound-button[data-audio="9"] {
   top: 25px;
   left: 25px;
 }
 
 .grid .droplet {
-  height: 60px;
-  width: 60px;
+  height: 110px;
+  width: 110px;
   border: 20px solid var(--color-primary);
   background-color: var(--color-background);
   display: flex;
@@ -203,6 +206,7 @@ body {
   align-items: center;
   border-radius: 50%;
   transition: background-color 0.3s;
+  overflow: visible;
 }
 
 .droplet:hover {

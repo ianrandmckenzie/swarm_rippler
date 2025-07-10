@@ -23,10 +23,11 @@
   --color-ripple: rgba(168, 124, 126, 0.2);  /* Ripple effect color - lighter and more visible */
   --color-scroll-overlay: rgba(200, 200, 200, 0.3);  /* Scroll button overlay - lighter */
   --color-tooltip-bg: rgba(45, 45, 45, 0.95);      /* Tooltip background - dark but visible */
+  --color-click-highlight: #D4A5A7;
 
   /* State colors */
-  --color-white: #F5F5F5;             /* Off-white for various elements */
-  --color-black: #0D0D0D;             /* Very dark for hover states */
+  --color-white: #000000;             /* Off-white for various elements */
+  --color-black: #ffffff;             /* Very dark for hover states */
 
   /* RGB values for animations */
   --color-accent-rgb: 168, 124, 126;  /* RGB values for accent color */
@@ -49,7 +50,7 @@
   --color-text: #2D2A2A;              /* Default text color */
   --color-text-secondary: #6B484A;    /* Secondary text color */
   --color-text-light: #FFE6CC;        /* Light text on dark backgrounds */
-  --color-text-white: #ffffff;        /* Pure white text */
+  --color-text-white: #000000;        /* Pure white text */
   --color-text-link: #DBE8D1;         /* Link color in tooltips */
 
   /* Interactive colors */

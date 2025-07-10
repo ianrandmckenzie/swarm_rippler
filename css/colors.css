@@ -4,6 +4,7 @@
   --color-surface: #FFF3E0;           /* Lighter surface color for panels */
   --color-primary: #2D2A2A;           /* Dark primary color for buttons/borders */
   --color-caveat-dark: #2D2D2D;       /* Needs to be dark in both themes */
+  --color-caveat-light: #ffffff;      /* Needs to be light in both themes */
   --color-accent: #6B484A;            /* Medium accent color */
   --color-accent-dark: #471F21;       /* Dark accent color for hover states */
 
@@ -22,6 +23,7 @@
   --color-ripple: rgba(120, 89, 91, 0.1);  /* Ripple effect color */
   --color-scroll-overlay: rgba(45, 45, 42, 0.2);  /* Scroll button overlay */
   --color-tooltip-bg: rgba(71, 31, 33, 0.9);      /* Tooltip background */
+  --color-click-highlight: #ffffff;
 
   /* State colors */
   --color-white: white;               /* Pure white for various elements */
