@@ -2,6 +2,36 @@
 
 This is part of an project for supplementing my drawings with a more interactive experience. The basic premise is that there are 4 layers. The layers start on the inside and work their way outward. If there are multiple sounds in a layer, they happen simultaneously – something most humans are not capable of, creating somewhat of an alien cacophony.
 
+## Getting Started
+
+### Web Version
+Simply open `index.html` in your browser to use the web version.
+
+### Desktop Application (Tauri)
+
+#### Prerequisites
+- [Node.js](https://nodejs.org/) (v16 or later)
+- [Rust](https://rustup.rs/) (latest stable version)
+
+#### Development
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run tauri:dev
+   ```
+
+#### Building for Production
+To create a native desktop application:
+```bash
+npm run tauri:build
+```
+
+This will create platform-specific installers in `src-tauri/target/release/bundle/`.
+
 ## The Grid
 
 In a 2-layer system, the number 5 is "layer 0." 1, 2, 3, 4, 6, 7, 8, 9 are "layer 1."

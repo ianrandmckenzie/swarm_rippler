@@ -1,0 +1,29 @@
+{
+  "name": "click-rippler",
+  "version": "1.0.0",
+  "description": "Interactive sound grid for creating and learning clicking sounds and glossolalia",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8181",
+    "build": "node build.js",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ianrandmckenzie/clicking_glossolalia.git"
+  },
+  "keywords": ["clicking sounds", "glossolalia", "interactive", "sound grid", "audio", "tauri", "desktop app"],
+  "author": "Click Sound Rippler Project",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ianrandmckenzie/clicking_glossolalia/issues"
+  },
+  "homepage": "https://github.com/ianrandmckenzie/clicking_glossolalia#readme",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.6.2"
+  }
+}
