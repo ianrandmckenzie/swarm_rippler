@@ -121,6 +121,108 @@ class PersistentStorage {
     });
   }
 
+  // Tutorial methods
+  async setTutorialStatus(completed) {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.preferencesStore], 'readwrite');
+      const store = transaction.objectStore(this.preferencesStore);
+      const request = store.put({ key: 'tutorialCompleted', value: completed });
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
+  }
+
+  async getTutorialStatus() {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.preferencesStore], 'readonly');
+      const store = transaction.objectStore(this.preferencesStore);
+      const request = store.get('tutorialCompleted');
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const result = request.result;
+        resolve(result ? result.value : false);
+      };
+    });
+  }
+
+  async setDontShowStatus(dontShow) {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.preferencesStore], 'readwrite');
+      const store = transaction.objectStore(this.preferencesStore);
+      const request = store.put({ key: 'tutorialDontShow', value: dontShow });
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
+  }
+
+  async getDontShowStatus() {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.preferencesStore], 'readonly');
+      const store = transaction.objectStore(this.preferencesStore);
+      const request = store.get('tutorialDontShow');
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const result = request.result;
+        resolve(result ? result.value : false);
+      };
+    });
+  }
+
+  // Tutorial step persistence methods
+  async setTutorialStep(step) {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.preferencesStore], 'readwrite');
+      const store = transaction.objectStore(this.preferencesStore);
+      const request = store.put({ key: 'tutorialCurrentStep', value: step });
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
+  }
+
+  async getTutorialStep() {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.preferencesStore], 'readonly');
+      const store = transaction.objectStore(this.preferencesStore);
+      const request = store.get('tutorialCurrentStep');
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const result = request.result;
+        resolve(result ? result.value : 0);
+      };
+    });
+  }
+
+  async clearTutorialStep() {
+    if (!this.db) await this.init();
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.preferencesStore], 'readwrite');
+      const store = transaction.objectStore(this.preferencesStore);
+      const request = store.delete('tutorialCurrentStep');
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
+  }
+
   // Migration method to transfer localStorage data to IndexedDB
   async migrateFromLocalStorage() {
     try {

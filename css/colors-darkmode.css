@@ -13,6 +13,8 @@
   --color-border-dotted: #999999;     /* Dotted border color */
 
   /* Text colors */
+  --color-text: #E8E5E5;              /* Default text color */
+  --color-text-secondary: #A67C7E;    /* Secondary text color */
   --color-text-light: #E8E5E5;        /* Light text on dark backgrounds */
   --color-text-white: #ffffff;        /* Pure white text */
   --color-text-link: #B8E5A8;         /* Light green link color in tooltips */
@@ -25,6 +27,9 @@
   /* State colors */
   --color-white: #F5F5F5;             /* Off-white for various elements */
   --color-black: #0D0D0D;             /* Very dark for hover states */
+
+  /* RGB values for animations */
+  --color-accent-rgb: 168, 124, 126;  /* RGB values for accent color */
 }
 
 /* Light mode color variables - explicit light mode class */
@@ -41,6 +46,8 @@
   --color-border-dotted: #CCC9C8;     /* Dotted border color */
 
   /* Text colors */
+  --color-text: #2D2A2A;              /* Default text color */
+  --color-text-secondary: #6B484A;    /* Secondary text color */
   --color-text-light: #FFE6CC;        /* Light text on dark backgrounds */
   --color-text-white: #ffffff;        /* Pure white text */
   --color-text-link: #DBE8D1;         /* Link color in tooltips */
@@ -48,9 +55,7 @@
   /* Interactive colors */
   --color-ripple: rgba(120, 89, 91, 0.1);  /* Ripple effect color */
   --color-scroll-overlay: rgba(45, 45, 42, 0.2);  /* Scroll button overlay */
-  --color-tooltip-bg: rgba(71, 31, 33, 0.9);      /* Tooltip background */
 
-  /* State colors */
-  --color-white: white;               /* Pure white for various elements */
-  --color-black: black;               /* Pure black for hover states */
+  /* RGB values for animations */
+  --color-accent-rgb: 107, 72, 74;    /* RGB values for accent color */
 }

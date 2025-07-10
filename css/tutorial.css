@@ -1,0 +1,252 @@
+/* Tutorial Sidebar and Overlay Styles */
+
+/* Tutorial Overlay - Dark transparent background */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 9998;
+  display: none;
+  pointer-events: none;
+}
+
+.tutorial-overlay.active {
+  display: block;
+}
+
+/* Tutorial Sidebar */
+.tutorial-sidebar {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 350px;
+  height: 100%;
+  background-color: var(--color-surface);
+  border-left: 3px solid var(--color-primary);
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease-in-out;
+  overflow-y: auto;
+  font-family: inherit;
+}
+
+.tutorial-sidebar.active {
+  right: 0;
+}
+
+.tutorial-sidebar h2 {
+  color: var(--color-primary);
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.tutorial-sidebar .tutorial-content {
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+.tutorial-sidebar .tutorial-content p {
+  color: var(--color-text);
+  line-height: 1.6;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.tutorial-sidebar .tutorial-content ul {
+  color: var(--color-text);
+  line-height: 1.6;
+  margin-bottom: 15px;
+  padding-left: 20px;
+}
+
+.tutorial-sidebar .tutorial-content li {
+  margin-bottom: 8px;
+}
+
+/* Tutorial Buttons */
+.tutorial-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.tutorial-button {
+  padding: 12px 24px;
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.tutorial-button:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.tutorial-button.secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.tutorial-button.secondary:hover {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.tutorial-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.tutorial-button:disabled:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: none;
+}
+
+/* Tutorial Checkbox */
+.tutorial-checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tutorial-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.tutorial-checkbox-label {
+  color: var(--color-text);
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+/* Tutorial Highlight - for specific elements */
+.tutorial-highlight {
+  position: relative;
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+.tutorial-highlight::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 3px solid var(--color-accent);
+  border-radius: 8px;
+  animation: tutorialPulse 2s infinite;
+  pointer-events: none;
+}
+
+/* Save button states during tutorial */
+.tutorial-sidebar.active ~ * #save:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+.tutorial-sidebar.active ~ * #save:not(:disabled) {
+  opacity: 1 !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+@keyframes tutorialPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb), 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--color-accent-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb), 0);
+  }
+}
+
+/* Tutorial Progress Indicator */
+.tutorial-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tutorial-progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  transition: background-color 0.3s ease;
+}
+
+.tutorial-progress-dot.active {
+  background-color: var(--color-primary);
+}
+
+.tutorial-progress-dot.completed {
+  background-color: var(--color-accent);
+}
+
+/* Step counter */
+.tutorial-step-counter {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .tutorial-sidebar {
+    width: 100%;
+    right: -100%;
+    padding: 20px;
+  }
+
+  .tutorial-sidebar.active {
+    right: 0;
+  }
+
+  .tutorial-sidebar h2 {
+    font-size: 20px;
+  }
+
+  .tutorial-sidebar .tutorial-content p {
+    font-size: 14px;
+  }
+
+  .tutorial-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Ensure tutorial works with existing tooltips */
+.tutorial-overlay ~ .tooltip {
+  z-index: 10000;
+}

@@ -12,6 +12,8 @@
   --color-border-dotted: #CCC9C8;     /* Dotted border color */
 
   /* Text colors */
+  --color-text: #2D2A2A;              /* Default text color */
+  --color-text-secondary: #6B484A;    /* Secondary text color */
   --color-text-light: #FFE6CC;        /* Light text on dark backgrounds */
   --color-text-white: #ffffff;        /* Pure white text */
   --color-text-link: #DBE8D1;         /* Link color in tooltips */
@@ -24,4 +26,7 @@
   /* State colors */
   --color-white: white;               /* Pure white for various elements */
   --color-black: black;               /* Pure black for hover states */
+
+  /* RGB values for animations */
+  --color-accent-rgb: 107, 72, 74;    /* RGB values for accent color */
 }
