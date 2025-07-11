@@ -90,9 +90,7 @@
       margin-top: 100px;
     }
 
-    .grid div .sound-button,
-    .grid div button,
-    .sound-button {
+    .grid div .sound-button {
       /* Reset button defaults */
       padding: 0;
       margin: 0;
@@ -119,12 +117,12 @@
       color: var(--color-text);
     }
 
-    .grid div button:hover,
-    .grid div button:focus {
+    .grid div .sound-button:hover,
+    .grid div .sound-button:focus {
       background-color: var(--color-accent);
     }
 
-    .grid div button.clicked {
+    .grid div .sound-button.clicked {
       background-color: var(--color-primary);
       color: var(--color-text-light);
     }
@@ -134,151 +132,121 @@
       position: relative;
     }
 
-    .grid div[data-layer="2"] button,
-    .grid div[data-layer="3"] button {
+    .grid div[data-layer="2"] .sound-button,
+    .grid div[data-layer="3"] .sound-button {
       position: absolute;
     }
 
-    .grid div[data-layer="1"][data-audio="1"] button {
+    .grid div[data-layer="1"][data-audio="1"] .sound-button {
       margin: 30px 0px 0px 30px;
     }
 
-    .grid div[data-layer="1"][data-audio="2"] button {
+    .grid div[data-layer="1"][data-audio="2"] .sound-button {
       margin: 0px 30px 30px 30px;
     }
 
-    .grid div[data-layer="1"][data-audio="3"] button {
+    .grid div[data-layer="1"][data-audio="3"] .sound-button {
       margin: 30px 30px 0px 0px;
     }
 
-    .grid div[data-layer="1"][data-audio="4"] button {
+    .grid div[data-layer="1"][data-audio="4"] .sound-button {
       margin: 30px 30px 30px 0px;
     }
 
-    .grid div[data-layer="1"][data-audio="6"] button {
+    .grid div[data-layer="1"][data-audio="6"] .sound-button {
       margin: 30px 0px 30px 30px;
     }
 
-    .grid div[data-layer="1"][data-audio="7"] button {
+    .grid div[data-layer="1"][data-audio="7"] .sound-button {
       margin: 0px 0px 30px 30px;
     }
 
-    .grid div[data-layer="1"][data-audio="8"] button {
+    .grid div[data-layer="1"][data-audio="8"] .sound-button {
       margin: 30px 30px 0px 30px;
     }
 
-    .grid div[data-layer="1"][data-audio="9"] button {
+    .grid div[data-layer="1"][data-audio="9"] .sound-button {
       margin: 0px 30px 30px 0px;
     }
 
-    .grid div[data-layer="2"][data-audio="1"] button {
+    .grid div[data-layer="2"][data-audio="1"] .sound-button {
       bottom: -15px;
       right: -15px;
     }
 
-    .grid div[data-layer="2"][data-audio="2"] button {
+    .grid div[data-layer="2"][data-audio="2"] .sound-button {
       left: 30px;
       bottom: 30px;
     }
 
-    .grid div[data-layer="2"][data-audio="3"] button {
+    .grid div[data-layer="2"][data-audio="3"] .sound-button {
       left: -15px;
       bottom: -15px;
     }
 
-    .grid div[data-layer="2"][data-audio="4"] button {
+    .grid div[data-layer="2"][data-audio="4"] .sound-button {
       top: 30px;
       right: 30px;
     }
 
-    .grid div[data-layer="2"][data-audio="6"] button {
+    .grid div[data-layer="2"][data-audio="6"] .sound-button {
       top: 30px;
       left: 30px;
     }
 
-    .grid div[data-layer="2"][data-audio="7"] button {
+    .grid div[data-layer="2"][data-audio="7"] .sound-button {
       top: -15px;
       right: -15px;
     }
 
-    .grid div[data-layer="2"][data-audio="8"] button {
+    .grid div[data-layer="2"][data-audio="8"] .sound-button {
       top: 30px;
       left: 30px;
     }
 
-    .grid div[data-layer="2"][data-audio="9"] button {
+    .grid div[data-layer="2"][data-audio="9"] .sound-button {
       top: -15px;
       left: -15px;
     }
 
-    .grid div[data-layer="3"][data-audio="1"] button {
+    .grid div[data-layer="3"][data-audio="1"] .sound-button {
       bottom: 45px;
       right: 45px;
     }
 
-    .grid div[data-layer="3"][data-audio="2"] button {
+    .grid div[data-layer="3"][data-audio="2"] .sound-button {
       left: 30px;
       bottom: 105px;
     }
 
-    .grid div[data-layer="3"][data-audio="3"] button {
+    .grid div[data-layer="3"][data-audio="3"] .sound-button {
       left: 45px;
       bottom: 45px;
     }
 
-    .grid div[data-layer="3"][data-audio="4"] button {
+    .grid div[data-layer="3"][data-audio="4"] .sound-button {
       top: 30px;
       right: 105px;
     }
 
-    .grid div[data-layer="3"][data-audio="6"] button {
+    .grid div[data-layer="3"][data-audio="6"] .sound-button {
       top: 30px;
       left: 105px;
     }
 
-    .grid div[data-layer="3"][data-audio="7"] button {
+    .grid div[data-layer="3"][data-audio="7"] .sound-button {
       top: 45px;
       right: 45px;
     }
 
-    .grid div[data-layer="3"][data-audio="8"] button {
+    .grid div[data-layer="3"][data-audio="8"] .sound-button {
       top: 105px;
       left: 30px;
     }
 
-    .grid div[data-layer="3"][data-audio="9"] button {
+    .grid div[data-layer="3"][data-audio="9"] .sound-button {
       top: 45px;
       left: 45px;
-    }
-
-    .grid .droplet,
-    button.droplet {
-      /* Reset button defaults */
-      padding: 0;
-      margin: 0;
-      outline: none;
-      font-family: inherit;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-
-      /* Droplet styles */
-      height: 60px;
-      width: 60px;
-      border: 20px solid var(--color-primary);
-      background-color: var(--color-background);
-      display: flex;
-      position: relative;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .droplet:hover,
-    button.droplet:hover {
-      background-color: var(--color-surface);
     }
 
     .grid div[data-audio="0"] {
@@ -292,7 +260,9 @@
 
     .save-button {
       cursor: pointer;
-      margin-top: 220px;
+      position: relative;
+      top: 180px;
+      right: 0px;
       width: auto;
       padding: 10px 20px;
       background: var(--color-accent);

@@ -83,7 +83,7 @@ function toggleClick(event) {
   } else {
     button.classList.add("clicked");
   }
-  
+
   // Announce the change to screen readers
   const ariaLabel = button.getAttribute('aria-label') || 'Sound button';
   const action = button.classList.contains("clicked") ? 'selected' : 'deselected';
@@ -99,7 +99,7 @@ async function saveClickWords() {
 
     const layerData = { 1: [], 2: [], 3: [] };
 
-    document.querySelectorAll(".grid div button.clicked").forEach(button => {
+    document.querySelectorAll(".grid div .sound-button.clicked").forEach(button => {
       const parentDiv = button.parentElement;
       let layer = parentDiv.dataset.layer;
       let audio = parentDiv.dataset.audio;
@@ -133,7 +133,7 @@ async function saveClickWords() {
 
     const layerData = { 1: [], 2: [], 3: [] };
 
-    document.querySelectorAll(".grid div button.clicked").forEach(button => {
+    document.querySelectorAll(".grid div .sound-button.clicked").forEach(button => {
       const parentDiv = button.parentElement;
       let layer = parentDiv.dataset.layer;
       let audio = parentDiv.dataset.audio;

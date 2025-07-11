@@ -399,23 +399,34 @@ class Tutorial {
 
   highlightSelectableCircles() {
     this.cleanup();
-    // Find circles that are selectable (have audio data and are not "0")
-    const selectableCircles = document.querySelectorAll('.grid div div');
-    let highlightedCount = 0;
 
-    selectableCircles.forEach(circle => {
-      // Check if this circle has audio data by looking at its parent
-      const parent = circle.parentElement;
-      if (parent && parent.dataset.audio && parent.dataset.audio !== "0") {
-        circle.classList.add('tutorial-highlight');
-        highlightedCount++;
-      }
-    });
+    // Wait a bit for the grid to be fully rendered
+    setTimeout(() => {
+      // Find circles that are selectable (have audio data and are not "0")
+      const selectableCircles = document.querySelectorAll('.grid div .sound-button');
+      let highlightedCount = 0;
 
-    console.log(`Highlighted ${highlightedCount} selectable circles`);
+      console.log(`Tutorial: Found ${selectableCircles.length} total buttons in grid`);
 
-    // Monitor circle selection
-    this.monitorCircleSelection();
+      selectableCircles.forEach((button, index) => {
+        // Check if this button's parent div has audio data and is not "0"
+        const parent = button.parentElement;
+        const audioData = parent ? parent.dataset.audio : null;
+
+        console.log(`Button ${index}: audio=${audioData}, parent layer=${parent?.dataset.layer}`);
+
+        if (parent && audioData && audioData !== "0") {
+          button.classList.add('tutorial-highlight');
+          highlightedCount++;
+          console.log(`Added highlight to button ${index} with audio ${audioData}`);
+        }
+      });
+
+      console.log(`Highlighted ${highlightedCount} selectable circles`);
+
+      // Monitor circle selection
+      this.monitorCircleSelection();
+    }, 200);
   }
 
   highlightNewWord() {
@@ -443,7 +454,7 @@ class Tutorial {
 
       // Monitor the circle selections
       const updateSelectionCount = () => {
-        const selectedCircles = document.querySelectorAll('.grid div div.clicked');
+        const selectedCircles = document.querySelectorAll('.grid div .sound-button.clicked');
         const count = selectedCircles.length;
 
         console.log(`Tutorial: ${count} circles selected`);
@@ -478,11 +489,11 @@ class Tutorial {
       };
 
       // Listen for clicks on grid cells
-      const gridCells = document.querySelectorAll('.grid div div');
+      const gridCells = document.querySelectorAll('.grid div .sound-button');
       console.log(`Tutorial: Found ${gridCells.length} grid cells to monitor`);
 
-      gridCells.forEach(cell => {
-        cell.addEventListener('click', () => {
+      gridCells.forEach(button => {
+        button.addEventListener('click', () => {
           // Small delay to let the clicked class be added/removed
           setTimeout(updateSelectionCount, 50);
         });
@@ -560,6 +571,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('Tutorial: Available debug commands:', Object.keys(window.tutorialDebug));
   }, 500);
+  document.querySelector('#mainContent').style.position = 'relative';
+  document.querySelector('#mainContent .grid').style.position = 'absolute';
+  document.querySelector('#mainContent .grid').style.right = '85px';
+  document.querySelector('#mainContent .grid').style.bottom = '50px';
 });
 
 // Export for potential use in other scripts
