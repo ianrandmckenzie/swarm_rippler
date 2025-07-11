@@ -387,7 +387,13 @@ class Tutorial {
     this.cleanup();
     const newWordBtn = document.querySelector('.new-sequence-button, a[href*="new_word"]');
     if (newWordBtn) {
+      // Preserve original positioning
+      const originalPos = window.getComputedStyle(newWordBtn).position;
       newWordBtn.classList.add('tutorial-highlight');
+      // If this element was fixed, restore its fixed positioning
+      if (originalPos === 'fixed') {
+        newWordBtn.style.position = 'fixed';
+      }
     }
   }
 

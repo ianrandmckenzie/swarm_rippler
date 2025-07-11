@@ -3,7 +3,7 @@
 # Icon Generator Script for Click Rippler
 # This script helps convert your custom icon.png to the required Tauri icon formats
 # including macOS, Windows, and Windows Store/UWP icons
-# 
+#
 # IMPORTANT: Tauri requires icons to be in RGBA format (not palette/colormap)
 # This script ensures all generated icons use the proper RGBA format to avoid
 # build errors like "icon is not RGBA"
