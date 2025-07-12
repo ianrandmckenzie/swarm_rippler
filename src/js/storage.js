@@ -47,3 +47,17 @@ async function loadAllSequences() {
     req.onerror = () => res([]);
   });
 }
+
+// Preferences management
+async function getPreferences() {
+  const preferences = await getSetting('preferences');
+  return preferences || {
+    theme: 'system',
+    volume: 0.7,
+    showTutorial: true
+  };
+}
+
+async function savePreferences(preferences) {
+  await setSetting('preferences', preferences);
+}

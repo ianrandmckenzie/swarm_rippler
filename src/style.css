@@ -2,6 +2,14 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+body {
+  background-image: url('../assets/bg.png');
+}
+
+body::after {
+  background: rgba(255, 255, 255, 1);
+}
+
 /* Custom scrollbar styles with swarm color palette */
 ::-webkit-scrollbar {
   width: 8px;
@@ -65,6 +73,29 @@
   }
 }
 
+/* Dark theme scrollbar styles */
+@layer components {
+  .dark .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-swarmshadow-50;
+  }
+
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-swarmlight-200 border-swarmshadow-200;
+  }
+
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-swarmlight-300;
+  }
+
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb:active {
+    @apply bg-swarmlight-400;
+  }
+
+  .dark .custom-scrollbar::-webkit-scrollbar-corner {
+    @apply bg-swarmshadow-50;
+  }
+}
+
 /* Highlight animation for tutorial button */
 @layer components {
   .highlight-once {
@@ -79,6 +110,20 @@
       box-shadow: 0 0 10px 10px rgb(theme('colors.swarmstripe.400') / 0.7);
     }
   }
+
+  /* Dark theme pulse animation */
+  .dark .highlight-once {
+    animation: pulseDark 1s ease-in-out infinite;
+  }
+
+  @keyframes pulseDark {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgb(theme('colors.swarmlight.300') / 0);
+    }
+    50% {
+      box-shadow: 0 0 10px 10px rgb(theme('colors.swarmlight.300') / 0.8);
+    }
+  }
 }
 
 /* Tooltip styling */
@@ -91,10 +136,67 @@
   z-index: 1100;
 }
 
+/* Dark theme tooltip */
+.dark .tooltip {
+  background: #202020; /* swarmshadow-100 */
+  border-color: #FFF176; /* swarmlight-300 */
+  color: #FFFBC2; /* swarmlight-100 */
+}
+
 /* Dull background when modal open */
 .modal-open #main-content,
 .modal-open footer,
 .modal-open header {
   filter: grayscale(100%);
   pointer-events: none;
+}
+
+/* Theme switcher styles */
+.theme-btn {
+  color: #141414; /* swarmshadow-400 */
+  transition: all 0.2s ease;
+}
+
+.theme-btn:hover {
+  background-color: #202020; /* swarmshadow-100 */
+  color: #0A0A0A; /* swarmshadow-600 */
+}
+
+.dark .theme-btn {
+  color: #FFF176; /* swarmlight-300 */
+}
+
+.dark .theme-btn:hover {
+  background-color: #191919; /* swarmshadow-300 */
+  color: #FFFBC2; /* swarmlight-100 */
+}
+
+/* Active state styles - much more obvious */
+.theme-btn.active {
+  background-color: #1F1F1F; /* swarmshadow-200 */
+  color: #FFFBC2; /* swarmlight-100 */
+  box-shadow: 0 0 0 2px #FFF176; /* swarmlight-300 ring */
+}
+
+.dark .theme-btn.active {
+  background-color: #FFF176; /* swarmlight-300 */
+  color: #1F1F1F; /* swarmshadow-200 */
+  box-shadow: 0 0 0 2px #1F1F1F; /* swarmshadow-200 ring */
+}
+
+/* Specific theme button active states for extra clarity */
+.theme-btn[data-theme="dark"].active {
+  background-color: #1F1F1F; /* swarmshadow-200 */
+  color: #FFFBC2; /* swarmlight-100 */
+}
+
+.theme-btn[data-theme="light"].active {
+  background-color: #FFF9C4; /* swarmlight-200 */
+  color: #1F1F1F; /* swarmshadow-200 */
+}
+
+.theme-btn[data-theme="system"].active {
+  background: linear-gradient(45deg, #1F1F1F 50%, #FFF9C4 50%);
+  color: #FFF176; /* swarmlight-300 */
+  box-shadow: 0 0 0 2px #FFEB3B; /* swarmstripe-200 */
 }

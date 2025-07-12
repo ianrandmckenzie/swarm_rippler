@@ -48,28 +48,53 @@
     </style>
   </head>
 
-  <body class="bg-swarmlight-50/25">
-    <main id="main-content">
-      <div id="canvas-container" role="application" aria-label="Sound grid interface for creating clicking sounds">
-        <canvas id="soundCanvas"></canvas>
+  <body class="bg-cover bg-center bg-no-repeat">
+    <!-- Theme Switcher -->
+    <div class="fixed top-4 right-4 z-50">
+      <div class="bg-swarmlight-100 dark:bg-swarmshadow-100 border border-swarmshadow-300 dark:border-swarmlight-300 rounded-lg p-2 shadow-lg">
+        <div class="flex items-center space-x-1" role="radiogroup" aria-label="Theme selection">
+          <button id="darkTheme" class="theme-btn p-2 rounded-md transition-colors" data-theme="dark" aria-label="Dark theme" title="Dark theme">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21.4 13.7C20.2 14.4 18.8 14.8 17.3 14.8C12.9 14.8 9.3 11.2 9.3 6.8C9.3 5.3 9.7 3.9 10.4 2.7C10.6 2.3 10.3 1.8 9.9 1.8C5.2 2.8 1.8 7.1 1.8 12.2C1.8 18.1 6.6 22.9 12.5 22.9C17.6 22.9 21.9 19.5 22.9 14.8C23 14.4 22.5 14.1 21.4 13.7Z"/>
+            </svg>
+          </button>
+          <button id="systemTheme" class="theme-btn p-2 rounded-md transition-colors" data-theme="system" aria-label="System theme" title="System theme">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M4 6H20V16H4V6M20 18A2 2 0 0 0 22 16V6C22 4.89 21.1 4 20 4H4A2 2 0 0 0 2 6V16A2 2 0 0 0 4 18H0V20H24V18H20Z"/>
+            </svg>
+          </button>
+          <button id="lightTheme" class="theme-btn p-2 rounded-md transition-colors" data-theme="light" aria-label="Light theme" title="Light theme">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 18C8.69 18 6 15.31 6 12S8.69 6 12 6 18 8.69 18 12 15.31 18 12 18M12 2A1 1 0 0 0 11 3V5A1 1 0 0 0 13 5V3A1 1 0 0 0 12 2M21 11H19A1 1 0 0 0 19 13H21A1 1 0 0 0 21 11M3 13H5A1 1 0 0 0 5 11H3A1 1 0 0 0 3 13M5.64 7.05A1 1 0 0 0 6.34 5.64L7.76 7.05A1 1 0 0 0 6.34 8.46L5.64 7.05M16.95 6.34A1 1 0 0 0 18.36 7.05L16.95 8.46A1 1 0 0 0 18.36 5.64L16.95 6.34M7.05 18.36A1 1 0 0 0 5.64 16.95L7.05 15.54A1 1 0 0 0 8.46 16.95L7.05 18.36M18.36 16.95A1 1 0 0 0 16.95 18.36L15.54 16.95A1 1 0 0 0 16.95 15.54L18.36 16.95Z"/>
+            </svg>
+          </button>
+        </div>
       </div>
-    </main>
+    </div>
 
-    <div id="tooltip" role="tooltip" aria-hidden="true" class="absolute bg-swarmlight-100 border border-swarmshadow-300 px-2 py-1 rounded shadow z-50 hidden text-swarmshadow-600"></div>
+    <div class="bg-swarmlight-50/90 dark:bg-swarmshadow-50/90 flex flex-col bg-cover relative h-screen transition-colors duration-300">
+      <main id="main-content">
+        <div id="canvas-container" role="application" aria-label="Sound grid interface for creating clicking sounds">
+          <canvas id="soundCanvas"></canvas>
+        </div>
+      </main>
 
-    <!-- Sequence thumbnails bar -->
-    <div id="sequenceBar" class="custom-scrollbar fixed bottom-0 left-0 right-0 h-28 pt-2 bg-swarmlight-50 flex items-center space-x-2 overflow-x-auto px-2"></div>
+      <div id="tooltip" role="tooltip" aria-hidden="true" class="absolute bg-swarmlight-100 dark:bg-swarmshadow-100 border border-swarmshadow-300 dark:border-swarmlight-300 px-2 py-1 rounded shadow z-50 hidden text-swarmshadow-600 dark:text-swarmlight-100"></div>
 
-    <!-- Create Sequence tutorial button -->
-    <button id="createSequenceBtn" class="animate-pulse ring-4 ring-yellow-300 ring-opacity-50 px-4 py-2 bg-swarmlight-200 text-swarmshadow-600 rounded-md shadow-lg" title="Start playing by clicking here!">
-      Create Sequence
-    </button>
+      <!-- Create Sequence tutorial button -->
+      <button id="createSequenceBtn" class="w-48 mx-auto relative -bottom-24 ring-4 ring-yellow-300 dark:ring-swarmstripe-400 ring-opacity-50 px-4 py-2 bg-swarmlight-200 dark:bg-swarmshadow-200 text-swarmshadow-600 dark:text-swarmlight-100 rounded-md shadow-lg transition-colors duration-300" title="Start playing by clicking here!">
+        New Sequence
+      </button>
+
+      <!-- Sequence thumbnails bar -->
+      <div id="sequenceBar" class="custom-scrollbar fixed bottom-0 left-0 right-0 h-28 pt-2 bg-swarmlight-50 dark:bg-swarmshadow-50 flex items-center space-x-2 overflow-x-auto px-2 transition-colors duration-300"></div>
+    </div>
 
     <!-- Sequence Modal -->
-    <div id="sequenceModal" class="fixed inset-0 bg-black/50 bg-opacity-50 items-center justify-center z-50 hidden" aria-hidden="true" role="dialog" aria-modal="true">
-      <div id="modalContent" class="bg-swarmlight-50 p-6 rounded-lg shadow-xl relative text-center w-96 border border-swarmshadow-300">
+    <div id="sequenceModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 bg-opacity-50 items-center justify-center z-50 hidden transition-colors duration-300" aria-hidden="true" role="dialog" aria-modal="true">
+      <div id="modalContent" class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-6 rounded-lg shadow-xl relative text-center w-96 border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300">
         <!-- Close button -->
-        <button id="closeModalBtn" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-swarmshadow-600 hover:bg-swarmshadow-100 rounded-full transition-colors" aria-label="Close modal">
+        <button id="closeModalBtn" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 rounded-full transition-colors" aria-label="Close modal">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -77,13 +102,14 @@
 
         <canvas id="sequenceCanvas" class="w-80 h-80 block mx-auto mb-4"></canvas>
         <div class="flex justify-center space-x-2">
-          <button id="testSequenceBtn" disabled class="px-4 py-2 bg-swarmlight-200 text-swarmshadow-600 rounded-md disabled:opacity-50 border border-swarmshadow-400">Test</button>
-          <button id="saveSequenceBtn" disabled class="px-4 py-2 bg-swarmlight-300 text-swarmshadow-600 rounded-md disabled:opacity-50 border border-swarmshadow-400">Save</button>
+          <button id="testSequenceBtn" disabled class="px-4 py-2 bg-swarmlight-200 dark:bg-swarmshadow-200 text-swarmshadow-600 dark:text-swarmlight-100 rounded-md disabled:opacity-50 border border-swarmshadow-400 dark:border-swarmlight-400 transition-colors duration-300">Test</button>
+          <button id="saveSequenceBtn" disabled class="px-4 py-2 bg-swarmlight-300 dark:bg-swarmshadow-300 text-swarmshadow-600 dark:text-swarmlight-100 rounded-md disabled:opacity-50 border border-swarmshadow-400 dark:border-swarmlight-400 transition-colors duration-300">Save</button>
         </div>
       </div>
     </div>
 
     <script src="./src/js/storage.js"></script>
+    <script src="./src/js/theme.js"></script>
     <script src="./src/js/main.js"></script>
     <script src="./src/js/audio.js"></script>
     <script src="./src/js/main-canvas.js"></script>
