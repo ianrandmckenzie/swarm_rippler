@@ -1,12 +1,84 @@
-@import "tailwindcss";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Custom scrollbar styles with swarm color palette */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #FFFDE7; /* swarmlight-50 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #1F1F1F; /* swarmshadow-200 */
+  border-radius: 4px;
+  border: 1px solid #FFF9C4; /* swarmlight-200 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #191919; /* swarmshadow-300 */
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: #141414; /* swarmshadow-400 */
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #FFFDE7; /* swarmlight-50 */
+}
+
+/* Firefox scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1F1F1F #FFFDE7; /* swarmshadow-200 swarmlight-50 */
+}
+
+/* Alternative approach using @apply (will work when CSS is processed by Tailwind) */
+@layer components {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-swarmlight-50 rounded;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-swarmshadow-200 rounded border border-swarmlight-200;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-swarmshadow-300;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:active {
+    @apply bg-swarmshadow-400;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-corner {
+    @apply bg-swarmlight-50;
+  }
+}
 
 /* Highlight animation for tutorial button */
-.highlight-once {
-  animation: pulse 1s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7); }
-  50% { box-shadow: 0 0 10px 10px rgba(255, 165, 0, 0.7); }
+@layer components {
+  .highlight-once {
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgb(theme('colors.swarmstripe.400') / 0);
+    }
+    50% {
+      box-shadow: 0 0 10px 10px rgb(theme('colors.swarmstripe.400') / 0.7);
+    }
+  }
 }
 
 /* Tooltip styling */

@@ -86,8 +86,8 @@ function drawPattern() {
 
 // Ripple animation setup and interactive loop
 const ripples = [];
-const EXPAND_SPEED = 4;
-const FADE_SPEED = 0.02;
+const EXPAND_SPEED = 7;
+const FADE_SPEED = 0.032;
 
 // Detect clicks within the center droplet and spawn ripples
 canvas.addEventListener('click', (e) => {

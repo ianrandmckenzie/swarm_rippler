@@ -213,3 +213,41 @@ saveBtn.addEventListener('click', async () => {
   modal.classList.remove('flex');
   modal.setAttribute('aria-hidden','true');
 });
+
+// Close modal functionality
+function closeModal() {
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  modal.setAttribute('aria-hidden', 'true');
+
+  // Reset modal state
+  modalCircles.forEach(circle => circle.clicked = false);
+  testBtn.disabled = true;
+  saveBtn.disabled = true;
+  drawModal();
+}
+
+// Close button event listener
+const closeBtn = document.getElementById('closeModalBtn');
+closeBtn.addEventListener('click', closeModal);
+
+// Close modal when clicking on overlay (but not on modal content)
+modal.addEventListener('click', (e) => {
+  // Only close if clicking on the modal backdrop, not the content
+  if (e.target === modal) {
+    closeModal();
+  }
+});
+
+// Prevent modal content clicks from bubbling up to the overlay
+const modalContent = document.getElementById('modalContent');
+modalContent.addEventListener('click', (e) => {
+  e.stopPropagation();
+});
+
+// ESC key to close modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+    closeModal();
+  }
+});

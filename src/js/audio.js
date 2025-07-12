@@ -70,8 +70,6 @@ async function playSequence(sequenceIndices) {
     await ctx.resume();
   }
 
-  console.log('🎵 Playing sequence:', sequenceIndices);
-
   // Group circles by radian for timing
   const radianGroups = {
     0: [], // Center (not used for sequences, but keeping for completeness)
@@ -117,8 +115,6 @@ async function playSequence(sequenceIndices) {
       }
     });
   });
-
-  console.log('🎵 Sequence playback scheduled');
 }
 
 // Add click listeners to thumbnail sequences
@@ -149,15 +145,12 @@ function setupSequencePlayback() {
       // Load all sequences and get the clicked one
       const sequences = await loadAllSequences();
       if (sequences[sequenceIndex]) {
-        console.log(`🎵 Playing sequence ${sequenceIndex + 1}`);
         await playSequence(sequences[sequenceIndex]);
       }
     } catch (error) {
       console.error('Error playing sequence:', error);
     }
   });
-
-  console.log('🎵 Sequence playback system initialized');
 }
 
 // Initialize when the script loads

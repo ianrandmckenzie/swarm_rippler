@@ -69,7 +69,29 @@ async function addSequenceThumbnail(seq) {
   bar.appendChild(thumb);
 }
 
-// Populate sequence bar on initial load
-loadAllSequences().then(seqs => {
-  seqs.forEach(seq => addSequenceThumbnail(seq));
-});
+// Populate sequence bar on initial load - wait for all dependencies
+function initializeSequenceBar() {
+  // Check if all required dependencies are available
+  if (typeof loadAllSequences === 'undefined' ||
+      typeof smallCircles === 'undefined' ||
+      typeof dpr === 'undefined') {
+    // Retry after a short delay if dependencies aren't ready
+    setTimeout(initializeSequenceBar, 10);
+    return;
+  }
+
+  loadAllSequences().then(seqs => {
+    seqs.forEach(seq => addSequenceThumbnail(seq));
+    console.log(`✅ Loaded ${seqs.length} saved sequences`);
+  }).catch(error => {
+    console.error('Failed to load sequences:', error);
+  });
+}
+
+// Initialize when DOM is ready and all scripts have loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeSequenceBar);
+} else {
+  // DOM is already loaded
+  initializeSequenceBar();
+}

@@ -32,7 +32,6 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="">
 
-    <link href="./src/style.css" rel="stylesheet" type="text/css" />
     <style>
       #canvas-container {
         width: 100%;
@@ -46,9 +45,14 @@
         display: block;
       }
     </style>
+    <link rel="stylesheet" crossorigin href="/assets/index-BsGV2AD4.css">
   </head>
 
-  <body class="bg-swarmlight-50/25">
+  <body>
+    <!-- Create Sequence tutorial button -->
+    <button id="createSequenceBtn" class="animate-pulse ring-4 ring-yellow-300 ring-opacity-50 px-4 py-2 bg-swarmlight-200 text-swarmshadow-600 rounded-md shadow-lg" title="Start playing by clicking here!">
+      Create Sequence
+    </button>
     <main id="main-content">
       <div id="canvas-container" role="application" aria-label="Sound grid interface for creating clicking sounds">
         <canvas id="soundCanvas"></canvas>
@@ -58,16 +62,11 @@
     <div id="tooltip" role="tooltip" aria-hidden="true" class="absolute bg-swarmlight-100 border border-swarmshadow-300 px-2 py-1 rounded shadow z-50 hidden text-swarmshadow-600"></div>
 
     <!-- Sequence thumbnails bar -->
-    <div id="sequenceBar" class="custom-scrollbar fixed bottom-0 left-0 right-0 h-28 pt-2 bg-swarmlight-50 flex items-center space-x-2 overflow-x-auto px-2"></div>
-
-    <!-- Create Sequence tutorial button -->
-    <button id="createSequenceBtn" class="animate-pulse ring-4 ring-yellow-300 ring-opacity-50 px-4 py-2 bg-swarmlight-200 text-swarmshadow-600 rounded-md shadow-lg" title="Start playing by clicking here!">
-      Create Sequence
-    </button>
+    <div id="sequenceBar" class="fixed bottom-0 left-0 right-0 h-24 bg-swarmshadow-200 flex items-center space-x-2 overflow-x-auto px-2"></div>
 
     <!-- Sequence Modal -->
     <div id="sequenceModal" class="fixed inset-0 bg-black/50 bg-opacity-50 items-center justify-center z-50 hidden" aria-hidden="true" role="dialog" aria-modal="true">
-      <div id="modalContent" class="bg-swarmlight-50 p-6 rounded-lg shadow-xl relative text-center w-96 border border-swarmshadow-300">
+      <div id="modalContent" class="bg-swarmlight-100 p-6 rounded-lg shadow-xl relative text-center w-96 border border-swarmshadow-300">
         <!-- Close button -->
         <button id="closeModalBtn" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-swarmshadow-600 hover:bg-swarmshadow-100 rounded-full transition-colors" aria-label="Close modal">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
