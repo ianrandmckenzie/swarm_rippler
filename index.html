@@ -49,24 +49,30 @@
   </head>
 
   <body>
-    <!-- Skip Link for Accessibility -->
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-
-    <!-- Theme Toggle Button -->
-    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()"
-            aria-label="Toggle between light and dark theme"
-            title="Toggle theme">
-      <span class="toggle-icon" aria-hidden="true">🔄</span>
+    <!-- Create Sequence tutorial button -->
+    <button id="createSequenceBtn" class="animate-pulse ring-4 ring-orange-400 ring-opacity-50 px-4 py-2 bg-white rounded-md shadow-lg" title="Start playing by clicking here!">
+      Create Sequence
     </button>
-
     <main id="main-content">
       <div id="canvas-container" role="application" aria-label="Sound grid interface for creating clicking sounds">
         <canvas id="soundCanvas"></canvas>
       </div>
     </main>
 
-    <div class="tooltip" id="tooltip" role="tooltip" aria-hidden="true"></div>
+    <div id="tooltip" role="tooltip" aria-hidden="true" class="absolute bg-white border border-gray-300 px-2 py-1 rounded shadow z-50 hidden"></div>
+    <!-- Sequence Modal -->
+    <div id="sequenceModal" class="fixed inset-0 bg-black/50 bg-opacity-50 items-center justify-center z-50 hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="bg-white p-6 rounded-lg shadow-xl relative text-center w-96">
+        <canvas id="sequenceCanvas" class="w-80 h-80 block mx-auto mb-4"></canvas>
+        <div class="flex justify-center space-x-2">
+          <button id="testSequenceBtn" disabled class="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50">Test</button>
+          <button id="saveSequenceBtn" disabled class="px-4 py-2 bg-green-500 text-white rounded-md disabled:opacity-50">Save</button>
+        </div>
+      </div>
+    </div>
 
+    <!-- Sequence thumbnails bar -->
+    <div id="sequenceBar" class="fixed bottom-0 left-0 right-0 h-[50px] bg-gray-100 flex items-center space-x-2 overflow-x-auto px-2"></div>
     <script src="./src/js/main.js"></script>
   </body>
 </html>
