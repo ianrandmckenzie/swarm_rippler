@@ -228,6 +228,9 @@ class Tutorial {
     document.querySelectorAll('.tutorial-highlight').forEach(el => {
       el.classList.remove('tutorial-highlight');
     });
+    document.querySelectorAll('.tutorial-circle-highlight').forEach(el => {
+      el.classList.remove('tutorial-highlight');
+    });
 
     // Remove overlay pointer events
     const overlay = document.getElementById('tutorial-overlay');
@@ -385,7 +388,7 @@ class Tutorial {
 
   highlightNewWordButton() {
     this.cleanup();
-    const newWordBtn = document.querySelector('.new-sequence-button, a[href*="new_word"]');
+    const newWordBtn = document.querySelector('.primary-button, a[href*="new_word"]');
     if (newWordBtn) {
       // Preserve original positioning
       const originalPos = window.getComputedStyle(newWordBtn).position;
@@ -571,10 +574,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('Tutorial: Available debug commands:', Object.keys(window.tutorialDebug));
   }, 500);
-  document.querySelector('#mainContent').style.position = 'relative';
-  document.querySelector('#mainContent .grid').style.position = 'absolute';
-  document.querySelector('#mainContent .grid').style.right = '85px';
-  document.querySelector('#mainContent .grid').style.bottom = '50px';
+  document.querySelector('#main-content').style.position = 'relative';
+  document.querySelector('#main-content .grid').style.position = 'absolute';
+  document.querySelector('#main-content .grid').style.right = '85px';
+  document.querySelector('#main-content .grid').style.bottom = '50px';
 });
 
 // Export for potential use in other scripts

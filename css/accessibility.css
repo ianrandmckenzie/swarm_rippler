@@ -35,7 +35,7 @@
 /* Focus styles for interactive elements */
 .sound-button:focus,
 .theme-toggle:focus,
-.new-sequence-button:focus,
+.primary-button:focus,
 #scrollLeft:focus,
 #scrollRight:focus,
 button:focus {

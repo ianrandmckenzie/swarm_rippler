@@ -7,14 +7,14 @@
   <meta name="description" content="Create and save custom sound sequences using clicking sounds and glossolalia">
 
   <!-- SEO Meta Tags -->
-  <meta name="keywords" content="custom sound sequences, clicking patterns, glossolalia creation, sound maker, audio sequences, vocal patterns">
+  <meta name="keywords" content="clicking sounds, glossolalia, interactive sound grid, tongue clicking, vocal sounds, audio art, mouth sounds">
   <meta name="author" content="Click Sound Rippler Project">
   <meta name="robots" content="index, follow">
   <meta name="language" content="en">
 
   <!-- Open Graph Meta Tags for Social Sharing -->
-  <meta property="og:title" content="New Sequence - Create Custom Sound Patterns">
-  <meta property="og:description" content="Create and save custom sound sequences using clicking sounds and glossolalia">
+  <meta property="og:title" content="Click Ripple - Interactive Sound Grid">
+  <meta property="og:description" content="Interactive sound grid for creating and learning clicking sounds and glossolalia">
   <meta property="og:type" content="website">
   <meta property="og:url" content="">
   <meta property="og:site_name" content="Click Sound Rippler">
@@ -22,19 +22,24 @@
 
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="New Sequence - Create Custom Sound Patterns">
-  <meta name="twitter:description" content="Create and save custom sound sequences using clicking sounds and glossolalia">
+  <meta name="twitter:title" content="Click Ripple - Interactive Sound Grid">
+  <meta name="twitter:description" content="Interactive sound grid for creating and learning clicking sounds and glossolalia">
 
   <!-- Favicon and Icons -->
-  <!-- <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest"> -->
+  <link rel="manifest" href="/site.webmanifest">
 
   <!-- Theme Color -->
   <meta name="theme-color" content="#000000">
   <meta name="msapplication-TileColor" content="#000000">
+
+  <!-- Preload Audio Files -->
+  <link rel="preload" href="audio/1.mp3" as="audio">
+  <link rel="preload" href="audio/2.mp3" as="audio">
+  <link rel="preload" href="audio/3.mp3" as="audio">
 
   <!-- Canonical URL -->
   <link rel="canonical" href="">
@@ -47,276 +52,11 @@
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/tutorial.css">
   <link rel="stylesheet" href="css/accessibility.css">
-  <style>
-    /* Theme Toggle Button */
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      border: 2px solid var(--color-primary);
-      background-color: var(--color-surface);
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      transition: all 0.3s ease;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .theme-toggle:hover {
-      background-color: var(--color-accent);
-      transform: scale(1.05);
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: var(--color-background);
-      flex-direction: column;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(7, auto);
-      grid-template-rows: repeat(7, auto);
-      gap: 0px;
-      margin-top: 100px;
-    }
-
-    .grid div .sound-button {
-      /* Reset button defaults */
-      padding: 0;
-      margin: 0;
-      border: 2px solid var(--color-primary);
-      outline: none;
-      background-color: var(--color-background);
-      font-family: inherit;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-
-      /* Our custom styles */
-      width: 36px;
-      height: 36px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
-      font-weight: bold;
-      user-select: none;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      color: var(--color-text);
-    }
-
-    .grid div .sound-button:hover,
-    .grid div .sound-button:focus {
-      background-color: var(--color-accent);
-    }
-
-    .grid div .sound-button.clicked {
-      background-color: var(--color-primary);
-      color: var(--color-text-light);
-    }
-
-    .grid div[data-layer="2"],
-    .grid div[data-layer="3"] {
-      position: relative;
-    }
-
-    .grid div[data-layer="2"] .sound-button,
-    .grid div[data-layer="3"] .sound-button {
-      position: absolute;
-    }
-
-    .grid div[data-layer="1"][data-audio="1"] .sound-button {
-      margin: 30px 0px 0px 30px;
-    }
-
-    .grid div[data-layer="1"][data-audio="2"] .sound-button {
-      margin: 0px 30px 30px 30px;
-    }
-
-    .grid div[data-layer="1"][data-audio="3"] .sound-button {
-      margin: 30px 30px 0px 0px;
-    }
-
-    .grid div[data-layer="1"][data-audio="4"] .sound-button {
-      margin: 30px 30px 30px 0px;
-    }
-
-    .grid div[data-layer="1"][data-audio="6"] .sound-button {
-      margin: 30px 0px 30px 30px;
-    }
-
-    .grid div[data-layer="1"][data-audio="7"] .sound-button {
-      margin: 0px 0px 30px 30px;
-    }
-
-    .grid div[data-layer="1"][data-audio="8"] .sound-button {
-      margin: 30px 30px 0px 30px;
-    }
-
-    .grid div[data-layer="1"][data-audio="9"] .sound-button {
-      margin: 0px 30px 30px 0px;
-    }
-
-    .grid div[data-layer="2"][data-audio="1"] .sound-button {
-      bottom: -15px;
-      right: -15px;
-    }
-
-    .grid div[data-layer="2"][data-audio="2"] .sound-button {
-      left: 30px;
-      bottom: 30px;
-    }
-
-    .grid div[data-layer="2"][data-audio="3"] .sound-button {
-      left: -15px;
-      bottom: -15px;
-    }
-
-    .grid div[data-layer="2"][data-audio="4"] .sound-button {
-      top: 30px;
-      right: 30px;
-    }
-
-    .grid div[data-layer="2"][data-audio="6"] .sound-button {
-      top: 30px;
-      left: 30px;
-    }
-
-    .grid div[data-layer="2"][data-audio="7"] .sound-button {
-      top: -15px;
-      right: -15px;
-    }
-
-    .grid div[data-layer="2"][data-audio="8"] .sound-button {
-      top: 30px;
-      left: 30px;
-    }
-
-    .grid div[data-layer="2"][data-audio="9"] .sound-button {
-      top: -15px;
-      left: -15px;
-    }
-
-    .grid div[data-layer="3"][data-audio="1"] .sound-button {
-      bottom: 45px;
-      right: 45px;
-    }
-
-    .grid div[data-layer="3"][data-audio="2"] .sound-button {
-      left: 30px;
-      bottom: 105px;
-    }
-
-    .grid div[data-layer="3"][data-audio="3"] .sound-button {
-      left: 45px;
-      bottom: 45px;
-    }
-
-    .grid div[data-layer="3"][data-audio="4"] .sound-button {
-      top: 30px;
-      right: 105px;
-    }
-
-    .grid div[data-layer="3"][data-audio="6"] .sound-button {
-      top: 30px;
-      left: 105px;
-    }
-
-    .grid div[data-layer="3"][data-audio="7"] .sound-button {
-      top: 45px;
-      right: 45px;
-    }
-
-    .grid div[data-layer="3"][data-audio="8"] .sound-button {
-      top: 105px;
-      left: 30px;
-    }
-
-    .grid div[data-layer="3"][data-audio="9"] .sound-button {
-      top: 45px;
-      left: 45px;
-    }
-
-    .grid div[data-audio="0"] {
-      z-index: -100;
-      opacity: 0;
-    }
-
-    .grid div.clicked {
-      background-color: var(--color-primary);
-    }
-
-    .save-button {
-      cursor: pointer;
-      position: relative;
-      top: 180px;
-      right: 0px;
-      width: auto;
-      padding: 10px 20px;
-      background: var(--color-accent);
-      text-decoration: none;
-      font-weight: 200;
-      font-size: 17px;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      transition: background-color 0.2s;
-    }
-
-    .save-button:hover {
-      background: var(--color-accent-dark);
-    }
-
-    /* Skip Link */
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      width: 100%;
-      padding: 8px 16px;
-      background: var(--color-primary);
-      color: white;
-      text-align: center;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: top 0.3s;
-      z-index: 1000;
-    }
-
-    .skip-link:focus {
-      top: 20px;
-    }
-
-    /* Visually Hidden Class */
-    .visually-hidden,
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-  </style>
+  <link rel="stylesheet" href="css/new_word.css">
 </head>
 <body>
   <!-- Skip Link -->
-  <a href="#mainContent" class="skip-link" id="skipLink">Skip to main content</a>
+  <a href="#main-content" class="skip-link" id="skipLink">Skip to main content</a>
 
   <!-- Theme Toggle Button -->
   <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()"
@@ -325,67 +65,163 @@
     <span class="toggle-icon" aria-hidden="true">🔄</span>
   </button>
 
-  <main id="mainContent">
-    <h1 class="visually-hidden">Create New Sound Sequence</h1>
-
-  <div class="grid" id="grid" role="grid" aria-label="Sound sequence grid">
-    <div data-row="0" data-col="0" data-layer="3" data-audio="1" role="gridcell"><button class="sound-button" tabindex="0" aria-label="Sound button 1 - Layer 3"></button></div>
-    <div data-row="0" data-col="1" data-layer="3" data-audio="0" role="gridcell"><button class="sound-button empty" tabindex="0" aria-label="Empty sound slot"></button></div>
-    <div data-row="0" data-col="2" data-layer="3" data-audio="0" role="gridcell"><button class="sound-button empty" tabindex="0" aria-label="Empty sound slot"></button></div>
-    <div data-row="0" data-col="3" data-layer="3" data-audio="2" role="gridcell"><button class="sound-button" tabindex="0" aria-label="Sound button 2 - Layer 3"></button></div>
-    <div data-row="0" data-col="4" data-layer="3" data-audio="0" role="gridcell"><button class="sound-button empty" tabindex="0" aria-label="Empty sound slot"></button></div>
-    <div data-row="0" data-col="5" data-layer="3" data-audio="0" role="gridcell"><button class="sound-button empty" tabindex="0" aria-label="Empty sound slot"></button></div>
-    <div data-row="0" data-col="6" data-layer="3" data-audio="3" role="gridcell"><button class="sound-button" tabindex="0" aria-label="Sound button 3 - Layer 3"></button></div>
-    <div data-row="1" data-col="0" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 8"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="1" data-col="1" data-layer="2" data-audio="1" role="gridcell" aria-label="Sound button 9"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="1" data-col="2" data-layer="2" data-audio="0" role="gridcell" aria-label="Sound button 10"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="1" data-col="3" data-layer="2" data-audio="2" role="gridcell" aria-label="Sound button 11"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="1" data-col="4" data-layer="2" data-audio="0" role="gridcell" aria-label="Sound button 12"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="1" data-col="5" data-layer="2" data-audio="3" role="gridcell" aria-label="Sound button 13"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="1" data-col="6" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 14"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="2" data-col="0" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 15"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="2" data-col="1" data-layer="2" data-audio="0" role="gridcell" aria-label="Sound button 16"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="2" data-col="2" data-layer="1" data-audio="1" role="gridcell" aria-label="Sound button 17"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="2" data-col="3" data-layer="1" data-audio="2" role="gridcell" aria-label="Sound button 18"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="2" data-col="4" data-layer="1" data-audio="3" role="gridcell" aria-label="Sound button 19"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="2" data-col="5" data-layer="2" data-audio="0" role="gridcell" aria-label="Sound button 20"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="2" data-col="6" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 21"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="3" data-col="0" data-layer="3" data-audio="4" role="gridcell" aria-label="Sound button 22"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="3" data-col="1" data-layer="2" data-audio="4" role="gridcell" aria-label="Sound button 23"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="3" data-col="2" data-layer="1" data-audio="4" role="gridcell" aria-label="Sound button 24"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="3" data-col="3" data-layer="0" data-audio="5" role="gridcell">
-      <button class="droplet clickableCircle" id="clickableCircle" aria-label="Central droplet sound - Layer 0" tabindex="0"></button>
+  <main id="main-content">
+    <div class="grid" id="grid" role="grid" aria-label="Sound sequence grid">
+      <div data-row="0" data-col="0" data-layer="3">
+        <button data-audio="1" class="sound-button" tabindex="0" aria-label="Sound button 1 - Layer 3"></button>
+      </div>
+      <div data-row="0" data-col="1" data-layer="3">
+        <button data-audio="0" class="sound-button empty" tabindex="0" aria-label="Empty sound slot"></button>
+      </div>
+      <div data-row="0" data-col="2" data-layer="3">
+        <button data-audio="0" class="sound-button empty" tabindex="0" aria-label="Empty sound slot"></button>
+      </div>
+      <div data-row="0" data-col="3" data-layer="3">
+        <button data-audio="2" class="sound-button" tabindex="0" aria-label="Sound button 2 - Layer 3"></button>
+      </div>
+      <div data-row="0" data-col="4" data-layer="3">
+        <button data-audio="0" class="sound-button empty" tabindex="0" aria-label="Empty sound slot"></button>
+      </div>
+      <div data-row="0" data-col="5" data-layer="3">
+        <button data-audio="0" class="sound-button empty" tabindex="0" aria-label="Empty sound slot"></button>
+      </div>
+      <div data-row="0" data-col="6" data-layer="3">
+        <button data-audio="3" class="sound-button" tabindex="0" aria-label="Sound button 3 - Layer 3"></button>
+      </div>
+      <div data-row="1" data-col="0" data-layer="3" aria-label="Sound button 8">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="1" data-col="1" data-layer="2" aria-label="Sound button 9">
+        <button data-audio="1" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="1" data-col="2" data-layer="2" aria-label="Sound button 10">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="1" data-col="3" data-layer="2" aria-label="Sound button 11">
+        <button data-audio="2" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="1" data-col="4" data-layer="2" aria-label="Sound button 12">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="1" data-col="5" data-layer="2" aria-label="Sound button 13">
+        <button data-audio="3" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="1" data-col="6" data-layer="3" aria-label="Sound button 14">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="2" data-col="0" data-layer="3" aria-label="Sound button 15">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="2" data-col="1" data-layer="2" aria-label="Sound button 16">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="2" data-col="2" data-layer="1" aria-label="Sound button 17">
+        <button data-audio="1" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="2" data-col="3" data-layer="1" aria-label="Sound button 18">
+        <button data-audio="2" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="2" data-col="4" data-layer="1" aria-label="Sound button 19">
+        <button data-audio="3" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="2" data-col="5" data-layer="2" aria-label="Sound button 20">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="2" data-col="6" data-layer="3" aria-label="Sound button 21">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="3" data-col="0" data-layer="3" aria-label="Sound button 22">
+        <button data-audio="4" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="3" data-col="1" data-layer="2" aria-label="Sound button 23">
+        <button data-audio="4" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="3" data-col="2" data-layer="1" aria-label="Sound button 24">
+        <button data-audio="4" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="3" data-col="3">
+        <button class="droplet clickableCircle" id="clickableCircle" aria-label="Central droplet sound - Layer 0" tabindex="0"></button>
+      </div>
+      <div data-row="3" data-col="4" data-layer="1" aria-label="Sound button 26">
+        <button data-audio="5" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="3" data-col="5" data-layer="2" aria-label="Sound button 27">
+        <button data-audio="6" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="3" data-col="6" data-layer="3" aria-label="Sound button 28">
+        <button data-audio="6" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="4" data-col="0" data-layer="3" aria-label="Sound button 29">
+        <button data-audio="6" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="4" data-col="1" data-layer="2" aria-label="Sound button 30">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="4" data-col="2" data-layer="1" aria-label="Sound button 31">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="4" data-col="3" data-layer="1" aria-label="Sound button 32">
+        <button data-audio="7" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="4" data-col="4" data-layer="1" aria-label="Sound button 33">
+        <button data-audio="8" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="4" data-col="5" data-layer="2" aria-label="Sound button 34">
+        <button data-audio="9" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="4" data-col="6" data-layer="3" aria-label="Sound button 35">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="5" data-col="0" data-layer="3" aria-label="Sound button 36">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="5" data-col="1" data-layer="2" aria-label="Sound button 37">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="5" data-col="2" data-layer="2" aria-label="Sound button 38">
+        <button data-audio="7" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="5" data-col="3" data-layer="2" aria-label="Sound button 39">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="5" data-col="4" data-layer="2" aria-label="Sound button 40">
+        <button data-audio="8" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="5" data-col="5" data-layer="2" aria-label="Sound button 41">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="5" data-col="6" data-layer="3" aria-label="Sound button 42">
+        <button data-audio="9" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="6" data-col="0" data-layer="3" aria-label="Sound button 43">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="6" data-col="1" data-layer="3" aria-label="Sound button 44">
+        <button data-audio="7" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="6" data-col="2" data-layer="3" aria-label="Sound button 45">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="6" data-col="3" data-layer="3" aria-label="Sound button 46">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
+      <div data-row="6" data-col="4" data-layer="3" aria-label="Sound button 47">
+        <button data-audio="8" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="6" data-col="5" data-layer="3" aria-label="Sound button 48">
+        <button data-audio="0" class="sound-button empty" tabindex="0"></button>
+      </div>
+      <div data-row="6" data-col="6" data-layer="3" aria-label="Sound button 49">
+        <button data-audio="0" class="sound-button" tabindex="0"></button>
+      </div>
     </div>
-    <div data-row="3" data-col="4" data-layer="1" data-audio="6" role="gridcell" aria-label="Sound button 26"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="3" data-col="5" data-layer="2" data-audio="6" role="gridcell" aria-label="Sound button 27"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="3" data-col="6" data-layer="3" data-audio="6" role="gridcell" aria-label="Sound button 28"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="4" data-col="0" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 29"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="4" data-col="1" data-layer="2" data-audio="0" role="gridcell" aria-label="Sound button 30"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="4" data-col="2" data-layer="1" data-audio="7" role="gridcell" aria-label="Sound button 31"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="4" data-col="3" data-layer="1" data-audio="8" role="gridcell" aria-label="Sound button 32"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="4" data-col="4" data-layer="1" data-audio="9" role="gridcell" aria-label="Sound button 33"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="4" data-col="5" data-layer="2" data-audio="0" role="gridcell" aria-label="Sound button 34"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="4" data-col="6" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 35"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="5" data-col="0" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 36"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="5" data-col="1" data-layer="2" data-audio="7" role="gridcell" aria-label="Sound button 37"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="5" data-col="2" data-layer="2" data-audio="0" role="gridcell" aria-label="Sound button 38"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="5" data-col="3" data-layer="2" data-audio="8" role="gridcell" aria-label="Sound button 39"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="5" data-col="4" data-layer="2" data-audio="0" role="gridcell" aria-label="Sound button 40"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="5" data-col="5" data-layer="2" data-audio="9" role="gridcell" aria-label="Sound button 41"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="5" data-col="6" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 42"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="6" data-col="0" data-layer="3" data-audio="7" role="gridcell" aria-label="Sound button 43"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="6" data-col="1" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 44"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="6" data-col="2" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 45"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="6" data-col="3" data-layer="3" data-audio="8" role="gridcell" aria-label="Sound button 46"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="6" data-col="4" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 47"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="6" data-col="5" data-layer="3" data-audio="0" role="gridcell" aria-label="Sound button 48"><button class="sound-button" tabindex="0"></button></div>
-    <div data-row="6" data-col="6" data-layer="3" data-audio="9" role="gridcell" aria-label="Sound button 49"><button class="sound-button" tabindex="0"></button></div>
-  </div>
-  <button class="save-button" id="save" aria-label="Save your sequence">Save Sequence</button>
+    <button class="primary-button" id="save" aria-label="Save your sequence">Save Sequence</button>
   </main>
 
   <!-- Screen reader announcements -->
-  <div id="announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>  <script>    // Persistent Storage using IndexedDB
+  <div id="announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <script>    // Persistent Storage using IndexedDB
     class PersistentStorage {
       constructor() {
         this.dbName = 'ClickingGlossaliaDB';
@@ -699,7 +535,7 @@
     // Focus management for skip link
     document.getElementById('skipLink').addEventListener('focus', (e) => {
       e.preventDefault();
-      document.getElementById('mainContent').focus();
+      document.getElementById('main-content').focus();
     });
   </script>
 

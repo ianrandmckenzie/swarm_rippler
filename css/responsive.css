@@ -189,6 +189,11 @@
 }
 
 @media screen and (max-width: 520px) {
+  .primary-button {
+    top: 0;
+    max-height: 22px;
+  }
+
   .ripple {
     height: 106.4px;
     width: 106.4px;
