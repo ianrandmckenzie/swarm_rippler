@@ -157,50 +157,98 @@ async function playSequence(sequenceIndices, options = {}) {
   });
 }
 
-// Loop playback management
-let currentLoopTimer = null;
-let currentLoopSequence = null;
+// Loop playback management - support for multiple concurrent loops
+const MAX_CONCURRENT_LOOPS = 5;
+let activeLoops = new Map(); // Map of sequence ID -> { timer, sequence, interval }
+
+function getSequenceId(sequence) {
+  return JSON.stringify(sequence);
+}
 
 function toggleLoopPlayback(sequence, intervalSeconds) {
-  if (currentLoopTimer) {
-    // Stop current loop
-    clearInterval(currentLoopTimer);
-    currentLoopTimer = null;
-    currentLoopSequence = null;
-    console.log('🔄 Loop playback stopped');
+  const sequenceId = getSequenceId(sequence);
+
+  if (activeLoops.has(sequenceId)) {
+    // Stop this specific loop
+    const loopData = activeLoops.get(sequenceId);
+    clearInterval(loopData.timer);
+    activeLoops.delete(sequenceId);
+    console.log('🔄 Loop playback stopped for sequence:', sequenceId.substring(0, 50) + '...');
 
     // Update visual state
     updateThumbnailLoopStates();
+    updateLoopCounter();
   } else {
+    // Check if we've reached the maximum number of concurrent loops
+    if (activeLoops.size >= MAX_CONCURRENT_LOOPS) {
+      console.warn(`🔄 Maximum number of concurrent loops (${MAX_CONCURRENT_LOOPS}) reached. Cannot start new loop.`);
+
+      // Show a brief visual feedback to the user
+      const loopCounter = document.getElementById('loopCounter');
+      if (loopCounter) {
+        const originalBg = loopCounter.className;
+        loopCounter.className = loopCounter.className.replace(/bg-\S+/g, 'bg-red-200 dark:bg-red-800');
+        loopCounter.style.animation = 'pulse 0.5s ease-in-out 2';
+
+        setTimeout(() => {
+          loopCounter.className = originalBg;
+          loopCounter.style.animation = '';
+        }, 1000);
+      }
+
+      return;
+    }
+
     // Start new loop
-    currentLoopSequence = sequence;
     console.log(`🔄 Starting loop playback every ${intervalSeconds}s`);
 
     // Play immediately
     playSequence(sequence);
 
     // Set up repeating timer
-    currentLoopTimer = setInterval(async () => {
+    const timer = setInterval(async () => {
       try {
         await playSequence(sequence);
       } catch (error) {
         console.error('Error in loop playback:', error);
-        // Stop loop if there's an error
+        // Stop this specific loop if there's an error
         toggleLoopPlayback(sequence, intervalSeconds);
       }
     }, intervalSeconds * 1000);
 
+    // Store the loop data
+    activeLoops.set(sequenceId, {
+      timer: timer,
+      sequence: sequence,
+      interval: intervalSeconds
+    });
+
     // Update visual state
     updateThumbnailLoopStates();
+    updateLoopCounter();
   }
 }
 
 // Check if a sequence is currently looping
 function isSequenceLooping(sequence) {
-  if (!currentLoopSequence || !sequence) return false;
+  if (!sequence) return false;
+  const sequenceId = getSequenceId(sequence);
+  return activeLoops.has(sequenceId);
+}
 
-  // Compare sequences by converting to strings (since they're arrays)
-  return JSON.stringify(currentLoopSequence) === JSON.stringify(sequence);
+// Update loop counter display
+function updateLoopCounter() {
+  const loopCounter = document.getElementById('loopCounter');
+  if (!loopCounter) return;
+
+  const activeCount = activeLoops.size;
+
+  if (activeCount > 0) {
+    loopCounter.textContent = `Loops playing: ${activeCount}/${MAX_CONCURRENT_LOOPS}`;
+    loopCounter.classList.remove('hidden');
+  } else {
+    loopCounter.classList.add('hidden');
+  }
 }
 
 // Update visual state of all thumbnails to show which one is looping
@@ -313,6 +361,13 @@ function setupSequencePlayback() {
 // Initialize when the script loads
 setupSequencePlayback();
 
+// Initialize loop counter on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateLoopCounter);
+} else {
+  updateLoopCounter();
+}
+
 // Export functions for use in other files
 window.audioSystem = {
   playSequence,
@@ -320,6 +375,9 @@ window.audioSystem = {
   toggleLoopPlayback,
   isSequenceLooping,
   updateThumbnailLoopStates,
+  updateLoopCounter,
   getRadianInfo,
-  RADIAN_TIMING
+  RADIAN_TIMING,
+  MAX_CONCURRENT_LOOPS,
+  getActiveLoopCount: () => activeLoops.size
 };

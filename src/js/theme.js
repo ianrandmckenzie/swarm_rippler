@@ -111,6 +111,11 @@ class ThemeManager {
 
     // Update meta theme-color for mobile browsers
     this.updateMetaThemeColor(theme);
+
+    // Update loop-related UI elements after theme change
+    if (window.audioSystem && window.audioSystem.updateThumbnailLoopStates) {
+      window.audioSystem.updateThumbnailLoopStates();
+    }
   }
 
   applySystemTheme() {
@@ -123,6 +128,11 @@ class ThemeManager {
       html.classList.add('dark');
     } else {
       html.classList.add('light');
+    }
+
+    // Update loop-related UI elements after system theme change
+    if (window.audioSystem && window.audioSystem.updateThumbnailLoopStates) {
+      window.audioSystem.updateThumbnailLoopStates();
     }
   }
 

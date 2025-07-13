@@ -78,13 +78,18 @@
         New Sequence
       </button>
 
+      <!-- Loop counter - positioned above sequence bar -->
+      <div id="loopCounter" class="fixed bottom-28 right-4 bg-swarmlight-100 dark:bg-swarmshadow-500 text-swarmshadow-600 dark:text-swarmlight-100 px-3 py-1 rounded-lg shadow-lg text-sm font-medium transition-colors duration-300 z-50 hidden">
+        Loops playing: 0/5
+      </div>
+
       <!-- Sequence thumbnails bar -->
       <div id="sequenceBar" class="fixed bottom-0 left-0 right-0 h-28 pt-2 bg-swarmlight-100 dark:bg-swarmshadow-500 flex items-center space-x-2 overflow-x-auto px-2 transition-colors duration-300 scrollbar-thin scrollbar-thumb-swarmshadow-200 scrollbar-track-swarmlight-50 dark:scrollbar-thumb-swarmlight-200 dark:scrollbar-track-swarmshadow-50"></div>
     </div>
 
     <!-- Sequence Modal -->
-    <div id="sequenceModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 bg-opacity-50 flex items-center justify-center z-50 hidden transition-colors duration-300 p-4" aria-hidden="true" role="dialog" aria-modal="true">
-      <div id="modalContent" class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-2 sm:p-4 sm:p-6 rounded-lg shadow-xl relative text-center w-full max-w-sm sm:w-96 border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-y-auto">
+    <div id="sequenceModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 hidden transition-colors duration-300 p-4" aria-hidden="true" role="dialog" aria-modal="true">
+      <div id="modalContent" class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-2 sm:p-6 rounded-lg shadow-xl relative text-center w-full max-w-sm sm:w-96 border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-y-auto">
         <!-- Close button -->
         <button id="closeModalBtn" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 rounded-full transition-colors" aria-label="Close modal">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
