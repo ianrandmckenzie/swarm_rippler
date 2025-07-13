@@ -1,4 +1,6 @@
 // ------------ Development Helper Functions ------------
+import { openDB, setSetting } from './storage.js';
+
 // NON-PRODUCTION: Clear all IndexedDB data for this project
 async function clearAllData() {
   console.warn('🗑️ Clearing all IndexedDB data for clicking_glossolalia project...');
@@ -153,3 +155,11 @@ console.log('  - generateRandomSequences(50) - Generate random sequences');
 console.log('  - generateTestPatterns() - Generate specific test patterns');
 console.log('  - clearAllData() - Clear all data and reload');
 console.log('  - resetTutorial() - Reset tutorial state');
+
+// Export dev tools functions
+export {
+  clearAllData,
+  resetTutorial,
+  generateRandomSequences,
+  generateTestPatterns
+};

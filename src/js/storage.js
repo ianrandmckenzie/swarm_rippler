@@ -176,3 +176,16 @@ async function deleteSequence(index) {
     };
   });
 }
+
+// Export all storage functions
+export {
+  openDB,
+  getSetting,
+  setSetting,
+  saveSequenceToDB,
+  loadAllSequences,
+  getPreferences,
+  savePreferences,
+  updateSequence,
+  deleteSequence
+};

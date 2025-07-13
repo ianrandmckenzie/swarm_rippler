@@ -1,5 +1,7 @@
 // Audio sequence playback system
 // Handles playing saved sequences with proper timing and ripple effects
+import { smallCircles, ripples, canvas, dropletSound } from './main-canvas.js';
+import { loadAllSequences } from './storage.js';
 
 // Timing configuration for radial playback
 const RADIAN_TIMING = {
@@ -38,8 +40,7 @@ function getRadianInfo(circleIndex) {
 // Get audio source for a circle index
 function getAudioForCircle(circleIndex) {
   const directionIndex = Math.floor(circleIndex / 3);
-  // Ensure we have access to smallCircles array from main.js
-  if (typeof smallCircles !== 'undefined' && smallCircles[directionIndex]) {
+  if (smallCircles[directionIndex]) {
     return smallCircles[directionIndex].audio;
   }
   return null;
@@ -47,7 +48,7 @@ function getAudioForCircle(circleIndex) {
 
 // Create ripple effect at center for sequence playback
 function createSequenceRipple() {
-  if (typeof ripples !== 'undefined' && typeof canvas !== 'undefined') {
+  if (ripples && canvas) {
     const cx = canvas.clientWidth / 2;
     const cy = canvas.clientHeight / 2;
     const size = Math.min(canvas.clientWidth, canvas.clientHeight);
@@ -107,7 +108,7 @@ async function playSequence(sequenceIndices, options = {}) {
   }
 
   // Play center droplet sound at 0s
-  if (typeof dropletSound !== 'undefined') {
+  if (dropletSound) {
     setTimeout(() => {
       dropletSound.currentTime = 0;
       dropletSound.play().catch(e => console.warn('Failed to play droplet sound:', e));
@@ -380,4 +381,20 @@ window.audioSystem = {
   RADIAN_TIMING,
   MAX_CONCURRENT_LOOPS,
   getActiveLoopCount: () => activeLoops.size
+};
+
+// ES module exports
+export {
+  playSequence,
+  initAudioContext,
+  toggleLoopPlayback,
+  isSequenceLooping,
+  updateThumbnailLoopStates,
+  updateLoopCounter,
+  getRadianInfo,
+  RADIAN_TIMING,
+  MAX_CONCURRENT_LOOPS,
+  getAudioForCircle,
+  createSequenceRipple,
+  setupSequencePlayback
 };

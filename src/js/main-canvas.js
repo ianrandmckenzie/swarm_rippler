@@ -156,7 +156,7 @@ function drawPattern() {
 }
 
 // Ripple animation setup and interactive loop
-const ripples = [];
+let ripples = [];
 const EXPAND_SPEED_RATIO = 0.006; // Proportion of canvas size per frame
 const FADE_SPEED = 0.016;
 
@@ -261,3 +261,20 @@ function getPulseIntensity(startTime, duration) {
 
 // Start the main animation loop
 animate();
+
+// Export main canvas variables and functions
+export {
+  canvas,
+  ctx,
+  dpr,
+  dropletSound,
+  smallCircles,
+  highlightedCircles,
+  highlightAnimations,
+  ripples,
+  resizeCanvas,
+  drawPattern,
+  highlightCircle,
+  clearAllHighlights,
+  getPulseIntensity
+};

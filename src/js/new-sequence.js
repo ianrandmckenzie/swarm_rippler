@@ -1,3 +1,8 @@
+// Modal and sequence creation functionality
+import { getSetting, setSetting, loadAllSequences, saveSequenceToDB, updateSequence } from './storage.js';
+import { addSequenceThumbnail } from './main.js';
+import { smallCircles, dpr } from './main-canvas.js'
+
 // Modal elements
 const createBtn = document.getElementById('createSequenceBtn');
 const modal = document.getElementById('sequenceModal');
@@ -594,14 +599,14 @@ saveBtn.addEventListener('click', async () => {
   };
 
   try {
-    if (modalManager.isEditMode) {
+    if (window.modalManager.isEditMode) {
       // Edit mode: update existing sequence
       const allSequences = await loadAllSequences();
 
       // Get the original sequence properly
-      const originalSeq = Array.isArray(modalManager.originalSequenceData) ?
-                         modalManager.originalSequenceData :
-                         (modalManager.originalSequenceData.sequence || modalManager.originalSequenceData.seq);
+      const originalSeq = Array.isArray(window.modalManager.originalSequenceData) ?
+                         window.modalManager.originalSequenceData :
+                         (window.modalManager.originalSequenceData.sequence || window.modalManager.originalSequenceData.seq);
 
       // Find the sequence index
       const sequenceIndex = allSequences.findIndex(seq => {
@@ -616,14 +621,14 @@ saveBtn.addEventListener('click', async () => {
         // Stop any active loop for the old sequence
         if (window.audioSystem && window.audioSystem.isSequenceLooping) {
           if (window.audioSystem.isSequenceLooping(originalSeq)) {
-            const originalInterval = modalManager.originalSequenceData.loopInterval || 3;
+            const originalInterval = window.modalManager.originalSequenceData.loopInterval || 3;
             window.audioSystem.toggleLoopPlayback(originalSeq, originalInterval);
           }
         }
 
         // Remove editing attribute and update thumbnail
-        modalManager.editingThumbnail.removeAttribute('data-editing');
-        modalManager.editingThumbnail.remove();
+        window.modalManager.editingThumbnail.removeAttribute('data-editing');
+        window.modalManager.editingThumbnail.remove();
         addSequenceThumbnail(sequenceData);
 
         console.log('✅ Sequence updated successfully');
@@ -657,12 +662,12 @@ function closeModal() {
   modal.setAttribute('aria-hidden', 'true');
 
   // Reset modal manager state
-  if (modalManager.isEditMode && modalManager.editingThumbnail) {
-    modalManager.editingThumbnail.removeAttribute('data-editing');
+  if (window.modalManager.isEditMode && window.modalManager.editingThumbnail) {
+    window.modalManager.editingThumbnail.removeAttribute('data-editing');
   }
-  modalManager.isEditMode = false;
-  modalManager.editingThumbnail = null;
-  modalManager.originalSequenceData = null;
+  window.modalManager.isEditMode = false;
+  window.modalManager.editingThumbnail = null;
+  window.modalManager.originalSequenceData = null;
 
   // Reset modal state
   modalCircles.forEach(circle => circle.clicked = false);
@@ -730,3 +735,12 @@ function getModalPulseIntensity(startTime, duration) {
 
   return baseIntensity * pulse;
 }
+
+// Export modal manager and utility functions
+export {
+  ModalManager,
+  getModalPulseIntensity
+};
+
+// Initialize modal manager
+window.modalManager = new ModalManager();

@@ -1,4 +1,6 @@
 // Theme management functionality
+import { getPreferences, savePreferences } from './storage.js';
+
 class ThemeManager {
   constructor() {
     this.themes = ['light', 'dark', 'system'];
@@ -275,7 +277,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.themeManager = new ThemeManager();
 });
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = ThemeManager;
-}
+// Export theme manager class
+export { ThemeManager };

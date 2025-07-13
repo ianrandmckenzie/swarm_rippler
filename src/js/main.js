@@ -1,3 +1,7 @@
+// Main application logic and tooltip management
+import { loadAllSequences } from './storage.js';
+import { smallCircles, dpr } from './main-canvas.js';
+
 // Tooltip helper
 const tooltipEl = document.getElementById('tooltip');
 function showTooltip(text, targetEl, offset = 0) {
@@ -168,15 +172,6 @@ async function addSequenceThumbnail(sequenceData) {
 
 // Populate sequence bar on initial load - wait for all dependencies
 function initializeSequenceBar() {
-  // Check if all required dependencies are available
-  if (typeof loadAllSequences === 'undefined' ||
-      typeof smallCircles === 'undefined' ||
-      typeof dpr === 'undefined') {
-    // Retry after a short delay if dependencies aren't ready
-    setTimeout(initializeSequenceBar, 10);
-    return;
-  }
-
   loadAllSequences().then(seqs => {
     seqs.forEach(sequenceData => addSequenceThumbnail(sequenceData));
     console.log(`✅ Loaded ${seqs.length} saved sequences`);
@@ -219,3 +214,12 @@ if (document.readyState === 'loading') {
   // DOM is already loaded
   initializeSequenceBar();
 }
+
+// Export main functions
+export {
+  showTooltip,
+  hideTooltip,
+  addSequenceThumbnail,
+  initializeSequenceBar,
+  onThemeChange
+};

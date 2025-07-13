@@ -1,4 +1,6 @@
 // Context menu functionality for sequence thumbnails
+import { loadAllSequences, deleteSequence } from './storage.js';
+
 class ContextMenuManager {
   constructor() {
     this.contextMenu = null;
@@ -194,5 +196,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.contextMenuManager = new ContextMenuManager();
 });
 
-// Export for use by other modules
-window.ContextMenuManager = ContextMenuManager;
+// Export context menu manager
+export { ContextMenuManager };
