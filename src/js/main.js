@@ -139,40 +139,18 @@ async function addSequenceThumbnail(sequenceData) {
     }
   });
 
-  // Add loop indicator if this is a loop sequence
-  if (isLoop) {
-    const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
-    const loopColor = effectiveTheme === 'dark' ? '#fff' : '#000';
-
-    // Draw a small loop symbol in the bottom-right corner
-    tctx.strokeStyle = loopColor;
-    tctx.lineWidth = 1.5;
-    tctx.beginPath();
-    const loopX = size - 12;
-    const loopY = size - 8;
-    tctx.arc(loopX, loopY, 4, 0, Math.PI * 1.5);
-    tctx.stroke();
-
-    // Add an arrow tip
-    tctx.beginPath();
-    tctx.moveTo(loopX - 2, loopY - 4);
-    tctx.lineTo(loopX, loopY - 6);
-    tctx.lineTo(loopX + 1, loopY - 4);
-    tctx.stroke();
-  }
-
   // Store sequence data on the canvas element for click handling
   thumb.sequenceData = { seq, isLoop, loopInterval };
 
   // Check if this sequence is currently looping and apply appropriate styling
   if (window.audioSystem && window.audioSystem.isSequenceLooping && window.audioSystem.isSequenceLooping(seq)) {
     const isDark = document.documentElement.classList.contains('dark');
-    thumb.classList.add('rounded-lg', 'transition-colors', 'duration-300', 'ease-in-out');
+    thumb.classList.add('rounded-full', 'transition-colors', 'duration-300', 'ease-in-out', 'p-2');
 
     if (isDark) {
-      thumb.style.backgroundColor = '#2A2A2A';
+      thumb.classList.add('bg-swarmshadow-50');
     } else {
-      thumb.classList.add('bg-swarmlight-200');
+      thumb.classList.add('bg-swarmstripe-200/50');
     }
 
     thumb.style.animation = 'loop-pulse 2s ease-in-out infinite';

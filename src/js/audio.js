@@ -217,8 +217,8 @@ function updateThumbnailLoopStates() {
 
       // Remove all loop state classes
       thumbnail.classList.remove(
-        'bg-swarmlight-200', 'rounded-lg', 'transition-colors', 'duration-300',
-        'ease-in-out', 'loop-pulse-animation'
+        'bg-swarmstripe-200/50', 'bg-swarmshadow-50', 'rounded-lg', 'transition-colors', 'duration-300',
+        'ease-in-out', 'loop-pulse-animation', 'p-2'
       );
       thumbnail.style.backgroundColor = '';
       thumbnail.style.animation = '';
@@ -226,14 +226,14 @@ function updateThumbnailLoopStates() {
       // Apply active loop styling
       if (isCurrentlyLooping) {
         thumbnail.classList.add(
-          'rounded-lg', 'transition-colors', 'duration-300', 'ease-in-out', 'loop-pulse-animation'
+          'rounded-full', 'transition-colors', 'duration-300', 'ease-in-out', 'loop-pulse-animation', 'p-2'
         );
 
         // Apply theme-aware background color
         if (isDark) {
-          thumbnail.style.backgroundColor = '#2A2A2A'; // Slightly lighter than swarmshadow-200
+          thumbnail.classList.add('bg-swarmshadow-50'); // Slightly lighter than swarmshadow-200
         } else {
-          thumbnail.classList.add('bg-swarmlight-200');
+          thumbnail.classList.add('bg-swarmstripe-200/50');
         }
 
         // Add pulsing animation

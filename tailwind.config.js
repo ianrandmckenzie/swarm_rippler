@@ -46,13 +46,13 @@ module.exports = {
           600: '#B71C1C',
         },
         blackspire: {
-          50: '#1A1A13',   // very dark, slight yellow
-          100: '#23231A',  // dark, more yellow
-          200: '#2C2C1F',  // base dark yellow-black
-          300: '#363624',  // lighter
-          400: '#403029',  // even lighter
-          500: '#4A3A2E',  // lightest yellow-black
-          600: '#000000'   // pure black
+          50: '#1A1A13',
+          100: '#23231A',
+          200: '#2C2C1F',
+          300: '#363624',
+          400: '#403029',
+          500: '#4A3A2E',
+          600: '#000000'
         }
       }
     }
