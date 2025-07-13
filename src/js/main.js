@@ -154,7 +154,7 @@ async function addSequenceThumbnail(sequenceData) {
   thumb.sequenceData = { seq, isLoop, loopInterval };
 
   // Check if this sequence is currently looping and apply appropriate styling
-  if (window.audioSystem && window.audioSystem.isSequenceLooping && window.audioSystem.isSequenceLooping(seq)) {
+  if (window.audioSystem && window.audioSystem.isSequenceLooping && window.audioSystem.isSequenceLooping(seq, thumb)) {
     const isDark = document.documentElement.classList.contains('dark');
     thumb.classList.add('rounded-full', 'transition-colors', 'duration-300', 'ease-in-out', 'p-2');
 

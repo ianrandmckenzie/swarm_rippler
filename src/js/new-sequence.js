@@ -465,10 +465,15 @@ modalCanvas.addEventListener('click', async e => {
       const circleIndex = di * 3 + (i - 1);
       const circle = modalCircles[circleIndex];
 
-      if (circle && !circle.clicked && (x - circleX)**2 + (y - circleY)**2 <= r*r) {
-        circle.clicked = true;
-        circle.audio.currentTime = 0;
-        circle.audio.play();
+      if (circle && (x - circleX)**2 + (y - circleY)**2 <= r*r) {
+        // Toggle the circle's clicked state
+        circle.clicked = !circle.clicked;
+
+        // Play sound only when selecting (not deselecting)
+        if (circle.clicked) {
+          circle.audio.currentTime = 0;
+          circle.audio.play();
+        }
 
         // Update button states based on mode
         updateButtonStates();
@@ -620,9 +625,9 @@ saveBtn.addEventListener('click', async () => {
 
         // Stop any active loop for the old sequence
         if (window.audioSystem && window.audioSystem.isSequenceLooping) {
-          if (window.audioSystem.isSequenceLooping(originalSeq)) {
+          if (window.audioSystem.isSequenceLooping(originalSeq, window.modalManager.editingThumbnail)) {
             const originalInterval = window.modalManager.originalSequenceData.loopInterval || 3;
-            window.audioSystem.toggleLoopPlayback(originalSeq, originalInterval);
+            window.audioSystem.toggleLoopPlayback(originalSeq, originalInterval, window.modalManager.editingThumbnail);
           }
         }
 

@@ -172,9 +172,9 @@ class ContextMenuManager {
           if (window.audioSystem && window.audioSystem.isSequenceLooping) {
             const seqToCheck = Array.isArray(sequenceData) ? sequenceData :
                               (sequenceData.sequence || sequenceData.seq);
-            if (window.audioSystem.isSequenceLooping(seqToCheck)) {
+            if (window.audioSystem.isSequenceLooping(seqToCheck, thumbnailToDelete)) {
               const interval = sequenceData.loopInterval || 3;
-              window.audioSystem.toggleLoopPlayback(seqToCheck, interval);
+              window.audioSystem.toggleLoopPlayback(seqToCheck, interval, thumbnailToDelete);
             }
           }
 

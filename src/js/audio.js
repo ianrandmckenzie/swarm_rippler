@@ -160,21 +160,26 @@ async function playSequence(sequenceIndices, options = {}) {
 
 // Loop playback management - support for multiple concurrent loops
 const MAX_CONCURRENT_LOOPS = 5;
-let activeLoops = new Map(); // Map of sequence ID -> { timer, sequence, interval }
+let activeLoops = new Map(); // Map of thumbnail element -> { timer, sequence, interval }
 
-function getSequenceId(sequence) {
+function getLoopId(thumbnail, sequence) {
+  // Use thumbnail element as unique identifier if available
+  if (thumbnail) {
+    return thumbnail;
+  }
+  // Fallback to sequence content for backwards compatibility
   return JSON.stringify(sequence);
 }
 
-function toggleLoopPlayback(sequence, intervalSeconds) {
-  const sequenceId = getSequenceId(sequence);
+function toggleLoopPlayback(sequence, intervalSeconds, thumbnail = null) {
+  const loopId = getLoopId(thumbnail, sequence);
 
-  if (activeLoops.has(sequenceId)) {
+  if (activeLoops.has(loopId)) {
     // Stop this specific loop
-    const loopData = activeLoops.get(sequenceId);
+    const loopData = activeLoops.get(loopId);
     clearInterval(loopData.timer);
-    activeLoops.delete(sequenceId);
-    console.log('🔄 Loop playback stopped for sequence:', sequenceId.substring(0, 50) + '...');
+    activeLoops.delete(loopId);
+    console.log('🔄 Loop playback stopped for thumbnail');
 
     // Update visual state
     updateThumbnailLoopStates();
@@ -213,16 +218,19 @@ function toggleLoopPlayback(sequence, intervalSeconds) {
       } catch (error) {
         console.error('Error in loop playback:', error);
         // Stop this specific loop if there's an error
-        toggleLoopPlayback(sequence, intervalSeconds);
+        toggleLoopPlayback(sequence, intervalSeconds, thumbnail);
       }
     }, intervalSeconds * 1000);
 
     // Store the loop data
-    activeLoops.set(sequenceId, {
+    activeLoops.set(loopId, {
       timer: timer,
       sequence: sequence,
-      interval: intervalSeconds
+      interval: intervalSeconds,
+      thumbnail: thumbnail
     });
+
+    console.log('🔄 Loop playback started');
 
     // Update visual state
     updateThumbnailLoopStates();
@@ -231,10 +239,10 @@ function toggleLoopPlayback(sequence, intervalSeconds) {
 }
 
 // Check if a sequence is currently looping
-function isSequenceLooping(sequence) {
+function isSequenceLooping(sequence, thumbnail = null) {
   if (!sequence) return false;
-  const sequenceId = getSequenceId(sequence);
-  return activeLoops.has(sequenceId);
+  const loopId = getLoopId(thumbnail, sequence);
+  return activeLoops.has(loopId);
 }
 
 // Update loop counter display
@@ -261,7 +269,7 @@ function updateThumbnailLoopStates() {
   thumbnails.forEach(thumbnail => {
     const sequenceData = thumbnail.sequenceData;
     if (sequenceData) {
-      const isCurrentlyLooping = isSequenceLooping(sequenceData.seq);
+      const isCurrentlyLooping = isSequenceLooping(sequenceData.seq, thumbnail);
       const isDark = document.documentElement.classList.contains('dark');
 
       // Remove all loop state classes
@@ -347,8 +355,8 @@ function setupSequencePlayback() {
 
     try {
       if (isLoop) {
-        // Start/stop loop playback
-        toggleLoopPlayback(seq, loopInterval);
+        // Start/stop loop playback - pass the canvas thumbnail as unique identifier
+        toggleLoopPlayback(seq, loopInterval, canvas);
       } else {
         // Play once
         await playSequence(seq);
