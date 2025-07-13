@@ -14,21 +14,53 @@ function resizeModalCanvas() {
 }
 const testBtn = document.getElementById('testSequenceBtn');
 const saveBtn = document.getElementById('saveSequenceBtn');
+const tutorialCounter = document.getElementById('tutorialCounter');
+const targetCountEl = document.getElementById('targetCount');
+const selectedCountEl = document.getElementById('selectedCount');
+
 let modalCircles = [];
+let tutorialMode = false;
+const TUTORIAL_TARGET_COUNT = 5;
+
 // Prepare tutorial state
-getSetting('tutorialSeen').then(seen => {
-  if (!seen) {
-    document.body.classList.add('modal-open');
-    createBtn.classList.add('highlight-once');
-    showTooltip('Start playing by clicking here!', createBtn);
+async function checkAndShowTutorial() {
+  try {
+    const tutorialSeen = await getSetting('tutorialSeen');
+    const savedSequences = await loadAllSequences();
+
+    // Show tutorial if never seen AND no sequences exist
+    if (!tutorialSeen && savedSequences.length === 0) {
+      document.body.classList.add('tutorial-active');
+      createBtn.classList.add('highlight-once');
+      showTooltip('Start playing by clicking New Sequence!', createBtn, 0);
+    }
+  } catch (error) {
+    console.log('Could not check tutorial state:', error);
   }
-});
+}
+
+// Initialize tutorial check after a brief delay to ensure all dependencies are loaded
+setTimeout(checkAndShowTutorial, 100);
 
 // Open modal
 createBtn.addEventListener('click', async () => {
   hideTooltip();
   createBtn.classList.remove('highlight-once');
-  document.body.classList.remove('modal-open');
+  document.body.classList.remove('tutorial-active');
+
+  // Check if this is a first-time user for tutorial mode
+  const tutorialSeen = await getSetting('tutorialSeen');
+  tutorialMode = !tutorialSeen;
+
+  if (tutorialMode) {
+    tutorialCounter.classList.remove('hidden');
+    targetCountEl.textContent = TUTORIAL_TARGET_COUNT;
+    selectedCountEl.textContent = '0';
+    // Initial tutorial tooltip will be set by updateTutorialUI after modal setup
+  } else {
+    tutorialCounter.classList.add('hidden');
+  }
+
   modal.classList.remove('hidden');
   modal.classList.add('flex');
   modal.setAttribute('aria-hidden', 'false');
@@ -75,6 +107,11 @@ createBtn.addEventListener('click', async () => {
     }
   });
   drawModal();
+
+  // Initialize tutorial UI if in tutorial mode
+  if (tutorialMode) {
+    updateTutorialUI();
+  }
 });
 
 function drawModal() {
@@ -178,16 +215,15 @@ modalCanvas.addEventListener('click', async e => {
         circle.clicked = true;
         circle.audio.currentTime = 0;
         circle.audio.play();
-        testBtn.disabled = false;
-        if (!getSetting('tutorialSeen').then) {
-          getSetting('tutorialSeen').then(seen => {
-            if (!seen) {
-              testBtn.classList.add('highlight-once');
-              showTooltip('Test what your click-sound sequence will sound like before saving!', testBtn);
-              setSetting('tutorialSeen', true);
-            }
-          });
+
+        // Update tutorial counter and progression
+        if (tutorialMode) {
+          updateTutorialUI();
+        } else {
+          // Non-tutorial mode - enable test button after any selection
+          testBtn.disabled = false;
         }
+
         drawModal();
         return;
       }
@@ -195,13 +231,60 @@ modalCanvas.addEventListener('click', async e => {
   });
 });
 
+// Helper function to update tutorial UI
+function updateTutorialUI() {
+  if (!tutorialMode) return;
+
+  const selectedCount = modalCircles.filter(c => c.clicked).length;
+  selectedCountEl.textContent = selectedCount;
+
+  // Update progress messaging
+  if (selectedCount === 0) {
+    showTooltip('Click the empty circles to form your sequence', modalCanvas, 340);
+  } else if (selectedCount < TUTORIAL_TARGET_COUNT) {
+    const remaining = TUTORIAL_TARGET_COUNT - selectedCount;
+    showTooltip(`Select ${remaining} more circle${remaining === 1 ? '' : 's'}`, modalCanvas);
+  } else if (selectedCount === TUTORIAL_TARGET_COUNT) {
+    hideTooltip();
+    testBtn.disabled = false;
+    testBtn.classList.add('highlight-once');
+    console.log('🎯 Tutorial: Added highlight-once class to test button');
+    showTooltip('Click Test to hear what your sequence sounds like!', testBtn);
+  }
+}
+
 // Test sequence
-testBtn.addEventListener('click', e => {
+testBtn.addEventListener('click', async e => {
   hideTooltip();
   testBtn.classList.remove('highlight-once');
-  alert('Sequence test placeholder');
-  saveBtn.disabled = false;
+  // Get the current sequence of clicked circles
+  const sequence = modalCircles.map((c, index) => c.clicked ? index : null).filter(i => i !== null);
+
+  if (sequence.length > 0) {
+    try {
+      // Use the audioSystem playback function
+      if (window.audioSystem && window.audioSystem.playSequence) {
+        await window.audioSystem.playSequence(sequence);
+      } else {
+        console.warn('Audio system not available, falling back to basic feedback');
+      }
+
+      // Enable save button after testing
+      saveBtn.disabled = false;
+
+      // Complete tutorial if in tutorial mode
+      if (tutorialMode) {
+        await setSetting('tutorialSeen', true);
+        tutorialMode = false;
+      }
+    } catch (error) {
+      console.error('Error playing test sequence:', error);
+      // Fallback to just enabling save button
+      saveBtn.disabled = false;
+    }
+  }
 });
+
 
 // Save sequence and close modal
 saveBtn.addEventListener('click', async () => {
@@ -209,13 +292,18 @@ saveBtn.addEventListener('click', async () => {
   const seq = modalCircles.map((c, index) => c.clicked ? index : null).filter(i => i !== null);
   await saveSequenceToDB(seq);
   addSequenceThumbnail(seq);
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
-  modal.setAttribute('aria-hidden','true');
+
+  // Complete tutorial if in tutorial mode
+  if (tutorialMode) {
+    await setSetting('tutorialSeen', true);
+  }
+
+  closeModal();
 });
 
 // Close modal functionality
 function closeModal() {
+  hideTooltip();
   modal.classList.add('hidden');
   modal.classList.remove('flex');
   modal.setAttribute('aria-hidden', 'true');
@@ -223,7 +311,11 @@ function closeModal() {
   // Reset modal state
   modalCircles.forEach(circle => circle.clicked = false);
   testBtn.disabled = true;
+  testBtn.classList.remove('highlight-once');
   saveBtn.disabled = true;
+  tutorialCounter.classList.add('hidden');
+  tutorialMode = false;
+
   drawModal();
 }
 

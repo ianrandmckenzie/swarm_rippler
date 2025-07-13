@@ -45,7 +45,7 @@ module.exports = {
           500: '#D32F2F',
           600: '#B71C1C',
         },
-        black: {
+        blackspire: {
           50: '#1A1A13',   // very dark, slight yellow
           100: '#23231A',  // dark, more yellow
           200: '#2C2C1F',  // base dark yellow-black

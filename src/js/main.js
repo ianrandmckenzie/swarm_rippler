@@ -1,13 +1,15 @@
 // Tooltip helper
 const tooltipEl = document.getElementById('tooltip');
-function showTooltip(text, targetEl) {
+function showTooltip(text, targetEl, offset) {
   const rect = targetEl.getBoundingClientRect();
   tooltipEl.textContent = text;
-  tooltipEl.style.left = (rect.left + rect.width/2) + 'px';
-  tooltipEl.style.top = (rect.bottom + 8) + 'px';
+  tooltipEl.style.left = ((rect.left/2 + rect.width/2) + offset) + 'px';
+  tooltipEl.style.top = (rect.bottom + 16) + 'px';
+  tooltipEl.classList.remove('hidden');
   tooltipEl.removeAttribute('aria-hidden');
 }
 function hideTooltip() {
+  tooltipEl.classList.add('hidden');
   tooltipEl.setAttribute('aria-hidden', 'true');
 }
 

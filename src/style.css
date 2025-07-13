@@ -99,31 +99,54 @@ body::after {
 /* Highlight animation for tutorial button */
 @layer components {
   .highlight-once {
-    animation: pulse 1s ease-in-out infinite;
+    animation: pulse 1.5s ease-in-out infinite;
+    position: relative;
+    z-index: 60;
+    border: 2px solid transparent !important;
   }
 
   @keyframes pulse {
     0%, 100% {
-      box-shadow: 0 0 0 0 rgb(theme('colors.swarmstripe.400') / 0);
+      box-shadow: 0 0 0 0 rgba(255, 235, 59, 0);
+      border-color: transparent;
+      transform: scale(1);
     }
     50% {
-      box-shadow: 0 0 10px 10px rgb(theme('colors.swarmstripe.400') / 0.7);
+      box-shadow: 0 0 20px 8px rgba(255, 235, 59, 0.8);
+      border-color: #FFEB3B;
+      transform: scale(1.05);
     }
   }
 
   /* Dark theme pulse animation */
   .dark .highlight-once {
-    animation: pulseDark 1s ease-in-out infinite;
+    animation: pulseDark 1.5s ease-in-out infinite;
   }
 
   @keyframes pulseDark {
     0%, 100% {
-      box-shadow: 0 0 0 0 rgb(theme('colors.swarmlight.300') / 0);
+      box-shadow: 0 0 0 0 rgba(255, 241, 118, 0);
+      border-color: transparent;
+      transform: scale(1);
     }
     50% {
-      box-shadow: 0 0 10px 10px rgb(theme('colors.swarmlight.300') / 0.8);
+      box-shadow: 0 0 20px 8px rgba(255, 241, 118, 0.9);
+      border-color: #FFF176;
+      transform: scale(1.05);
     }
   }
+}
+
+/* Tutorial highlight overrides for buttons */
+.highlight-once:not(:disabled) {
+  opacity: 1 !important;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+.highlight-once:disabled {
+  /* Make sure disabled state doesn't interfere with highlight */
+  opacity: 1 !important;
 }
 
 /* Tooltip styling */
@@ -143,12 +166,15 @@ body::after {
   color: #FFFBC2; /* swarmlight-100 */
 }
 
-/* Dull background when modal open */
-.modal-open #main-content,
-.modal-open footer,
-.modal-open header {
-  filter: grayscale(100%);
-  pointer-events: none;
+/* Tutorial overlay styles */
+.tutorial-active #tutorialOverlay {
+  display: block !important;
+}
+
+/* Ensure tutorial elements stay on top */
+.tutorial-active #createSequenceBtn {
+  z-index: 50;
+  position: relative;
 }
 
 /* Theme switcher styles */

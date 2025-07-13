@@ -27,9 +27,29 @@ async function clearAllData() {
   }
 }
 
-// Make function available in browser console for development
+// NON-PRODUCTION: Reset tutorial state to test first-time user experience
+async function resetTutorial() {
+  console.warn('🎓 Resetting tutorial state...');
+
+  try {
+    await setSetting('tutorialSeen', false);
+    console.log('✅ Tutorial state reset - reload page to see tutorial');
+
+    const shouldReload = confirm('Tutorial reset! Reload page to see tutorial?');
+    if (shouldReload) {
+      window.location.reload();
+    }
+  } catch (error) {
+    console.error('❌ Error resetting tutorial:', error);
+  }
+}
+
+// Make functions available in browser console for development
 window.clearAllData = clearAllData;
-console.log('🔧 Dev helper available: Call clearAllData() in console to reset all data');
+window.resetTutorial = resetTutorial;
+console.log('🔧 Dev helpers available:');
+console.log('  - clearAllData(): Clear all sequences and settings');
+console.log('  - resetTutorial(): Reset tutorial state to test first-time experience');
 
 // NON-PRODUCTION: Generate random sequences for testing bottom bar design
 async function generateRandomSequences(count = 50) {
@@ -132,3 +152,4 @@ console.log('🔧 Dev helpers available:');
 console.log('  - generateRandomSequences(50) - Generate random sequences');
 console.log('  - generateTestPatterns() - Generate specific test patterns');
 console.log('  - clearAllData() - Clear all data and reload');
+console.log('  - resetTutorial() - Reset tutorial state');
