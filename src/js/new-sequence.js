@@ -122,6 +122,9 @@ createBtn.addEventListener('click', async () => {
   if (tutorialMode) {
     updateTutorialUI();
   }
+
+  // Set initial button states
+  updateButtonStates();
 });
 
 function drawModal() {
@@ -331,13 +334,8 @@ modalCanvas.addEventListener('click', async e => {
         circle.audio.currentTime = 0;
         circle.audio.play();
 
-        // Update tutorial counter and progression
-        if (tutorialMode) {
-          updateTutorialUI();
-        } else {
-          // Non-tutorial mode - enable test button after any selection
-          testBtn.disabled = false;
-        }
+        // Update button states based on mode
+        updateButtonStates();
 
         drawModal();
         return;
@@ -345,6 +343,34 @@ modalCanvas.addEventListener('click', async e => {
     }
   });
 });
+
+// Helper function to update button states based on current mode and selections
+function updateButtonStates() {
+  const selectedCount = modalCircles.filter(c => c.clicked).length;
+
+  if (tutorialMode) {
+    // Tutorial mode: require specific count and testing
+    if (selectedCount === TUTORIAL_TARGET_COUNT) {
+      testBtn.disabled = false;
+      testBtn.classList.add('highlight-once');
+      showTooltip('Click Test to hear what your sequence sounds like!', testBtn);
+    } else {
+      testBtn.disabled = true;
+      testBtn.classList.remove('highlight-once');
+    }
+    // Save is only enabled after testing in tutorial mode
+    updateTutorialUI();
+  } else {
+    // Non-tutorial mode: enable both buttons when any circles are selected
+    if (selectedCount > 0) {
+      testBtn.disabled = false;
+      saveBtn.disabled = false; // Enable save directly without requiring test
+    } else {
+      testBtn.disabled = true;
+      saveBtn.disabled = true;
+    }
+  }
+}
 
 // Helper function to update tutorial UI
 function updateTutorialUI() {
@@ -361,10 +387,7 @@ function updateTutorialUI() {
     showTooltip(`Select ${remaining} more circle${remaining === 1 ? '' : 's'}`, modalCanvas);
   } else if (selectedCount === TUTORIAL_TARGET_COUNT) {
     hideTooltip();
-    testBtn.disabled = false;
-    testBtn.classList.add('highlight-once');
-    console.log('🎯 Tutorial: Added highlight-once class to test button');
-    showTooltip('Click Test to hear what your sequence sounds like!', testBtn);
+    // Button state is handled in updateButtonStates()
   }
 }
 
@@ -384,8 +407,10 @@ testBtn.addEventListener('click', async e => {
         console.warn('Audio system not available, falling back to basic feedback');
       }
 
-      // Enable save button after testing
-      saveBtn.disabled = false;
+      // Enable save button after testing (only needed in tutorial mode)
+      if (tutorialMode) {
+        saveBtn.disabled = false;
+      }
 
       // Complete tutorial if in tutorial mode
       if (tutorialMode) {
@@ -394,8 +419,10 @@ testBtn.addEventListener('click', async e => {
       }
     } catch (error) {
       console.error('Error playing test sequence:', error);
-      // Fallback to just enabling save button
-      saveBtn.disabled = false;
+      // Fallback to just enabling save button in tutorial mode
+      if (tutorialMode) {
+        saveBtn.disabled = false;
+      }
     }
   }
 });
