@@ -1,0 +1,21 @@
+{
+    "name": "Click Ripple - Interactive Sound Grid",
+    "short_name": "Click Ripple",
+    "description": "Interactive sound grid for creating and learning clicking sounds and glossolalia",
+    "icons": [
+        {
+            "src": "/public/favicon-96x96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "/public/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#1F1F1F",
+    "background_color": "#1F1F1F",
+    "display": "standalone",
+    "start_url": "/"
+}

@@ -12,6 +12,14 @@
     <meta name="robots" content="index, follow">
     <meta name="language" content="en">
 
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="/assets/favicon-96x96-ncU147kV.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/favicon-C6ez3iZu.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-EXDHH_nk.png" />
+    <meta name="apple-mobile-web-app-title" content="Spiral Anim" />
+    <link rel="manifest" href="/assets/site-CIM0WBVN.webmanifest" />
+
     <!-- Open Graph Meta Tags for Social Sharing -->
     <meta property="og:title" content="Click Ripple - Interactive Sound Grid">
     <meta property="og:description" content="Interactive sound grid for creating and learning clicking sounds and glossolalia">
@@ -32,61 +40,122 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="">
 
-    <style>
-      #canvas-container {
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-        aspect-ratio: 1 / 1;
-      }
-      #soundCanvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-    </style>
-    <link rel="stylesheet" crossorigin href="/assets/index-BsGV2AD4.css">
+    <script type="module" crossorigin src="/assets/index-C6EYxD5s.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DjwMpVmY.css">
   </head>
 
-  <body>
-    <!-- Create Sequence tutorial button -->
-    <button id="createSequenceBtn" class="animate-pulse ring-4 ring-yellow-300 ring-opacity-50 px-4 py-2 bg-swarmlight-200 text-swarmshadow-600 rounded-md shadow-lg" title="Start playing by clicking here!">
-      Create Sequence
-    </button>
-    <main id="main-content">
-      <div id="canvas-container" role="application" aria-label="Sound grid interface for creating clicking sounds">
-        <canvas id="soundCanvas"></canvas>
+  <body class="bg-cover bg-center bg-no-repeat">
+    <!-- Theme Switcher -->
+    <div class="fixed top-4 right-4 z-10 theme-switcher">
+      <div class="bg-swarmlight-100 dark:bg-swarmshadow-100 border border-swarmshadow-300 dark:border-swarmlight-300 rounded-lg p-2 shadow-lg">
+        <div class="flex items-center space-x-1" role="radiogroup" aria-label="Theme selection">
+          <button id="darkTheme" class="p-2 rounded-md transition-all duration-200 ease-in-out text-swarmshadow-400 hover:bg-swarmshadow-50 hover:text-swarmlight-600 dark:text-swarmlight-300 dark:hover:bg-swarmlight-500 dark:hover:text-swarmshadow-100" data-theme="dark" aria-label="Dark theme" title="Dark theme">
+            <svg fill="currentColor" class="h-4 w-4 md:h-5 md:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/></svg>
+          </button>
+          <button id="systemTheme" class="p-2 rounded-md transition-all duration-200 ease-in-out text-black hover:ring-black hover:text-black dark:text-swarmlight-500 dark:hover:bg-swarmlight-500 dark:hover:text-swarmlight-50 dark:hover:ring-swarmlight-50" data-theme="system" aria-label="System theme" title="System theme">
+            <svg fill="currentColor" class="h-4 w-4 md:h-5 md:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l176 0-10.7 32L160 448c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-69.3 0L336 416l176 0c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0zM512 64l0 224L64 288 64 64l448 0z"/></svg>
+          </button>
+          <button id="lightTheme" class="p-2 rounded-md transition-all duration-200 ease-in-out text-swarmshadow-400 hover:bg-swarmshadow-50 hover:text-swarmlight-600 dark:text-swarmlight-300 dark:hover:bg-swarmlight-500 dark:hover:text-swarmshadow-100" data-theme="light" aria-label="Light theme" title="Light theme">
+            <svg fill="currentColor" class="h-4 w-4 md:h-5 md:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"/></svg>
+          </button>
+        </div>
       </div>
-    </main>
+    </div>
 
-    <div id="tooltip" role="tooltip" aria-hidden="true" class="absolute bg-swarmlight-100 border border-swarmshadow-300 px-2 py-1 rounded shadow z-50 hidden text-swarmshadow-600"></div>
+    <div class="pt-12 sm:pt-0 bg-swarmlight-50/85 dark:bg-swarmshadow-50/90 flex flex-col bg-cover relative h-screen transition-colors duration-300">
+      <main id="main-content">
+        <div id="canvas-container" class="w-full my-8 max-w-[343px] sm:max-w-[600px] mx-auto aspect-square bg-swarmlight-200 dark:bg-swarmshadow-50 rounded-full border-2 border-swarmshadow-50 dark:border-swarmlight-100" role="application" aria-label="Sound grid interface for creating clicking sounds">
+          <canvas id="soundCanvas" class="w-full h-full"></canvas>
+        </div>
+      </main>
 
-    <!-- Sequence thumbnails bar -->
-    <div id="sequenceBar" class="fixed bottom-0 left-0 right-0 h-24 bg-swarmshadow-200 flex items-center space-x-2 overflow-x-auto px-2"></div>
+      <div id="tooltip" role="tooltip" aria-hidden="true" class="absolute bg-swarmlight-100 dark:bg-swarmshadow-100 border border-swarmshadow-300 dark:border-swarmlight-300 px-3 py-2 rounded-lg shadow-lg hidden text-swarmshadow-600 dark:text-swarmlight-100 text-sm max-w-xs z-[9999] pointer-events-none"></div>
+
+      <!-- Tutorial Overlay (hidden by default) -->
+      <div id="tutorialOverlay" class="fixed inset-0 bg-black/60 dark:bg-black/70 z-40 hidden pointer-events-none"></div>
+
+      <!-- Create Sequence tutorial button -->
+      <button id="createSequenceBtn" class="w-48 mx-auto relative bottom-0 ring-4 ring-yellow-300 dark:ring-swarmstripe-400 ring-opacity-50 px-4 py-2 bg-swarmshadow-300 dark:bg-swarmlight-300 text-swarmlight-100 dark:text-swarmshadow-600 rounded-md shadow-lg transition-colors duration-300 z-50 border-2 border-swarmshadow-400 dark:border-swarmlight-400 hover:bg-swarmshadow-400 dark:hover:bg-swarmlight-400 font-semibold" title="Start playing by clicking New Sequence!">
+        New Sequence
+      </button>
+
+      <!-- Loop counter - positioned above sequence bar -->
+      <div id="loopCounter" class="fixed bottom-28 right-4 bg-swarmlight-100 dark:bg-swarmshadow-500 text-swarmshadow-600 dark:text-swarmlight-100 px-3 py-1 rounded-lg shadow-lg text-sm font-medium transition-colors duration-300 z-50 hidden">
+        Loops playing: 0/5
+      </div>
+
+      <!-- Sequence thumbnails bar -->
+      <div id="sequenceBar" class="fixed bottom-0 left-0 right-0 h-28 pt-2 bg-swarmlight-100 dark:bg-swarmshadow-500 flex items-center space-x-2 overflow-x-auto px-2 transition-colors duration-300 scrollbar-thin scrollbar-thumb-swarmshadow-200 scrollbar-track-swarmlight-50 dark:scrollbar-thumb-swarmlight-200 dark:scrollbar-track-swarmshadow-50"></div>
+    </div>
 
     <!-- Sequence Modal -->
-    <div id="sequenceModal" class="fixed inset-0 bg-black/50 bg-opacity-50 items-center justify-center z-50 hidden" aria-hidden="true" role="dialog" aria-modal="true">
-      <div id="modalContent" class="bg-swarmlight-100 p-6 rounded-lg shadow-xl relative text-center w-96 border border-swarmshadow-300">
+    <div id="sequenceModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 hidden transition-colors duration-300 p-4" aria-hidden="true" role="dialog" aria-modal="true">
+      <div id="modalContent" class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-2 sm:p-6 rounded-lg shadow-xl relative text-center w-full max-w-sm sm:w-96 border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-y-auto">
         <!-- Close button -->
-        <button id="closeModalBtn" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-swarmshadow-600 hover:bg-swarmshadow-100 rounded-full transition-colors" aria-label="Close modal">
+        <button id="closeModalBtn" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 rounded-full transition-colors" aria-label="Close modal">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
 
-        <canvas id="sequenceCanvas" class="w-80 h-80 block mx-auto mb-4"></canvas>
+        <!-- Modal Title -->
+        <h2 id="modalTitle" class="text-lg sm:text-xl font-semibold text-swarmshadow-600 dark:text-swarmlight-100 mb-2 sm:mb-4">Create New Sequence</h2>
+
+        <canvas id="sequenceCanvas" class="w-64 h-64 sm:w-80 sm:h-80 block mx-auto sm:mb-4"></canvas>
+
+        <!-- Inline tutorial instruction -->
+        <div id="modalInstruction" class="text-center mb-3 text-sm text-swarmshadow-500 dark:text-swarmlight-200 italic hidden">
+          Click the empty circles to form your sequence
+        </div>
+
+        <!-- Tutorial Counter -->
+        <div id="tutorialCounter" class="text-center mb-3 sm:mb-4 hidden">
+          <div class="text-base sm:text-lg font-semibold text-swarmshadow-600 dark:text-swarmlight-100">
+            Select <span id="targetCount">5</span> circles to create your sequence
+          </div>
+          <div class="text-xs sm:text-sm text-swarmshadow-500 dark:text-swarmlight-200">
+            Selected: <span class="font-bold"><span id="selectedCount">0</span>/5</span>
+          </div>
+        </div>
+
+        <!-- Loop Controls -->
+        <div id="loopControls" class="text-center mb-3 sm:mb-4 space-y-2">
+          <div class="flex items-center justify-center space-x-2">
+            <label class="flex items-center space-x-2 cursor-pointer text-sm sm:text-base text-swarmshadow-600 dark:text-swarmlight-100">
+              <input type="checkbox" id="loopToggle" class="w-4 h-4 text-swarmshadow-600 dark:text-swarmlight-100 bg-swarmlight-100 dark:bg-swarmshadow-200 border-swarmshadow-400 dark:border-swarmlight-400 rounded focus:ring-swarmshadow-400 dark:focus:ring-swarmlight-400 focus:ring-2">
+              <span>Loop sequence</span>
+            </label>
+          </div>
+
+          <div id="loopIntervalControls" class="flex items-center justify-center space-x-1 text-sm sm:text-base text-swarmshadow-600 dark:text-swarmlight-100 opacity-50 transition-opacity duration-200">
+            <span>Every</span>
+            <input type="number" id="loopInterval" min="1" max="60" value="3" class="w-12 px-1 py-1 text-center bg-swarmlight-200 dark:bg-swarmshadow-200 border border-swarmshadow-400 dark:border-swarmlight-400 rounded text-swarmshadow-600 dark:text-swarmlight-100 focus:ring-2 focus:ring-swarmshadow-400 dark:focus:ring-swarmlight-400 focus:border-transparent disabled:opacity-50" disabled>
+            <span>seconds</span>
+          </div>
+        </div>
+
         <div class="flex justify-center space-x-2">
-          <button id="testSequenceBtn" disabled class="px-4 py-2 bg-swarmlight-200 text-swarmshadow-600 rounded-md disabled:opacity-50 border border-swarmshadow-400">Test</button>
-          <button id="saveSequenceBtn" disabled class="px-4 py-2 bg-swarmlight-300 text-swarmshadow-600 rounded-md disabled:opacity-50 border border-swarmshadow-400">Save</button>
+          <button id="testSequenceBtn" disabled class="px-3 py-2 sm:px-4 text-sm sm:text-base bg-swarmshadow-300 dark:bg-swarmlight-300 text-swarmlight-100 dark:text-swarmshadow-600 rounded-md disabled:opacity-50 border-2 border-swarmshadow-400 dark:border-swarmlight-400 transition-colors duration-300 hover:bg-swarmshadow-400 dark:hover:bg-swarmlight-400 disabled:hover:bg-swarmshadow-300 dark:disabled:hover:bg-swarmlight-300 font-semibold">Test</button>
+          <button id="saveSequenceBtn" disabled class="px-3 py-2 sm:px-4 text-sm sm:text-base bg-swarmshadow-300 dark:bg-swarmlight-300 text-swarmlight-100 dark:text-swarmshadow-600 rounded-md disabled:opacity-50 border-2 border-swarmshadow-400 dark:border-swarmlight-400 transition-colors duration-300 hover:bg-swarmshadow-400 dark:hover:bg-swarmlight-400 disabled:hover:bg-swarmshadow-300 dark:disabled:hover:bg-swarmlight-300 font-semibold">Save</button>
         </div>
       </div>
     </div>
 
-    <script src="./src/js/storage.js"></script>
-    <script src="./src/js/main.js"></script>
-    <script src="./src/js/audio.js"></script>
-    <script src="./src/js/main-canvas.js"></script>
-    <script src="./src/js/new-sequence.js"></script>
-    <script src="./src/js/dev-tools.js"></script>
+    <!-- Context Menu for Thumbnails -->
+    <div id="contextMenu" class="fixed hidden bg-swarmlight-50 dark:bg-swarmshadow-100 border border-swarmshadow-300 dark:border-swarmlight-300 rounded-lg shadow-lg py-1 z-[9999] min-w-32">
+      <button id="editSequence" class="w-full px-3 py-2 text-left text-sm text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 transition-colors duration-200 flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+        </svg>
+        <span>Edit</span>
+      </button>
+      <button id="deleteSequence" class="w-full px-3 py-2 text-left text-sm text-swarmstinger-300 hover:bg-swarmstinger-50 dark:hover:bg-swarmstinger-600/20 transition-colors duration-200 flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+        </svg>
+        <span>Delete</span>
+      </button>
+    </div>
+
   </body>
 </html>
