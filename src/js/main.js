@@ -17,11 +17,18 @@ function showTooltip(text, targetEl, offset = 0) {
     const tooltipWidth = tooltipEl.offsetWidth || 200; // Estimate if not rendered yet
 
     if (isInModal) {
-      // In modal, position relative to modal content, not viewport
+      // In modal, position above the modal content to avoid interference
       const modalContent = document.getElementById('modalContent');
       const modalRect = modalContent.getBoundingClientRect();
       left = modalRect.left + (modalRect.width - tooltipWidth) / 2;
-      top = rect.bottom + 8; // Closer spacing in modal
+
+      // Position tooltip above the modal with some spacing
+      top = modalRect.top - 40; // Position above modal
+
+      // If there's not enough space above, position at the very top of the modal
+      if (top < 16) {
+        top = modalRect.top + 8; // Small padding from top of modal
+      }
     } else {
       // Small screen, center horizontally
       left = (viewportWidth - tooltipWidth) / 2;

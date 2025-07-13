@@ -99,6 +99,12 @@ class ModalManager {
     // Clear highlights and ripples
     modalHighlightedCircles.clear();
     modalRipples.length = 0;
+
+    // Hide inline instruction by default
+    const modalInstruction = document.getElementById('modalInstruction');
+    if (modalInstruction) {
+      modalInstruction.classList.add('hidden');
+    }
   }
 
   loadSequenceIntoModal(sequenceData) {
@@ -504,14 +510,21 @@ function updateTutorialUI() {
   const selectedCount = modalCircles.filter(c => c.clicked).length;
   selectedCountEl.textContent = selectedCount;
 
-  // Update progress messaging
+  const modalInstruction = document.getElementById('modalInstruction');
+
+  // Update progress messaging using inline instruction instead of floating tooltip
   if (selectedCount === 0) {
-    showTooltip('Click the empty circles to form your sequence', modalCanvas);
+    modalInstruction.textContent = 'Click the empty circles to form your sequence';
+    modalInstruction.classList.remove('hidden');
+    hideTooltip(); // Hide any existing tooltip
   } else if (selectedCount < TUTORIAL_TARGET_COUNT) {
     const remaining = TUTORIAL_TARGET_COUNT - selectedCount;
-    showTooltip(`Select ${remaining} more circle${remaining === 1 ? '' : 's'}`, modalCanvas);
+    modalInstruction.textContent = `Select ${remaining} more circle${remaining === 1 ? '' : 's'}`;
+    modalInstruction.classList.remove('hidden');
+    hideTooltip(); // Hide any existing tooltip
   } else if (selectedCount === TUTORIAL_TARGET_COUNT) {
-    hideTooltip();
+    modalInstruction.classList.add('hidden');
+    hideTooltip(); // Hide any existing tooltip
     // Button state is handled in updateButtonStates()
   }
 }
@@ -658,6 +671,12 @@ function closeModal() {
   saveBtn.disabled = true;
   tutorialCounter.classList.add('hidden');
   tutorialMode = false;
+
+  // Hide inline instruction
+  const modalInstruction = document.getElementById('modalInstruction');
+  if (modalInstruction) {
+    modalInstruction.classList.add('hidden');
+  }
 
   // Reset loop controls
   loopToggle.checked = false;
