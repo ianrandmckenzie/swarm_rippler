@@ -8,4 +8,8 @@ export default defineConfig({
     emptyOutDir: false, // Don't empty the docs directory to preserve existing files like CNAME
   },
   publicDir: 'public', // Ensure public files are copied
+  server: {
+    port: 8181,
+    strictPort: true // Fail if port 8181 is not available
+  }
 })

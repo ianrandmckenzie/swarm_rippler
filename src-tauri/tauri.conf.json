@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.clickrippler.desktop",
   "build": {
-    "frontendDist": "../dist",
+    "frontendDist": "../docs",
     "devUrl": "http://localhost:8181",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
