@@ -4,12 +4,12 @@
     "description": "Interactive sound grid for creating and learning clicking sounds and glossolalia",
     "icons": [
         {
-            "src": "/public/favicon-96x96.png",
+            "src": "/favicon-96x96.png",
             "sizes": "96x96",
             "type": "image/png"
         },
         {
-            "src": "/public/apple-touch-icon.png",
+            "src": "/apple-touch-icon.png",
             "sizes": "180x180",
             "type": "image/png"
         }
