@@ -85,7 +85,7 @@
       </button>
 
       <!-- Sequence thumbnails bar -->
-      <div id="sequenceBar" class="fixed bottom-0 left-0 right-0 h-28 pt-2 bg-swarmlight-100 dark:bg-swarmshadow-600 flex items-center space-x-2 overflow-x-auto px-2 transition-colors duration-300 scrollbar-thin scrollbar-thumb-swarmshadow-200 scrollbar-track-swarmlight-50 dark:scrollbar-thumb-swarmlight-200 dark:scrollbar-track-swarmshadow-50"></div>
+      <div id="sequenceBar" class="fixed bottom-0 left-0 right-0 h-28 pt-2 bg-swarmlight-100 dark:bg-swarmshadow-500 flex items-center space-x-2 overflow-x-auto px-2 transition-colors duration-300 scrollbar-thin scrollbar-thumb-swarmshadow-200 scrollbar-track-swarmlight-50 dark:scrollbar-thumb-swarmlight-200 dark:scrollbar-track-swarmshadow-50"></div>
     </div>
 
     <!-- Sequence Modal -->
@@ -97,6 +97,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
+
+        <!-- Modal Title -->
+        <h2 id="modalTitle" class="text-lg sm:text-xl font-semibold text-swarmshadow-600 dark:text-swarmlight-100 mb-2 sm:mb-4">Create New Sequence</h2>
 
         <canvas id="sequenceCanvas" class="w-64 h-64 sm:w-80 sm:h-80 block mx-auto sm:mb-4"></canvas>
 
@@ -133,10 +136,27 @@
       </div>
     </div>
 
+    <!-- Context Menu for Thumbnails -->
+    <div id="contextMenu" class="fixed hidden bg-swarmlight-50 dark:bg-swarmshadow-100 border border-swarmshadow-300 dark:border-swarmlight-300 rounded-lg shadow-lg py-1 z-[9999] min-w-32">
+      <button id="editSequence" class="w-full px-3 py-2 text-left text-sm text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 transition-colors duration-200 flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+        </svg>
+        <span>Edit</span>
+      </button>
+      <button id="deleteSequence" class="w-full px-3 py-2 text-left text-sm text-swarmstinger-300 hover:bg-swarmstinger-50 dark:hover:bg-swarmstinger-600/20 transition-colors duration-200 flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+        </svg>
+        <span>Delete</span>
+      </button>
+    </div>
+
     <script src="./src/js/storage.js"></script>
     <script src="./src/js/theme.js"></script>
     <script src="./src/js/main.js"></script>
     <script src="./src/js/audio.js"></script>
+    <script src="./src/js/context-menu.js"></script>
     <script src="./src/js/main-canvas.js"></script>
     <script src="./src/js/new-sequence.js"></script>
     <script src="./src/js/dev-tools.js"></script>

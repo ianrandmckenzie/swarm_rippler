@@ -3,12 +3,187 @@ const createBtn = document.getElementById('createSequenceBtn');
 const modal = document.getElementById('sequenceModal');
 const modalCanvas = document.getElementById('sequenceCanvas');
 const modalCtx = modalCanvas.getContext('2d');
+const modalTitle = document.getElementById('modalTitle');
 
 // Modal highlighting and animation system
 let modalHighlightedCircles = new Map();
 let modalRipples = [];
 const MODAL_EXPAND_SPEED = 4;
 const MODAL_FADE_SPEED = 0.04;
+
+// Modal manager class to handle create and edit modes
+class ModalManager {
+  constructor() {
+    this.isEditMode = false;
+    this.editingThumbnail = null;
+    this.originalSequenceData = null;
+    this.init();
+  }
+
+  init() {
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    // Create new sequence button
+    createBtn.addEventListener('click', () => {
+      this.openCreateMode();
+    });
+  }
+
+  async openCreateMode() {
+    hideTooltip();
+    createBtn.classList.remove('highlight-once');
+    document.body.classList.remove('tutorial-active');
+
+    this.isEditMode = false;
+    this.editingThumbnail = null;
+    this.originalSequenceData = null;
+
+    modalTitle.textContent = 'Create New Sequence';
+
+    // Check if this is a first-time user for tutorial mode
+    const tutorialSeen = await getSetting('tutorialSeen');
+    tutorialMode = !tutorialSeen;
+
+    if (tutorialMode) {
+      tutorialCounter.classList.remove('hidden');
+      targetCountEl.textContent = TUTORIAL_TARGET_COUNT;
+      selectedCountEl.textContent = '0';
+    } else {
+      tutorialCounter.classList.add('hidden');
+    }
+
+    // Reset modal state
+    this.resetModalState();
+
+    // Open modal
+    this.showModal();
+  }  openEditMode(sequenceData, thumbnail) {
+    this.isEditMode = true;
+    this.editingThumbnail = thumbnail;
+    this.originalSequenceData = JSON.parse(JSON.stringify(sequenceData)); // Deep copy
+
+    modalTitle.textContent = 'Edit Sequence';
+
+    // Hide tutorial in edit mode
+    tutorialMode = false;
+    tutorialCounter.classList.add('hidden');
+
+    // Reset modal state first
+    this.resetModalState();
+
+    // Open modal and initialize circles
+    this.showModal();
+
+    // THEN load sequence data after circles are initialized
+    this.loadSequenceIntoModal(sequenceData);
+
+    // Redraw and update buttons
+    drawModal();
+    updateButtonStates();
+  }
+
+  resetModalState() {
+    // Clear selected circles
+    modalCircles.forEach(circle => {
+      circle.clicked = false;
+    });
+
+    // Reset loop controls
+    loopToggle.checked = false;
+    loopInterval.value = 3;
+    loopIntervalControls.style.opacity = '0.5';
+    loopInterval.disabled = true;
+
+    // Clear highlights and ripples
+    modalHighlightedCircles.clear();
+    modalRipples.length = 0;
+  }
+
+  loadSequenceIntoModal(sequenceData) {
+    const seq = Array.isArray(sequenceData) ? sequenceData :
+                (sequenceData.seq || sequenceData.sequence || []);
+    const isLoop = sequenceData.isLoop || false;
+    const loopIntervalValue = sequenceData.loopInterval || 3;
+
+    // Set loop controls
+    loopToggle.checked = isLoop;
+    loopInterval.value = loopIntervalValue;
+
+    if (isLoop) {
+      loopIntervalControls.style.opacity = '1';
+      loopInterval.disabled = false;
+    }
+
+    // Mark circles as clicked based on sequence
+    seq.forEach(circleIndex => {
+      if (modalCircles[circleIndex]) {
+        modalCircles[circleIndex].clicked = true;
+      }
+    });
+  }
+
+  showModal() {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    modal.setAttribute('aria-hidden', 'false');
+
+    // Initialize modal circles
+    this.initializeModalCircles();
+
+    drawModal();
+    animateModal();
+
+    if (tutorialMode) {
+      updateTutorialUI();
+    }
+
+    updateButtonStates();
+  }
+
+  initializeModalCircles() {
+    const w = modalCanvas.clientWidth;
+    const h = modalCanvas.clientHeight;
+    const S = 250; // Fixed size used in drawing
+    const offsetX = (w - S) / 2;
+    const offsetY = (h - S) / 2;
+    const cx = S / 2;
+    const cy = S / 2;
+    const R = S * 0.09; // Match the drawing function
+    const r = R * 0.3; // Match the drawing function
+    const spacing = R + r * 2; // Match the drawing function
+
+    // Use same order as drawing and click detection
+    const dirs = [
+      { x: 0, y: -1 },     // top
+      { x: 0, y: 1 },      // bottom
+      { x: -1, y: 0 },     // left
+      { x: 1, y: 0 },      // right
+      { x: 1/Math.SQRT2, y: -1/Math.SQRT2 },   // top-right
+      { x: -1/Math.SQRT2, y: -1/Math.SQRT2 },  // top-left
+      { x: 1/Math.SQRT2, y: 1/Math.SQRT2 },    // bottom-right
+      { x: -1/Math.SQRT2, y: 1/Math.SQRT2 }    // bottom-left
+    ];
+
+    modalCircles = [];
+    dirs.forEach((dir, di) => {
+      // Map the dirs array index to the correct smallCircles index
+      const smallCirclesMapping = [0, 1, 2, 3, 4, 5, 7, 6]; // Fix the swap
+      const audio = smallCircles[smallCirclesMapping[di]].audio;
+
+      for (let i = 1; i <= 3; i++) {
+        modalCircles.push({
+          x: offsetX + cx + dir.x * spacing * i,
+          y: offsetY + cy + dir.y * spacing * i,
+          r,
+          audio,
+          clicked: false
+        });
+      }
+    });
+  }
+}
 
 // Ensure modal canvas buffer matches its CSS size
 function resizeModalCanvas() {
@@ -54,83 +229,11 @@ async function checkAndShowTutorial() {
 // Initialize tutorial check after a brief delay to ensure all dependencies are loaded
 setTimeout(checkAndShowTutorial, 100);
 
-// Open modal
-createBtn.addEventListener('click', async () => {
-  hideTooltip();
-  createBtn.classList.remove('highlight-once');
-  document.body.classList.remove('tutorial-active');
+// Create modal manager instance
+const modalManager = new ModalManager();
 
-  // Check if this is a first-time user for tutorial mode
-  const tutorialSeen = await getSetting('tutorialSeen');
-  tutorialMode = !tutorialSeen;
-
-  if (tutorialMode) {
-    tutorialCounter.classList.remove('hidden');
-    targetCountEl.textContent = TUTORIAL_TARGET_COUNT;
-    selectedCountEl.textContent = '0';
-    // Initial tutorial tooltip will be set by updateTutorialUI after modal setup
-  } else {
-    tutorialCounter.classList.add('hidden');
-  }
-
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  modal.setAttribute('aria-hidden', 'false');
-  // initialize modal circles using the same coordinate system as drawModal
-  const w = modalCanvas.clientWidth;
-  const h = modalCanvas.clientHeight;
-  const S = 250; // Fixed size used in drawing
-  const offsetX = (w - S) / 2;
-  const offsetY = (h - S) / 2;
-  const cx = S / 2;
-  const cy = S / 2;
-  const R = S * 0.09; // Match the drawing function
-  const r = R * 0.3; // Match the drawing function
-  const spacing = R + r * 2; // Match the drawing function
-
-  // Use same order as drawing and click detection
-  const dirs = [
-    { x: 0, y: -1 },     // top
-    { x: 0, y: 1 },      // bottom
-    { x: -1, y: 0 },     // left
-    { x: 1, y: 0 },      // right
-    { x: 1/Math.SQRT2, y: -1/Math.SQRT2 },   // top-right
-    { x: -1/Math.SQRT2, y: -1/Math.SQRT2 },  // top-left
-    { x: 1/Math.SQRT2, y: 1/Math.SQRT2 },    // bottom-right
-    { x: -1/Math.SQRT2, y: 1/Math.SQRT2 }    // bottom-left
-  ];
-
-  modalCircles = [];
-  dirs.forEach((dir, di) => {
-    // Map the dirs array index to the correct smallCircles index
-    // dirs: [top, bottom, left, right, top-right, top-left, bottom-right, bottom-left]
-    // smallCircles: [top, bottom, left, right, top-right, top-left, bottom-left, bottom-right]
-    const smallCirclesMapping = [0, 1, 2, 3, 4, 5, 7, 6]; // Fix the swap
-    const audio = smallCircles[smallCirclesMapping[di]].audio;
-
-    for (let i = 1; i <= 3; i++) {
-      modalCircles.push({
-        x: offsetX + cx + dir.x * spacing * i,
-        y: offsetY + cy + dir.y * spacing * i,
-        r,
-        audio,
-        clicked: false
-      });
-    }
-  });
-  drawModal();
-
-  // Start modal animation loop
-  animateModal();
-
-  // Initialize tutorial UI if in tutorial mode
-  if (tutorialMode) {
-    updateTutorialUI();
-  }
-
-  // Set initial button states
-  updateButtonStates();
-});
+// Export modal manager for use by context menu
+window.modalManager = modalManager;
 
 function drawModal() {
   // Resize buffer then clear and compute square region
@@ -470,22 +573,67 @@ saveBtn.addEventListener('click', async () => {
   const isLoop = loopToggle.checked;
   const interval = parseInt(loopInterval.value) || 3;
 
-  // Save sequence with loop metadata
+  // Create sequence data object
   const sequenceData = {
     sequence: seq,
     isLoop: isLoop,
     loopInterval: interval
   };
 
-  await saveSequenceToDB(sequenceData);
-  addSequenceThumbnail(sequenceData);
+  try {
+    if (modalManager.isEditMode) {
+      // Edit mode: update existing sequence
+      const allSequences = await loadAllSequences();
 
-  // Complete tutorial if in tutorial mode
-  if (tutorialMode) {
-    await setSetting('tutorialSeen', true);
+      // Get the original sequence properly
+      const originalSeq = Array.isArray(modalManager.originalSequenceData) ?
+                         modalManager.originalSequenceData :
+                         (modalManager.originalSequenceData.sequence || modalManager.originalSequenceData.seq);
+
+      // Find the sequence index
+      const sequenceIndex = allSequences.findIndex(seq => {
+        const seqData = Array.isArray(seq) ? seq : (seq.sequence || seq.seq);
+        return JSON.stringify(seqData) === JSON.stringify(originalSeq);
+      });
+
+      if (sequenceIndex !== -1) {
+        // Update the sequence in storage
+        await updateSequence(sequenceIndex, sequenceData);
+
+        // Stop any active loop for the old sequence
+        if (window.audioSystem && window.audioSystem.isSequenceLooping) {
+          if (window.audioSystem.isSequenceLooping(originalSeq)) {
+            const originalInterval = modalManager.originalSequenceData.loopInterval || 3;
+            window.audioSystem.toggleLoopPlayback(originalSeq, originalInterval);
+          }
+        }
+
+        // Remove editing attribute and update thumbnail
+        modalManager.editingThumbnail.removeAttribute('data-editing');
+        modalManager.editingThumbnail.remove();
+        addSequenceThumbnail(sequenceData);
+
+        console.log('✅ Sequence updated successfully');
+      } else {
+        throw new Error('Original sequence not found in storage');
+      }
+    } else {
+      // Create mode: save new sequence
+      await saveSequenceToDB(sequenceData);
+      addSequenceThumbnail(sequenceData);
+      console.log('✅ New sequence saved successfully');
+    }
+
+    // Complete tutorial if in tutorial mode
+    if (tutorialMode) {
+      await setSetting('tutorialSeen', true);
+    }
+
+    closeModal();
+  } catch (error) {
+    console.error('❌ Failed to save sequence:', error);
+    alert('Failed to save sequence. Please try again.');
   }
-
-  closeModal();
 });
 
 // Close modal functionality
@@ -494,6 +642,14 @@ function closeModal() {
   modal.classList.add('hidden');
   modal.classList.remove('flex');
   modal.setAttribute('aria-hidden', 'true');
+
+  // Reset modal manager state
+  if (modalManager.isEditMode && modalManager.editingThumbnail) {
+    modalManager.editingThumbnail.removeAttribute('data-editing');
+  }
+  modalManager.isEditMode = false;
+  modalManager.editingThumbnail = null;
+  modalManager.originalSequenceData = null;
 
   // Reset modal state
   modalCircles.forEach(circle => circle.clicked = false);
@@ -507,7 +663,7 @@ function closeModal() {
   loopToggle.checked = false;
   loopInterval.value = 3;
   loopInterval.disabled = true;
-  loopIntervalControls.classList.add('opacity-50');
+  loopIntervalControls.style.opacity = '0.5';
 
   // Clear modal highlights and ripples
   if (window.modalHighlight) {

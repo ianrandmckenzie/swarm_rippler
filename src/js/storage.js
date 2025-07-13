@@ -76,3 +76,103 @@ async function getPreferences() {
 async function savePreferences(preferences) {
   await setSetting('preferences', preferences);
 }
+
+// Update an existing sequence at a specific index
+async function updateSequence(index, sequenceData) {
+  const db = await openDB();
+  const tx = db.transaction('sequences', 'readwrite');
+  const store = tx.objectStore('sequences');
+
+  return new Promise((resolve, reject) => {
+    // First get all sequences to find the one at the index
+    const getAllReq = store.getAll();
+
+    getAllReq.onsuccess = () => {
+      const sequences = getAllReq.result || [];
+
+      if (index >= 0 && index < sequences.length) {
+        // Update the sequence at the specified index
+        const updateReq = store.put(sequenceData, index + 1); // IndexedDB keys are 1-based
+
+        updateReq.onsuccess = () => {
+          console.log('Sequence updated successfully');
+          resolve();
+        };
+
+        updateReq.onerror = () => {
+          console.error('Failed to update sequence:', updateReq.error);
+          reject(updateReq.error);
+        };
+      } else {
+        reject(new Error('Invalid sequence index'));
+      }
+    };
+
+    getAllReq.onerror = () => {
+      console.error('Failed to get sequences for update:', getAllReq.error);
+      reject(getAllReq.error);
+    };
+  });
+}
+
+// Delete a sequence at a specific index
+async function deleteSequence(index) {
+  const db = await openDB();
+  const tx = db.transaction('sequences', 'readwrite');
+  const store = tx.objectStore('sequences');
+
+  return new Promise((resolve, reject) => {
+    // First get all sequences
+    const getAllReq = store.getAll();
+
+    getAllReq.onsuccess = () => {
+      const sequences = getAllReq.result || [];
+
+      if (index >= 0 && index < sequences.length) {
+        // Clear the store and re-add all sequences except the one to delete
+        const clearReq = store.clear();
+
+        clearReq.onsuccess = () => {
+          // Re-add all sequences except the deleted one
+          const remainingSequences = sequences.filter((_, i) => i !== index);
+          let addCount = 0;
+
+          if (remainingSequences.length === 0) {
+            console.log('Sequence deleted successfully (store now empty)');
+            resolve();
+            return;
+          }
+
+          remainingSequences.forEach((seq, newIndex) => {
+            const addReq = store.add(seq, newIndex + 1);
+
+            addReq.onsuccess = () => {
+              addCount++;
+              if (addCount === remainingSequences.length) {
+                console.log('Sequence deleted successfully');
+                resolve();
+              }
+            };
+
+            addReq.onerror = () => {
+              console.error('Failed to re-add sequence:', addReq.error);
+              reject(addReq.error);
+            };
+          });
+        };
+
+        clearReq.onerror = () => {
+          console.error('Failed to clear store for deletion:', clearReq.error);
+          reject(clearReq.error);
+        };
+      } else {
+        reject(new Error('Invalid sequence index'));
+      }
+    };
+
+    getAllReq.onerror = () => {
+      console.error('Failed to get sequences for deletion:', getAllReq.error);
+      reject(getAllReq.error);
+    };
+  });
+}

@@ -181,3 +181,16 @@ body {
     50% { opacity: 1; }
   }
 }
+
+/* Context menu positioning improvements */
+@layer components {
+  #contextMenu {
+    pointer-events: auto;
+    white-space: nowrap;
+    z-index: 9999;
+  }
+
+  #contextMenu.hidden {
+    pointer-events: none;
+  }
+}
