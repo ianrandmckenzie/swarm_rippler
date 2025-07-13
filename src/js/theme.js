@@ -163,20 +163,21 @@ class ThemeManager {
         if (theme === 'dark') {
           button.classList.add('bg-swarmshadow-200', 'text-swarmlight-100');
         } else if (theme === 'light') {
-          button.classList.add('bg-swarmlight-200', 'text-swarmshadow-200');
+          button.classList.add('bg-swarmlight-300', 'text-swarmshadow-200');
         } else if (theme === 'system') {
           // System theme gets special gradient treatment via CSS
           button.classList.add('ring-2', 'font-semibold');
           if (isDark) {
-            button.classList.add('text-white', 'ring-swarmshadow-200');
+            button.classList.add('text-white', 'ring-swarmlight-600', 'dark:hover:text-swarmlight-50');
+            button.classList.remove('dark:hover:text-black');
           } else {
             button.classList.add('text-black', 'ring-swarmlight-300');
           }
           // Set gradient background via style since Tailwind can't handle complex gradients inline
           if (isDark) {
-            button.style.background = 'linear-gradient(45deg, #FFF9C4 50%, #1F1F1F 50%)';
+            button.style.background = 'linear-gradient(45deg, #706A43 50%, #232323 50%)';
           } else {
-            button.style.background = 'linear-gradient(45deg, #1F1F1F 50%, #FFF9C4 50%)';
+            button.style.background = 'linear-gradient(45deg, #FFFDE7 50%, #FFEE58 50%)';
           }
         }
 
@@ -184,7 +185,7 @@ class ThemeManager {
         if (theme !== 'system') {
           button.classList.add('ring-2');
           if (isDark) {
-            button.classList.add('ring-swarmshadow-200');
+            button.classList.add('ring-swarmlight-600');
           } else {
             button.classList.add('ring-swarmlight-300');
           }
@@ -192,6 +193,8 @@ class ThemeManager {
       } else {
         // Clear any custom background for non-active system buttons
         if (button.dataset.theme === 'system') {
+          button.classList.add('dark:hover:text-black');
+          button.classList.remove('dark:hover:text-swarmlight-50');
           button.style.background = '';
         }
       }
