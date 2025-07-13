@@ -25,6 +25,11 @@ const tutorialCounter = document.getElementById('tutorialCounter');
 const targetCountEl = document.getElementById('targetCount');
 const selectedCountEl = document.getElementById('selectedCount');
 
+// Loop controls
+const loopToggle = document.getElementById('loopToggle');
+const loopInterval = document.getElementById('loopInterval');
+const loopIntervalControls = document.getElementById('loopIntervalControls');
+
 let modalCircles = [];
 let tutorialMode = false;
 const TUTORIAL_TARGET_COUNT = 5;
@@ -444,13 +449,36 @@ testBtn.addEventListener('click', async e => {
   }
 });
 
+// Loop controls event listeners
+loopToggle.addEventListener('change', () => {
+  const isEnabled = loopToggle.checked;
+  loopInterval.disabled = !isEnabled;
+
+  if (isEnabled) {
+    loopIntervalControls.classList.remove('opacity-50');
+  } else {
+    loopIntervalControls.classList.add('opacity-50');
+  }
+});
 
 // Save sequence and close modal
 saveBtn.addEventListener('click', async () => {
-  // Save indices of clicked circles instead of audio sources
+  // Get sequence data
   const seq = modalCircles.map((c, index) => c.clicked ? index : null).filter(i => i !== null);
-  await saveSequenceToDB(seq);
-  addSequenceThumbnail(seq);
+
+  // Get loop settings
+  const isLoop = loopToggle.checked;
+  const interval = parseInt(loopInterval.value) || 3;
+
+  // Save sequence with loop metadata
+  const sequenceData = {
+    sequence: seq,
+    isLoop: isLoop,
+    loopInterval: interval
+  };
+
+  await saveSequenceToDB(sequenceData);
+  addSequenceThumbnail(sequenceData);
 
   // Complete tutorial if in tutorial mode
   if (tutorialMode) {
@@ -474,6 +502,12 @@ function closeModal() {
   saveBtn.disabled = true;
   tutorialCounter.classList.add('hidden');
   tutorialMode = false;
+
+  // Reset loop controls
+  loopToggle.checked = false;
+  loopInterval.value = 3;
+  loopInterval.disabled = true;
+  loopIntervalControls.classList.add('opacity-50');
 
   // Clear modal highlights and ripples
   if (window.modalHighlight) {

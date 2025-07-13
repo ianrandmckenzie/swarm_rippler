@@ -58,7 +58,7 @@ if [ "$USE_IMAGEMAGICK" = true ]; then
     $MAGICK_CMD icon.png -resize 96x96 -define png:color-type=6 public/favicon-96x96.png
     $MAGICK_CMD icon.png -resize 180x180 -define png:color-type=6 public/apple-touch-icon.png
     $MAGICK_CMD icon.png -resize 32x32 -define png:color-type=6 public/favicon.ico
-    
+
     # Generate SVG favicon (convert to SVG if possible, otherwise copy original if it's SVG)
     if [ -f "icon.svg" ]; then
         cp icon.svg public/favicon.svg
@@ -70,13 +70,13 @@ if [ "$USE_IMAGEMAGICK" = true ]; then
             $MAGICK_CMD icon.png -resize 32x32 -define png:color-type=6 public/favicon.png
         }
     fi
-    
+
 elif [ "$USE_SIPS" = true ]; then
     # Web favicons using sips
     sips -z 96 96 icon.png --out public/favicon-96x96.png > /dev/null 2>&1
     sips -z 180 180 icon.png --out public/apple-touch-icon.png > /dev/null 2>&1
     sips -z 32 32 icon.png --out public/favicon.ico > /dev/null 2>&1
-    
+
     # Handle SVG favicon
     if [ -f "icon.svg" ]; then
         cp icon.svg public/favicon.svg

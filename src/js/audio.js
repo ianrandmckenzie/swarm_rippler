@@ -157,6 +157,92 @@ async function playSequence(sequenceIndices, options = {}) {
   });
 }
 
+// Loop playback management
+let currentLoopTimer = null;
+let currentLoopSequence = null;
+
+function toggleLoopPlayback(sequence, intervalSeconds) {
+  if (currentLoopTimer) {
+    // Stop current loop
+    clearInterval(currentLoopTimer);
+    currentLoopTimer = null;
+    currentLoopSequence = null;
+    console.log('🔄 Loop playback stopped');
+
+    // Update visual state
+    updateThumbnailLoopStates();
+  } else {
+    // Start new loop
+    currentLoopSequence = sequence;
+    console.log(`🔄 Starting loop playback every ${intervalSeconds}s`);
+
+    // Play immediately
+    playSequence(sequence);
+
+    // Set up repeating timer
+    currentLoopTimer = setInterval(async () => {
+      try {
+        await playSequence(sequence);
+      } catch (error) {
+        console.error('Error in loop playback:', error);
+        // Stop loop if there's an error
+        toggleLoopPlayback(sequence, intervalSeconds);
+      }
+    }, intervalSeconds * 1000);
+
+    // Update visual state
+    updateThumbnailLoopStates();
+  }
+}
+
+// Check if a sequence is currently looping
+function isSequenceLooping(sequence) {
+  if (!currentLoopSequence || !sequence) return false;
+
+  // Compare sequences by converting to strings (since they're arrays)
+  return JSON.stringify(currentLoopSequence) === JSON.stringify(sequence);
+}
+
+// Update visual state of all thumbnails to show which one is looping
+function updateThumbnailLoopStates() {
+  const sequenceBar = document.getElementById('sequenceBar');
+  if (!sequenceBar) return;
+
+  const thumbnails = sequenceBar.querySelectorAll('canvas');
+  thumbnails.forEach(thumbnail => {
+    const sequenceData = thumbnail.sequenceData;
+    if (sequenceData) {
+      const isCurrentlyLooping = isSequenceLooping(sequenceData.seq);
+      const isDark = document.documentElement.classList.contains('dark');
+
+      // Remove all loop state classes
+      thumbnail.classList.remove(
+        'bg-swarmlight-200', 'rounded-lg', 'transition-colors', 'duration-300',
+        'ease-in-out', 'loop-pulse-animation'
+      );
+      thumbnail.style.backgroundColor = '';
+      thumbnail.style.animation = '';
+
+      // Apply active loop styling
+      if (isCurrentlyLooping) {
+        thumbnail.classList.add(
+          'rounded-lg', 'transition-colors', 'duration-300', 'ease-in-out', 'loop-pulse-animation'
+        );
+
+        // Apply theme-aware background color
+        if (isDark) {
+          thumbnail.style.backgroundColor = '#2A2A2A'; // Slightly lighter than swarmshadow-200
+        } else {
+          thumbnail.classList.add('bg-swarmlight-200');
+        }
+
+        // Add pulsing animation
+        thumbnail.style.animation = 'loop-pulse 2s ease-in-out infinite';
+      }
+    }
+  });
+}
+
 // Add click listeners to thumbnail sequences
 function setupSequencePlayback() {
   // Wait for DOM to be ready
@@ -178,14 +264,45 @@ function setupSequencePlayback() {
     const canvas = e.target.closest('canvas');
     if (!canvas) return;
 
-    // Get the sequence data associated with this thumbnail
-    const sequenceIndex = Array.from(sequenceBar.children).indexOf(canvas);
+    // Get the sequence data from the canvas element (if available) or fallback to index lookup
+    let sequenceData;
+    if (canvas.sequenceData) {
+      sequenceData = canvas.sequenceData;
+    } else {
+      // Fallback for legacy sequences
+      const sequenceIndex = Array.from(sequenceBar.children).indexOf(canvas);
+      try {
+        const sequences = await loadAllSequences();
+        sequenceData = sequences[sequenceIndex];
+      } catch (error) {
+        console.error('Error loading sequence:', error);
+        return;
+      }
+    }
+
+    if (!sequenceData) return;
+
+    // Normalize sequence data
+    let seq, isLoop, loopInterval;
+    if (Array.isArray(sequenceData)) {
+      // Legacy format
+      seq = sequenceData;
+      isLoop = false;
+      loopInterval = 3;
+    } else {
+      // New format
+      seq = sequenceData.seq || sequenceData.sequence;
+      isLoop = sequenceData.isLoop || false;
+      loopInterval = sequenceData.loopInterval || 3;
+    }
 
     try {
-      // Load all sequences and get the clicked one
-      const sequences = await loadAllSequences();
-      if (sequences[sequenceIndex]) {
-        await playSequence(sequences[sequenceIndex]);
+      if (isLoop) {
+        // Start/stop loop playback
+        toggleLoopPlayback(seq, loopInterval);
+      } else {
+        // Play once
+        await playSequence(seq);
       }
     } catch (error) {
       console.error('Error playing sequence:', error);
@@ -200,6 +317,9 @@ setupSequencePlayback();
 window.audioSystem = {
   playSequence,
   initAudioContext,
+  toggleLoopPlayback,
+  isSequenceLooping,
+  updateThumbnailLoopStates,
   getRadianInfo,
   RADIAN_TIMING
 };

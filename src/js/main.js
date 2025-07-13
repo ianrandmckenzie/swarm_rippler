@@ -60,7 +60,7 @@ window.showTooltip = showTooltip;
 window.hideTooltip = hideTooltip;
 
 // Sequence thumbnails bar append
-async function addSequenceThumbnail(seq) {
+async function addSequenceThumbnail(sequenceData) {
   const bar = document.getElementById('sequenceBar');
   const size = 80;
   const thumb = document.createElement('canvas');
@@ -70,6 +70,20 @@ async function addSequenceThumbnail(seq) {
   thumb.style.height = size + 'px';
   const tctx = thumb.getContext('2d');
   tctx.scale(dpr, dpr);
+
+  // Normalize sequence data format for backward compatibility
+  let seq, isLoop, loopInterval;
+  if (Array.isArray(sequenceData)) {
+    // Legacy format: just an array of indices
+    seq = sequenceData;
+    isLoop = false;
+    loopInterval = 3;
+  } else {
+    // New format: object with sequence and loop settings
+    seq = sequenceData.sequence || sequenceData;
+    isLoop = sequenceData.isLoop || false;
+    loopInterval = sequenceData.loopInterval || 3;
+  }
 
   // Use even smaller proportions and add margin to ensure everything fits
   const margin = 3; // Leave 3px margin on all sides
@@ -124,6 +138,46 @@ async function addSequenceThumbnail(seq) {
       }
     }
   });
+
+  // Add loop indicator if this is a loop sequence
+  if (isLoop) {
+    const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+    const loopColor = effectiveTheme === 'dark' ? '#fff' : '#000';
+
+    // Draw a small loop symbol in the bottom-right corner
+    tctx.strokeStyle = loopColor;
+    tctx.lineWidth = 1.5;
+    tctx.beginPath();
+    const loopX = size - 12;
+    const loopY = size - 8;
+    tctx.arc(loopX, loopY, 4, 0, Math.PI * 1.5);
+    tctx.stroke();
+
+    // Add an arrow tip
+    tctx.beginPath();
+    tctx.moveTo(loopX - 2, loopY - 4);
+    tctx.lineTo(loopX, loopY - 6);
+    tctx.lineTo(loopX + 1, loopY - 4);
+    tctx.stroke();
+  }
+
+  // Store sequence data on the canvas element for click handling
+  thumb.sequenceData = { seq, isLoop, loopInterval };
+
+  // Check if this sequence is currently looping and apply appropriate styling
+  if (window.audioSystem && window.audioSystem.isSequenceLooping && window.audioSystem.isSequenceLooping(seq)) {
+    const isDark = document.documentElement.classList.contains('dark');
+    thumb.classList.add('rounded-lg', 'transition-colors', 'duration-300', 'ease-in-out');
+
+    if (isDark) {
+      thumb.style.backgroundColor = '#2A2A2A';
+    } else {
+      thumb.classList.add('bg-swarmlight-200');
+    }
+
+    thumb.style.animation = 'loop-pulse 2s ease-in-out infinite';
+  }
+
   bar.appendChild(thumb);
 }
 
@@ -139,7 +193,7 @@ function initializeSequenceBar() {
   }
 
   loadAllSequences().then(seqs => {
-    seqs.forEach(seq => addSequenceThumbnail(seq));
+    seqs.forEach(sequenceData => addSequenceThumbnail(sequenceData));
     console.log(`✅ Loaded ${seqs.length} saved sequences`);
   }).catch(error => {
     console.error('Failed to load sequences:', error);
@@ -155,7 +209,7 @@ function onThemeChange() {
 
   // Regenerate all thumbnails with new theme
   loadAllSequences().then(seqs => {
-    seqs.forEach(seq => addSequenceThumbnail(seq));
+    seqs.forEach(sequenceData => addSequenceThumbnail(sequenceData));
   }).catch(error => {
     console.error('Failed to reload sequences after theme change:', error);
   });

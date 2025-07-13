@@ -31,10 +31,25 @@ async function setSetting(key, value) {
   tx.objectStore('settings').put(value, key);
 }
 
-async function saveSequenceToDB(seq) {
+async function saveSequenceToDB(sequenceData) {
   const db = await openDB();
   const tx = db.transaction('sequences', 'readwrite');
-  tx.objectStore('sequences').add(seq);
+
+  // Normalize sequence data format
+  let normalizedData;
+  if (Array.isArray(sequenceData)) {
+    // Legacy format: just an array of indices
+    normalizedData = {
+      sequence: sequenceData,
+      isLoop: false,
+      loopInterval: 3
+    };
+  } else {
+    // New format: object with sequence and loop settings
+    normalizedData = sequenceData;
+  }
+
+  tx.objectStore('sequences').add(normalizedData);
 }
 
 // Load all sequences from IndexedDB

@@ -84,11 +84,15 @@ function drawPattern() {
       const blue = Math.floor(107 * intensity);
       ctx.strokeStyle = `rgb(${red}, ${green}, ${blue})`;
     } else {
-      ctx.strokeStyle = '#000';
+      // Theme-aware center ring color when highlight expires
+      const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+      ctx.strokeStyle = effectiveTheme === 'dark' ? '#fff' : '#000';
       highlightedCircles.delete(-1); // Remove expired highlight
     }
   } else {
-    ctx.strokeStyle = '#000';
+    // Normal center ring - theme-aware color
+    const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+    ctx.strokeStyle = effectiveTheme === 'dark' ? '#fff' : '#000';
   }
   ctx.stroke();
 

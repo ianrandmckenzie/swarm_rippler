@@ -173,60 +173,11 @@ body {
   position: relative;
 }
 
-/* Theme switcher styles */
-.theme-btn {
-  color: #141414; /* swarmshadow-400 */
-  transition: all 0.2s ease;
-}
-
-.theme-btn:hover {
-  background-color: #202020; /* swarmshadow-100 */
-  color: #0A0A0A; /* swarmshadow-600 */
-}
-
-.dark .theme-btn {
-  color: #FFF176; /* swarmlight-300 */
-}
-
-.dark .theme-btn:hover {
-  background-color: #191919; /* swarmshadow-300 */
-  color: #FFFBC2; /* swarmlight-100 */
-}
-
-/* Active state styles - much more obvious */
-.theme-btn.active {
-  background-color: #1F1F1F; /* swarmshadow-200 */
-  color: #FFFBC2; /* swarmlight-100 */
-  box-shadow: 0 0 0 2px #FFF176; /* swarmlight-300 ring */
-}
-
-.dark .theme-btn.active {
-  background-color: #FFF176; /* swarmlight-300 */
-  color: #1F1F1F; /* swarmshadow-200 */
-  box-shadow: 0 0 0 2px #1F1F1F; /* swarmshadow-200 ring */
-}
-
-/* Specific theme button active states for extra clarity */
-.theme-btn[data-theme="dark"].active {
-  background-color: #1F1F1F; /* swarmshadow-200 */
-  color: #FFFBC2; /* swarmlight-100 */
-}
-
-.theme-btn[data-theme="light"].active {
-  background-color: #FFF9C4; /* swarmlight-200 */
-  color: #1F1F1F; /* swarmshadow-200 */
-}
-
-.theme-btn[data-theme="system"].active {
-  background: linear-gradient(45deg, #1F1F1F 50%, #FFF9C4 50%);
-  color: #000000; /* High contrast black for accessibility */
-  box-shadow: 0 0 0 2px #FFF176; /* swarmlight-300 ring for consistency */
-  font-weight: 600; /* Bold for better readability */
-}
-
-.dark .theme-btn[data-theme="system"].active {
-  background: linear-gradient(45deg, #FFF9C4 50%, #1F1F1F 50%);
-  color: #FFFFFF; /* High contrast white for dark mode */
-  box-shadow: 0 0 0 2px #1F1F1F; /* swarmshadow-200 ring */
-  font-weight: 600;
+/* Keyframe animations that can't be done inline */
+@layer components {
+  /* Loop pulse animation for active thumbnails */
+  @keyframes loop-pulse {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; }
+  }
 }

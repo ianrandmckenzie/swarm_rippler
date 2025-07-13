@@ -44,7 +44,7 @@ class ThemeManager {
   }
 
   setupEventListeners() {
-    const themeButtons = document.querySelectorAll('.theme-btn');
+    const themeButtons = document.querySelectorAll('button[data-theme]');
 
     themeButtons.forEach(button => {
       const theme = button.dataset.theme;
@@ -142,12 +142,58 @@ class ThemeManager {
   }
 
   updateThemeButtons() {
-    const themeButtons = document.querySelectorAll('.theme-btn');
+    const themeButtons = document.querySelectorAll('button[data-theme]');
 
     themeButtons.forEach(button => {
+      // Remove all active state classes
+      button.classList.remove(
+        'bg-swarmshadow-200', 'text-swarmlight-100', 'ring-2', 'ring-swarmlight-300',
+        'bg-swarmlight-300', 'text-swarmshadow-200', 'ring-swarmshadow-200',
+        'bg-swarmlight-200', 'text-black', 'text-white', 'font-semibold'
+      );
+
+      // Remove the old 'active' class for backward compatibility
       button.classList.remove('active');
+
       if (button.dataset.theme === this.currentTheme) {
-        button.classList.add('active');
+        const theme = button.dataset.theme;
+        const isDark = document.documentElement.classList.contains('dark');
+
+        // Add active state classes based on theme and current mode
+        if (theme === 'dark') {
+          button.classList.add('bg-swarmshadow-200', 'text-swarmlight-100');
+        } else if (theme === 'light') {
+          button.classList.add('bg-swarmlight-200', 'text-swarmshadow-200');
+        } else if (theme === 'system') {
+          // System theme gets special gradient treatment via CSS
+          button.classList.add('ring-2', 'font-semibold');
+          if (isDark) {
+            button.classList.add('text-white', 'ring-swarmshadow-200');
+          } else {
+            button.classList.add('text-black', 'ring-swarmlight-300');
+          }
+          // Set gradient background via style since Tailwind can't handle complex gradients inline
+          if (isDark) {
+            button.style.background = 'linear-gradient(45deg, #FFF9C4 50%, #1F1F1F 50%)';
+          } else {
+            button.style.background = 'linear-gradient(45deg, #1F1F1F 50%, #FFF9C4 50%)';
+          }
+        }
+
+        // Add ring for non-system themes based on current mode
+        if (theme !== 'system') {
+          button.classList.add('ring-2');
+          if (isDark) {
+            button.classList.add('ring-swarmshadow-200');
+          } else {
+            button.classList.add('ring-swarmlight-300');
+          }
+        }
+      } else {
+        // Clear any custom background for non-active system buttons
+        if (button.dataset.theme === 'system') {
+          button.style.background = '';
+        }
       }
     });
   }
