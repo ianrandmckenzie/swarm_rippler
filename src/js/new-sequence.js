@@ -162,11 +162,15 @@ function drawModal() {
       const blue = Math.floor(107 * intensity);
       modalCtx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
     } else {
-      modalCtx.fillStyle = '#000';
+      // Theme-aware center circle color
+      const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+      modalCtx.fillStyle = effectiveTheme === 'dark' ? '#fff' : '#000';
       modalHighlightedCircles.delete(-1); // Remove expired highlight
     }
   } else {
-    modalCtx.fillStyle = '#000';
+    // Theme-aware center circle color
+    const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+    modalCtx.fillStyle = effectiveTheme === 'dark' ? '#fff' : '#000';
   }
   modalCtx.fill();
   // Draw small circles (rings or filled) matching main pattern
@@ -213,20 +217,29 @@ function drawModal() {
         } else {
           // Highlight expired, remove it and draw normal circle
           modalHighlightedCircles.delete(circleIndex);
+          // Theme-aware colors
+          const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+          const circleColor = effectiveTheme === 'dark' ? '#fff' : '#000';
+
           if (clicked) {
-            modalCtx.fillStyle = '#000';
+            modalCtx.fillStyle = circleColor;
             modalCtx.fill();
           } else {
+            modalCtx.strokeStyle = circleColor;
             modalCtx.lineWidth = 2;
             modalCtx.stroke();
           }
         }
       } else {
-        // Normal circle
+        // Normal circle - theme-aware colors
+        const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+        const circleColor = effectiveTheme === 'dark' ? '#fff' : '#000';
+
         if (clicked) {
-          modalCtx.fillStyle = '#000';
+          modalCtx.fillStyle = circleColor;
           modalCtx.fill();
         } else {
+          modalCtx.strokeStyle = circleColor;
           modalCtx.lineWidth = 2;
           modalCtx.stroke();
         }
@@ -239,10 +252,14 @@ function drawModal() {
 
 // Draw and update modal ripples
 function drawModalRipples(cx, cy, offsetX, offsetY) {
+  // Get effective theme for modal ripple colors
+  const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+  const rippleColor = effectiveTheme === 'dark' ? '255,255,255' : '0,0,0'; // White in dark, black in light
+
   modalRipples.forEach((ripple, idx) => {
     modalCtx.beginPath();
     modalCtx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
-    modalCtx.strokeStyle = `rgba(0,0,0,${ripple.alpha})`;
+    modalCtx.strokeStyle = `rgba(${rippleColor},${ripple.alpha})`;
     modalCtx.lineWidth = 2;
     modalCtx.stroke();
     ripple.radius += MODAL_EXPAND_SPEED;

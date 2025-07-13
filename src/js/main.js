@@ -32,9 +32,13 @@ function showTooltip(text, targetEl, offset = 0) {
     left = Math.max(8, Math.min(left, viewportWidth - tooltipWidth - 8));
     top = Math.max(8, Math.min(top, viewportHeight - 50)); // Leave room for tooltip height
   } else {
-    // Original positioning for larger screens
-    left = (rect.left / 2 + rect.width / 2) + offset;
+    // Original positioning for larger screens - center under the target element
+    left = rect.left + (rect.width / 2) - (tooltipEl.offsetWidth / 2) + offset;
     top = rect.bottom + 16;
+
+    // Ensure tooltip doesn't go off screen
+    const tooltipWidth = tooltipEl.offsetWidth || 200;
+    left = Math.max(8, Math.min(left, viewportWidth - tooltipWidth - 8));
   }
 
   tooltipEl.style.left = left + 'px';
@@ -46,6 +50,14 @@ function hideTooltip() {
   tooltipEl.classList.add('hidden');
   tooltipEl.setAttribute('aria-hidden', 'true');
 }
+
+// Expose tooltip functions globally for use by other modules
+window.showTooltip = showTooltip;
+window.hideTooltip = hideTooltip;
+
+// Expose tooltip functions globally for use by other modules
+window.showTooltip = showTooltip;
+window.hideTooltip = hideTooltip;
 
 // Sequence thumbnails bar append
 async function addSequenceThumbnail(seq) {
@@ -71,7 +83,11 @@ async function addSequenceThumbnail(seq) {
   // center ring
   tctx.beginPath();
   tctx.arc(cx, cy, R, 0, 2 * Math.PI);
-  tctx.fillStyle = '#000';
+
+  // Theme-aware center circle color
+  const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+  const centerColor = effectiveTheme === 'dark' ? '#fff' : '#000';
+  tctx.fillStyle = centerColor;
   tctx.fill();
 
   // Draw all 3 rings of small circles (24 total)
@@ -95,8 +111,14 @@ async function addSequenceThumbnail(seq) {
           y - r >= margin && y + r <= size - margin) {
         tctx.beginPath();
         tctx.arc(x, y, r, 0, 2 * Math.PI);
-        tctx.fillStyle = '#000';
-        tctx.strokeStyle = '#fff';
+
+        // Theme-aware small circle colors
+        const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+        const circleColor = effectiveTheme === 'dark' ? '#fff' : '#000';
+        const strokeColor = effectiveTheme === 'dark' ? '#000' : '#fff';
+
+        tctx.fillStyle = circleColor;
+        tctx.strokeStyle = strokeColor;
         tctx.lineWidth = 0.5;
         if (fill) tctx.fill(); else tctx.stroke();
       }
@@ -123,6 +145,33 @@ function initializeSequenceBar() {
     console.error('Failed to load sequences:', error);
   });
 }
+
+// Theme change listener to update thumbnails
+function onThemeChange() {
+  // Clear existing thumbnails
+  const bar = document.getElementById('sequenceBar');
+  const thumbnails = bar.querySelectorAll('canvas');
+  thumbnails.forEach(thumb => thumb.remove());
+
+  // Regenerate all thumbnails with new theme
+  loadAllSequences().then(seqs => {
+    seqs.forEach(seq => addSequenceThumbnail(seq));
+  }).catch(error => {
+    console.error('Failed to reload sequences after theme change:', error);
+  });
+}
+
+// Listen for theme changes
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.themeManager) {
+    // Override the theme manager's setTheme method to include thumbnail updates
+    const originalSetTheme = window.themeManager.setTheme.bind(window.themeManager);
+    window.themeManager.setTheme = async function(theme) {
+      await originalSetTheme(theme);
+      onThemeChange();
+    };
+  }
+});
 
 // Initialize when DOM is ready and all scripts have loaded
 if (document.readyState === 'loading') {

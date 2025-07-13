@@ -136,12 +136,15 @@ function drawPattern() {
         } else {
           // Highlight expired, remove it and draw normal circle
           highlightedCircles.delete(circleIndex);
-          ctx.fillStyle = '#000';
+          // Theme-aware circle color
+          const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+          ctx.fillStyle = effectiveTheme === 'dark' ? '#fff' : '#000';
           ctx.fill();
         }
       } else {
-        // Normal circle
-        ctx.fillStyle = '#000';
+        // Normal circle - theme-aware color
+        const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+        ctx.fillStyle = effectiveTheme === 'dark' ? '#fff' : '#000';
         ctx.fill();
       }
     }
@@ -200,10 +203,14 @@ function drawRipples() {
   const size = Math.min(canvas.clientWidth, canvas.clientHeight);
   const expandSpeed = size * EXPAND_SPEED_RATIO;
 
+  // Get effective theme for ripple colors
+  const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+  const rippleColor = effectiveTheme === 'dark' ? '255,255,255' : '0,0,0'; // White in dark, black in light
+
   ripples.forEach((ripple, idx) => {
     ctx.beginPath();
     ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(0,0,0,${ripple.alpha})`;
+    ctx.strokeStyle = `rgba(${rippleColor},${ripple.alpha})`;
     ctx.lineWidth = 2;
     ctx.stroke();
     ripple.radius += expandSpeed;

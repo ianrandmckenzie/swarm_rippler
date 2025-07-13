@@ -12,6 +12,14 @@
     <meta name="robots" content="index, follow">
     <meta name="language" content="en">
 
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="shortcut icon" href="/public/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Spiral Anim" />
+    <link rel="manifest" href="/public/site.webmanifest" />
+
     <!-- Open Graph Meta Tags for Social Sharing -->
     <meta property="og:title" content="Click Ripple - Interactive Sound Grid">
     <meta property="og:description" content="Interactive sound grid for creating and learning clicking sounds and glossolalia">
@@ -72,7 +80,7 @@
       <div id="tutorialOverlay" class="fixed inset-0 bg-black/60 dark:bg-black/70 z-40 hidden pointer-events-none"></div>
 
       <!-- Create Sequence tutorial button -->
-      <button id="createSequenceBtn" class="w-48 mx-auto relative bottom-0 ring-4 ring-yellow-300 dark:ring-swarmstripe-400 ring-opacity-50 px-4 py-2 bg-swarmlight-200 dark:bg-swarmshadow-200 text-swarmshadow-600 dark:text-swarmlight-100 rounded-md shadow-lg transition-colors duration-300 z-50" title="Start playing by clicking New Sequence!">
+      <button id="createSequenceBtn" class="w-48 mx-auto relative bottom-0 ring-4 ring-yellow-300 dark:ring-swarmstripe-400 ring-opacity-50 px-4 py-2 bg-swarmshadow-300 dark:bg-swarmlight-300 text-swarmlight-100 dark:text-swarmshadow-600 rounded-md shadow-lg transition-colors duration-300 z-50 border-2 border-swarmshadow-400 dark:border-swarmlight-400 hover:bg-swarmshadow-400 dark:hover:bg-swarmlight-400 font-semibold" title="Start playing by clicking New Sequence!">
         New Sequence
       </button>
 
@@ -103,8 +111,8 @@
         </div>
 
         <div class="flex justify-center space-x-2">
-          <button id="testSequenceBtn" disabled class="px-3 py-2 sm:px-4 text-sm sm:text-base bg-swarmlight-200 dark:bg-swarmshadow-200 text-swarmshadow-600 dark:text-swarmlight-100 rounded-md disabled:opacity-50 border border-swarmshadow-400 dark:border-swarmlight-400 transition-colors duration-300">Test</button>
-          <button id="saveSequenceBtn" disabled class="px-3 py-2 sm:px-4 text-sm sm:text-base bg-swarmlight-300 dark:bg-swarmshadow-300 text-swarmshadow-600 dark:text-swarmlight-100 rounded-md disabled:opacity-50 border border-swarmshadow-400 dark:border-swarmlight-400 transition-colors duration-300">Save</button>
+          <button id="testSequenceBtn" disabled class="px-3 py-2 sm:px-4 text-sm sm:text-base bg-swarmshadow-300 dark:bg-swarmlight-300 text-swarmlight-100 dark:text-swarmshadow-600 rounded-md disabled:opacity-50 border-2 border-swarmshadow-400 dark:border-swarmlight-400 transition-colors duration-300 hover:bg-swarmshadow-400 dark:hover:bg-swarmlight-400 disabled:hover:bg-swarmshadow-300 dark:disabled:hover:bg-swarmlight-300 font-semibold">Test</button>
+          <button id="saveSequenceBtn" disabled class="px-3 py-2 sm:px-4 text-sm sm:text-base bg-swarmshadow-300 dark:bg-swarmlight-300 text-swarmlight-100 dark:text-swarmshadow-600 rounded-md disabled:opacity-50 border-2 border-swarmshadow-400 dark:border-swarmlight-400 transition-colors duration-300 hover:bg-swarmshadow-400 dark:hover:bg-swarmlight-400 disabled:hover:bg-swarmshadow-300 dark:disabled:hover:bg-swarmlight-300 font-semibold">Save</button>
         </div>
       </div>
     </div>

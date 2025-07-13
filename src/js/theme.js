@@ -47,9 +47,31 @@ class ThemeManager {
     const themeButtons = document.querySelectorAll('.theme-btn');
 
     themeButtons.forEach(button => {
+      const theme = button.dataset.theme;
+
+      // Click handler
       button.addEventListener('click', (e) => {
-        const theme = e.currentTarget.dataset.theme;
-        this.setTheme(theme);
+        const clickedTheme = e.currentTarget.dataset.theme;
+        this.setTheme(clickedTheme);
+
+        // Show mobile tooltip temporarily after selection
+        if (window.innerWidth < 640) {
+          this.showMobileTooltip(button, clickedTheme);
+        }
+      });
+
+      // Hover tooltips for desktop
+      button.addEventListener('mouseenter', (e) => {
+        // Only show hover tooltips on larger screens
+        if (window.innerWidth >= 640) {
+          this.showThemeTooltip(e.currentTarget, theme);
+        }
+      });
+
+      button.addEventListener('mouseleave', () => {
+        if (window.innerWidth >= 640) {
+          this.hideTooltip();
+        }
       });
     });
   }
@@ -139,6 +161,53 @@ class ThemeManager {
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     return this.currentTheme;
+  }
+
+  getThemeDescription(theme) {
+    switch(theme) {
+      case 'light':
+        return 'Light theme - bright interface';
+      case 'dark':
+        return 'Dark theme - dark interface';
+      case 'system':
+        return 'System theme - follows your device settings';
+      default:
+        return 'Theme option';
+    }
+  }
+
+  showThemeTooltip(button, theme) {
+    const description = this.getThemeDescription(theme);
+    if (window.showTooltip) {
+      // For desktop theme tooltip, position directly under the theme toggle
+      const themeSwitcher = button.closest('.theme-switcher');
+      const targetElement = themeSwitcher || button;
+
+      window.showTooltip(description, targetElement, 0);
+    }
+  }
+
+  showMobileTooltip(button, theme) {
+    const description = this.getThemeDescription(theme);
+    if (window.showTooltip) {
+      // For mobile theme tooltip, use special positioning
+      const themeSwitcher = button.closest('.theme-switcher');
+      const targetElement = themeSwitcher || button;
+
+      window.showTooltip(description, targetElement, 0);
+      // Auto-hide after 2 seconds on mobile
+      setTimeout(() => {
+        if (window.hideTooltip) {
+          window.hideTooltip();
+        }
+      }, 2000);
+    }
+  }
+
+  hideTooltip() {
+    if (window.hideTooltip) {
+      window.hideTooltip();
+    }
   }
 }
 
