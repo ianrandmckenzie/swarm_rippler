@@ -6,10 +6,6 @@ body {
   background-image: url('../assets/bg.png');
 }
 
-body::after {
-  background: rgba(255, 255, 255, 1);
-}
-
 /* Custom scrollbar styles with swarm color palette */
 ::-webkit-scrollbar {
   width: 8px;

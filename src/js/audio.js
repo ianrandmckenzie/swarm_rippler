@@ -47,20 +47,24 @@ function getAudioForCircle(circleIndex) {
 
 // Create ripple effect at center for sequence playback
 function createSequenceRipple() {
-  if (typeof ripples !== 'undefined') {
-    const cx = DESIGN_UNIT * 3;
-    const cy = DESIGN_UNIT * 3;
-    const R = Math.min(DESIGN_UNIT, DESIGN_UNIT) * 0.4;
+  if (typeof ripples !== 'undefined' && typeof canvas !== 'undefined') {
+    const cx = canvas.clientWidth / 2;
+    const cy = canvas.clientHeight / 2;
+    const size = Math.min(canvas.clientWidth, canvas.clientHeight);
+    const artworkScale = 0.4; // Same scale factor as drawing
+    const R = size * 0.15 * artworkScale;
     ripples.push({ x: cx, y: cy, radius: R, alpha: 1 });
   }
 }
 
 // Play a sequence with proper timing
-async function playSequence(sequenceIndices) {
+async function playSequence(sequenceIndices, options = {}) {
   if (!sequenceIndices || sequenceIndices.length === 0) {
     console.warn('No sequence to play');
     return;
   }
+
+  const { inModal = false } = options;
 
   // Initialize audio context
   const ctx = initAudioContext();
@@ -73,6 +77,11 @@ async function playSequence(sequenceIndices) {
   // Clear any existing highlights before starting new sequence
   if (window.canvasHighlight) {
     window.canvasHighlight.clearAllHighlights();
+  }
+
+  // Clear modal highlights if in modal
+  if (inModal && window.modalHighlight) {
+    window.modalHighlight.clearModalHighlights();
   }
 
   // Group circles by radian for timing
@@ -92,6 +101,11 @@ async function playSequence(sequenceIndices) {
   // Create ripple effect at start
   createSequenceRipple();
 
+  // Create modal ripple if in modal
+  if (inModal && window.modalHighlight) {
+    window.modalHighlight.createModalRipple();
+  }
+
   // Play center droplet sound at 0s
   if (typeof dropletSound !== 'undefined') {
     setTimeout(() => {
@@ -101,6 +115,11 @@ async function playSequence(sequenceIndices) {
       // Highlight the center circle when droplet sound plays
       if (window.canvasHighlight) {
         window.canvasHighlight.highlightCircle(-1, 400); // Use -1 for center circle
+      }
+
+      // Highlight modal center if in modal
+      if (inModal && window.modalHighlight) {
+        window.modalHighlight.highlightModalCircle(-1, 400);
       }
     }, 0);
   }
@@ -126,6 +145,11 @@ async function playSequence(sequenceIndices) {
           // Highlight the corresponding circle on the main canvas
           if (window.canvasHighlight) {
             window.canvasHighlight.highlightCircle(circleIndex, 600); // Highlight for 600ms
+          }
+
+          // Highlight modal circle if in modal
+          if (inModal && window.modalHighlight) {
+            window.modalHighlight.highlightModalCircle(circleIndex, 600);
           }
         }, delay);
       }

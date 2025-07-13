@@ -27,35 +27,47 @@ const BASE_WIDTH = DESIGN_UNIT * 6;
 const BASE_HEIGHT = DESIGN_UNIT * 6;
 
 function resizeCanvas() {
-  // Size the drawing buffer to the base design dimensions
+  // Size the drawing buffer to match the canvas display size
   const cw = canvas.clientWidth;
   const ch = canvas.clientHeight;
-  canvas.width = BASE_WIDTH * dpr;
-  canvas.height = BASE_HEIGHT * dpr;
+
+  // Set canvas buffer size with device pixel ratio for crisp rendering
+  canvas.width = cw * dpr;
+  canvas.height = ch * dpr;
+
   ctx.resetTransform();
-  // Scale design-space to fill canvas responsively, preserving aspect
-  const scaleX = cw / BASE_WIDTH;
-  const scaleY = ch / BASE_HEIGHT;
-  const scale = Math.min(scaleX, scaleY);
-  ctx.scale(dpr * scale, dpr * scale);
+
+  // Scale the context to match the display size and account for device pixel ratio
+  ctx.scale(dpr, dpr);
+
+  // The artwork should fill the entire canvas, so we use the actual canvas size
+  // as our coordinate system instead of the fixed BASE_WIDTH/BASE_HEIGHT
 }
 
 function drawPattern() {
   resizeCanvas();
-  const width = DESIGN_UNIT;
-  const height = DESIGN_UNIT;
-  const cx = width * 3;
-  const cy = height * 3;
 
-  // Large center circle radius (40% of smaller dimension)
-  const R = Math.min(width, height) * 0.4;
+  // Use canvas size as the coordinate system instead of fixed BASE_WIDTH/BASE_HEIGHT
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const cx = width / 2;
+  const cy = height / 2;
+
+  // Scale all dimensions relative to canvas size instead of fixed DESIGN_UNIT
+  const size = Math.min(width, height);
+
+  // Add a scale factor to make the artwork appropriately sized within the canvas
+  const artworkScale = 0.4; // Scale down to 70% of the available space
+
+  // Large center circle radius (scaled appropriately for the canvas)
+  const R = size * 0.15 * artworkScale;
   // Small circles are 40% size of the large circle
   const r = R * 0.40;
   // Spacing between small circles along each direction
-  const spacing = R + r + 24;
+  const spacing = R + r + (size * 0.12 * artworkScale);
 
-  // Clear entire design-space buffer
-  ctx.clearRect(0, 0, BASE_WIDTH, BASE_HEIGHT);
+  // Clear entire canvas
+  ctx.clearRect(0, 0, width, height);
 
   // Draw center ring (hollow circle)
   ctx.beginPath();
@@ -138,29 +150,38 @@ function drawPattern() {
 
 // Ripple animation setup and interactive loop
 const ripples = [];
-const EXPAND_SPEED = 7;
-const FADE_SPEED = 0.032;
+const EXPAND_SPEED_RATIO = 0.006; // Proportion of canvas size per frame
+const FADE_SPEED = 0.016;
 
 // Detect clicks within the center droplet and spawn ripples
 canvas.addEventListener('click', (e) => {
   const rect = canvas.getBoundingClientRect();
   const cw = canvas.clientWidth;
   const ch = canvas.clientHeight;
-  const scale = Math.min(cw / BASE_WIDTH, ch / BASE_HEIGHT);
-  const x = (e.clientX - rect.left) / scale;
-  const y = (e.clientY - rect.top) / scale;
-  const cx = DESIGN_UNIT * 3;
-  const cy = DESIGN_UNIT * 3;
-  const R = Math.min(DESIGN_UNIT, DESIGN_UNIT) * 0.4;
+
+  // Convert click coordinates to canvas coordinates
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  // Center coordinates and sizing based on current canvas size
+  const cx = cw / 2;
+  const cy = ch / 2;
+  const size = Math.min(cw, ch);
+  const artworkScale = 0.4; // Same scale factor as drawing
+  const R = size * 0.15 * artworkScale;
+
+  // Check center circle click
   if ((x - cx) ** 2 + (y - cy) ** 2 <= R * R) {
     ripples.push({ x: cx, y: cy, radius: R, alpha: 1 });
     dropletSound.currentTime = 0;
     dropletSound.play();
     return;
   }
+
   // Check small circles for click and play corresponding sound
   const rSmall = R * 0.40;
-  const spacing = R + rSmall + 24;
+  const spacing = R + rSmall + (size * 0.12 * artworkScale);
+
   for (const { dirX, dirY, audio } of smallCircles) {
     for (let i = 1; i <= 3; i++) {
       const sx = cx + dirX * spacing * i;
@@ -176,13 +197,16 @@ canvas.addEventListener('click', (e) => {
 
 // Draw and update active ripples
 function drawRipples() {
+  const size = Math.min(canvas.clientWidth, canvas.clientHeight);
+  const expandSpeed = size * EXPAND_SPEED_RATIO;
+
   ripples.forEach((ripple, idx) => {
     ctx.beginPath();
     ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
     ctx.strokeStyle = `rgba(0,0,0,${ripple.alpha})`;
     ctx.lineWidth = 2;
     ctx.stroke();
-    ripple.radius += EXPAND_SPEED;
+    ripple.radius += expandSpeed;
     ripple.alpha -= FADE_SPEED;
     if (ripple.alpha <= 0) ripples.splice(idx, 1);
   });

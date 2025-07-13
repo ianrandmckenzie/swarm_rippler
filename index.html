@@ -33,19 +33,6 @@
     <link rel="canonical" href="">
 
     <link href="./src/style.css" rel="stylesheet" type="text/css" />
-    <style>
-      #canvas-container {
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-        aspect-ratio: 1 / 1;
-      }
-      #soundCanvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-    </style>
   </head>
 
   <body class="bg-cover bg-center bg-no-repeat">
@@ -72,10 +59,10 @@
       </div>
     </div>
 
-    <div class="bg-swarmlight-50/90 dark:bg-swarmshadow-50/90 flex flex-col bg-cover relative h-screen transition-colors duration-300">
+    <div class="pt-12 sm:pt-0 bg-swarmlight-50/85 dark:bg-swarmshadow-50/90 flex flex-col bg-cover relative h-screen transition-colors duration-300">
       <main id="main-content">
-        <div id="canvas-container" role="application" aria-label="Sound grid interface for creating clicking sounds">
-          <canvas id="soundCanvas"></canvas>
+        <div id="canvas-container" class="w-full my-8 max-w-[343px] sm:max-w-[600px] mx-auto aspect-square bg-swarmlight-100 dark:bg-swarmshadow-50 rounded-full border-2 border-swarmshadow-50 dark:border-swarmlight-100" role="application" aria-label="Sound grid interface for creating clicking sounds">
+          <canvas id="soundCanvas" class="w-full h-full"></canvas>
         </div>
       </main>
 
@@ -85,7 +72,7 @@
       <div id="tutorialOverlay" class="fixed inset-0 bg-black/60 dark:bg-black/70 z-40 hidden pointer-events-none"></div>
 
       <!-- Create Sequence tutorial button -->
-      <button id="createSequenceBtn" class="w-48 mx-auto relative -bottom-24 ring-4 ring-yellow-300 dark:ring-swarmstripe-400 ring-opacity-50 px-4 py-2 bg-swarmlight-200 dark:bg-swarmshadow-200 text-swarmshadow-600 dark:text-swarmlight-100 rounded-md shadow-lg transition-colors duration-300 z-50" title="Start playing by clicking New Sequence!">
+      <button id="createSequenceBtn" class="w-48 mx-auto relative bottom-0 ring-4 ring-yellow-300 dark:ring-swarmstripe-400 ring-opacity-50 px-4 py-2 bg-swarmlight-200 dark:bg-swarmshadow-200 text-swarmshadow-600 dark:text-swarmlight-100 rounded-md shadow-lg transition-colors duration-300 z-50" title="Start playing by clicking New Sequence!">
         New Sequence
       </button>
 

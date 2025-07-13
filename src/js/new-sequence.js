@@ -3,6 +3,13 @@ const createBtn = document.getElementById('createSequenceBtn');
 const modal = document.getElementById('sequenceModal');
 const modalCanvas = document.getElementById('sequenceCanvas');
 const modalCtx = modalCanvas.getContext('2d');
+
+// Modal highlighting and animation system
+let modalHighlightedCircles = new Map();
+let modalRipples = [];
+const MODAL_EXPAND_SPEED = 4;
+const MODAL_FADE_SPEED = 0.04;
+
 // Ensure modal canvas buffer matches its CSS size
 function resizeModalCanvas() {
   const cw = modalCanvas.clientWidth;
@@ -108,6 +115,9 @@ createBtn.addEventListener('click', async () => {
   });
   drawModal();
 
+  // Start modal animation loop
+  animateModal();
+
   // Initialize tutorial UI if in tutorial mode
   if (tutorialMode) {
     updateTutorialUI();
@@ -130,11 +140,31 @@ function drawModal() {
   // centered square side S
   const cx = S / 2;
   const cy = S / 2;
+
+  // Draw ripples first (behind everything)
+  drawModalRipples(cx, cy, offsetX, offsetY);
+
   // Draw solid center circle - much smaller to fit nicely in modal
   const R = S * 0.12; // Much smaller center circle (was 0.25)
   modalCtx.beginPath();
   modalCtx.arc(cx, cy, R, 0, 2 * Math.PI);
-  modalCtx.fillStyle = '#000';
+
+  // Check if center should be highlighted (using special index -1 for center)
+  if (modalHighlightedCircles.has(-1)) {
+    const { startTime, duration } = modalHighlightedCircles.get(-1);
+    const intensity = getModalPulseIntensity(startTime, duration);
+    if (intensity > 0) {
+      const red = Math.floor(255 * intensity);
+      const green = Math.floor(107 * intensity);
+      const blue = Math.floor(107 * intensity);
+      modalCtx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
+    } else {
+      modalCtx.fillStyle = '#000';
+      modalHighlightedCircles.delete(-1); // Remove expired highlight
+    }
+  } else {
+    modalCtx.fillStyle = '#000';
+  }
   modalCtx.fill();
   // Draw small circles (rings or filled) matching main pattern
   const r = R * 0.3; // Slightly larger relative to center for visibility
@@ -153,20 +183,105 @@ function drawModal() {
     for (let i = 1; i <= 3; i++) {
       const x = cx + dir.x * spacing * i;
       const y = cy + dir.y * spacing * i;
+      const circleIndex = di * 3 + (i - 1);
+
       modalCtx.beginPath();
       modalCtx.arc(x, y, r, 0, 2 * Math.PI);
-      const clicked = modalCircles[di * 3 + (i - 1)]?.clicked;
-      if (clicked) {
-        modalCtx.fill();
+
+      const clicked = modalCircles[circleIndex]?.clicked;
+
+      // Check if this circle should be highlighted
+      if (modalHighlightedCircles.has(circleIndex)) {
+        const { startTime, duration } = modalHighlightedCircles.get(circleIndex);
+        const intensity = getModalPulseIntensity(startTime, duration);
+
+        if (intensity > 0) {
+          // Create a pulsing red highlight
+          const red = Math.floor(255 * intensity);
+          const green = Math.floor(107 * intensity);
+          const blue = Math.floor(107 * intensity);
+          modalCtx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
+          modalCtx.fill();
+
+          // Add a white outline for extra visibility
+          modalCtx.strokeStyle = '#fff';
+          modalCtx.lineWidth = 2;
+          modalCtx.stroke();
+        } else {
+          // Highlight expired, remove it and draw normal circle
+          modalHighlightedCircles.delete(circleIndex);
+          if (clicked) {
+            modalCtx.fillStyle = '#000';
+            modalCtx.fill();
+          } else {
+            modalCtx.lineWidth = 2;
+            modalCtx.stroke();
+          }
+        }
       } else {
-        modalCtx.lineWidth = 2;
-        modalCtx.stroke();
+        // Normal circle
+        if (clicked) {
+          modalCtx.fillStyle = '#000';
+          modalCtx.fill();
+        } else {
+          modalCtx.lineWidth = 2;
+          modalCtx.stroke();
+        }
       }
     }
   });
   // restore transform
   modalCtx.restore();
 }
+
+// Draw and update modal ripples
+function drawModalRipples(cx, cy, offsetX, offsetY) {
+  modalRipples.forEach((ripple, idx) => {
+    modalCtx.beginPath();
+    modalCtx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+    modalCtx.strokeStyle = `rgba(0,0,0,${ripple.alpha})`;
+    modalCtx.lineWidth = 2;
+    modalCtx.stroke();
+    ripple.radius += MODAL_EXPAND_SPEED;
+    ripple.alpha -= MODAL_FADE_SPEED;
+    if (ripple.alpha <= 0) modalRipples.splice(idx, 1);
+  });
+}
+
+// Functions to manage modal highlighting and ripples
+function highlightModalCircle(circleIndex, duration = 600) {
+  const startTime = Date.now();
+  modalHighlightedCircles.set(circleIndex, { startTime, duration });
+}
+
+function clearModalHighlights() {
+  modalHighlightedCircles.clear();
+}
+
+function createModalRipple() {
+  // Use modal coordinate system
+  const S = 250;
+  const cx = S / 2;
+  const cy = S / 2;
+  const R = S * 0.12;
+  modalRipples.push({ x: cx, y: cy, radius: R, alpha: 1 });
+}
+
+// Animation loop for modal
+function animateModal() {
+  if (!modal.classList.contains('hidden')) {
+    drawModal();
+    requestAnimationFrame(animateModal);
+  }
+}
+
+// Export modal highlighting functions globally
+window.modalHighlight = {
+  highlightModalCircle,
+  clearModalHighlights,
+  createModalRipple,
+  startAnimation: animateModal
+};
 
 // Modal canvas clicks
 modalCanvas.addEventListener('click', async e => {
@@ -264,7 +379,7 @@ testBtn.addEventListener('click', async e => {
     try {
       // Use the audioSystem playback function
       if (window.audioSystem && window.audioSystem.playSequence) {
-        await window.audioSystem.playSequence(sequence);
+        await window.audioSystem.playSequence(sequence, { inModal: true });
       } else {
         console.warn('Audio system not available, falling back to basic feedback');
       }
@@ -316,6 +431,12 @@ function closeModal() {
   tutorialCounter.classList.add('hidden');
   tutorialMode = false;
 
+  // Clear modal highlights and ripples
+  if (window.modalHighlight) {
+    window.modalHighlight.clearModalHighlights();
+  }
+  modalRipples.length = 0;
+
   drawModal();
 }
 
@@ -343,3 +464,16 @@ document.addEventListener('keydown', (e) => {
     closeModal();
   }
 });
+
+// Function to create a pulsing highlight effect for modal
+function getModalPulseIntensity(startTime, duration) {
+  const elapsed = Date.now() - startTime;
+  const progress = Math.min(elapsed / duration, 1);
+
+  // Create a pulsing effect using a sine wave
+  const pulseSpeed = 4; // How fast the pulse oscillates
+  const baseIntensity = Math.max(0, 1 - progress); // Fade out over time
+  const pulse = Math.sin(elapsed * pulseSpeed / 100) * 0.3 + 0.7; // Oscillate between 0.4 and 1.0
+
+  return baseIntensity * pulse;
+}
