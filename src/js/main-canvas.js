@@ -2,6 +2,11 @@
 const canvas = document.getElementById('soundCanvas');
 const ctx = canvas.getContext('2d');
 const dpr = window.devicePixelRatio || 1;
+
+// Highlighting system for sequence playback
+let highlightedCircles = new Map(); // Changed to Map to store timing info
+let highlightAnimations = [];
+
 // Preload droplet click sound
 const dropletSound = new Audio('./assets/5.mp3');
 // Preload small-circle sounds with their direction vectors
@@ -56,7 +61,23 @@ function drawPattern() {
   ctx.beginPath();
   ctx.arc(cx, cy, R, 0, Math.PI * 2);
   ctx.lineWidth = r;
-  ctx.strokeStyle = '#000';
+
+  // Check if center should be highlighted (using special index -1 for center)
+  if (highlightedCircles.has(-1)) {
+    const { startTime, duration } = highlightedCircles.get(-1);
+    const intensity = getPulseIntensity(startTime, duration);
+    if (intensity > 0) {
+      const red = Math.floor(255 * intensity);
+      const green = Math.floor(107 * intensity);
+      const blue = Math.floor(107 * intensity);
+      ctx.strokeStyle = `rgb(${red}, ${green}, ${blue})`;
+    } else {
+      ctx.strokeStyle = '#000';
+      highlightedCircles.delete(-1); // Remove expired highlight
+    }
+  } else {
+    ctx.strokeStyle = '#000';
+  }
   ctx.stroke();
 
   // Directions: up, down, left, right, and diagonals
@@ -72,14 +93,45 @@ function drawPattern() {
   ];
 
   // Draw small solid circles along each direction
-  ctx.fillStyle = '#000';
-  dirs.forEach(dir => {
+  dirs.forEach((dir, dirIndex) => {
     for (let i = 1; i <= 3; i++) {
       const x = cx + dir.x * spacing * i;
       const y = cy + dir.y * spacing * i;
+
+      // Calculate circle index (matching the sequence indexing)
+      const circleIndex = dirIndex * 3 + (i - 1);
+
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fill();
+
+      // Check if this circle should be highlighted
+      if (highlightedCircles.has(circleIndex)) {
+        const { startTime, duration } = highlightedCircles.get(circleIndex);
+        const intensity = getPulseIntensity(startTime, duration);
+
+        if (intensity > 0) {
+          // Create a pulsing red highlight
+          const red = Math.floor(255 * intensity);
+          const green = Math.floor(107 * intensity);
+          const blue = Math.floor(107 * intensity);
+          ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
+          ctx.fill();
+
+          // Add a white outline for extra visibility
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          // Highlight expired, remove it and draw normal circle
+          highlightedCircles.delete(circleIndex);
+          ctx.fillStyle = '#000';
+          ctx.fill();
+        }
+      } else {
+        // Normal circle
+        ctx.fillStyle = '#000';
+        ctx.fill();
+      }
     }
   });
 }
@@ -141,6 +193,35 @@ function animate() {
   drawPattern();
   drawRipples();
   requestAnimationFrame(animate);
+}
+
+// Functions to manage circle highlighting for sequence playback
+function highlightCircle(circleIndex, duration = 500) {
+  const startTime = Date.now();
+  highlightedCircles.set(circleIndex, { startTime, duration });
+}
+
+function clearAllHighlights() {
+  highlightedCircles.clear();
+}
+
+// Export highlighting functions globally for use by audio system
+window.canvasHighlight = {
+  highlightCircle,
+  clearAllHighlights
+};
+
+// Function to create a pulsing highlight effect
+function getPulseIntensity(startTime, duration) {
+  const elapsed = Date.now() - startTime;
+  const progress = Math.min(elapsed / duration, 1);
+
+  // Create a pulsing effect using a sine wave
+  const pulseSpeed = 4; // How fast the pulse oscillates
+  const baseIntensity = Math.max(0, 1 - progress); // Fade out over time
+  const pulse = Math.sin(elapsed * pulseSpeed / 100) * 0.3 + 0.7; // Oscillate between 0.4 and 1.0
+
+  return baseIntensity * pulse;
 }
 
 // Start the main animation loop

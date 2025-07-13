@@ -70,6 +70,11 @@ async function playSequence(sequenceIndices) {
     await ctx.resume();
   }
 
+  // Clear any existing highlights before starting new sequence
+  if (window.canvasHighlight) {
+    window.canvasHighlight.clearAllHighlights();
+  }
+
   // Group circles by radian for timing
   const radianGroups = {
     0: [], // Center (not used for sequences, but keeping for completeness)
@@ -92,10 +97,15 @@ async function playSequence(sequenceIndices) {
     setTimeout(() => {
       dropletSound.currentTime = 0;
       dropletSound.play().catch(e => console.warn('Failed to play droplet sound:', e));
+
+      // Highlight the center circle when droplet sound plays
+      if (window.canvasHighlight) {
+        window.canvasHighlight.highlightCircle(-1, 400); // Use -1 for center circle
+      }
     }, 0);
   }
 
-  // Schedule sounds for each radian
+  // Schedule sounds and highlights for each radian
   Object.keys(radianGroups).forEach(radian => {
     const circles = radianGroups[radian];
     if (circles.length === 0) return;
@@ -109,8 +119,14 @@ async function playSequence(sequenceIndices) {
         const delay = baseDelay + (index * MULTIPLE_SOUND_OFFSET * 1000);
 
         setTimeout(() => {
+          // Play the audio
           audio.currentTime = 0;
           audio.play().catch(e => console.warn(`Failed to play audio for circle ${circleIndex}:`, e));
+
+          // Highlight the corresponding circle on the main canvas
+          if (window.canvasHighlight) {
+            window.canvasHighlight.highlightCircle(circleIndex, 600); // Highlight for 600ms
+          }
         }, delay);
       }
     });
