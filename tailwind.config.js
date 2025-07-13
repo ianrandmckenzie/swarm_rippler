@@ -21,7 +21,7 @@ module.exports = {
         swarmlight: {
           50: '#FFFDE7',
           100: '#FFFBC2',
-          200: '#FFF9C4', // base
+          200: '#FFF5B9', // base
           300: '#FFF176',
           400: '#FFEE58',
           500: '#FFE082',

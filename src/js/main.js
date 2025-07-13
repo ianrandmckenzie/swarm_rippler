@@ -1,10 +1,44 @@
 // Tooltip helper
 const tooltipEl = document.getElementById('tooltip');
-function showTooltip(text, targetEl, offset) {
+function showTooltip(text, targetEl, offset = 0) {
   const rect = targetEl.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
   tooltipEl.textContent = text;
-  tooltipEl.style.left = ((rect.left/2 + rect.width/2) + offset) + 'px';
-  tooltipEl.style.top = (rect.bottom + 16) + 'px';
+
+  // Check if we're in a modal context
+  const isInModal = targetEl.closest('#sequenceModal') !== null;
+
+  let left, top;
+
+  if (isInModal || viewportWidth < 640) { // Small screens or modal context
+    // For small screens and modal, center the tooltip and position it more carefully
+    const tooltipWidth = tooltipEl.offsetWidth || 200; // Estimate if not rendered yet
+
+    if (isInModal) {
+      // In modal, position relative to modal content, not viewport
+      const modalContent = document.getElementById('modalContent');
+      const modalRect = modalContent.getBoundingClientRect();
+      left = modalRect.left + (modalRect.width - tooltipWidth) / 2;
+      top = rect.bottom + 8; // Closer spacing in modal
+    } else {
+      // Small screen, center horizontally
+      left = (viewportWidth - tooltipWidth) / 2;
+      top = rect.bottom + 8;
+    }
+
+    // Ensure tooltip doesn't go off screen
+    left = Math.max(8, Math.min(left, viewportWidth - tooltipWidth - 8));
+    top = Math.max(8, Math.min(top, viewportHeight - 50)); // Leave room for tooltip height
+  } else {
+    // Original positioning for larger screens
+    left = (rect.left / 2 + rect.width / 2) + offset;
+    top = rect.bottom + 16;
+  }
+
+  tooltipEl.style.left = left + 'px';
+  tooltipEl.style.top = top + 'px';
   tooltipEl.classList.remove('hidden');
   tooltipEl.removeAttribute('aria-hidden');
 }

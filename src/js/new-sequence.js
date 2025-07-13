@@ -39,7 +39,7 @@ async function checkAndShowTutorial() {
     if (!tutorialSeen && savedSequences.length === 0) {
       document.body.classList.add('tutorial-active');
       createBtn.classList.add('highlight-once');
-      showTooltip('Start playing by clicking New Sequence!', createBtn, 0);
+      showTooltip('Start playing by clicking New Sequence!', createBtn);
     }
   } catch (error) {
     console.log('Could not check tutorial state:', error);
@@ -79,7 +79,7 @@ createBtn.addEventListener('click', async () => {
   const offsetY = (h - S) / 2;
   const cx = S / 2;
   const cy = S / 2;
-  const R = S * 0.12; // Match the drawing function
+  const R = S * 0.09; // Match the drawing function
   const r = R * 0.3; // Match the drawing function
   const spacing = R + r * 2; // Match the drawing function
 
@@ -145,7 +145,7 @@ function drawModal() {
   drawModalRipples(cx, cy, offsetX, offsetY);
 
   // Draw solid center circle - much smaller to fit nicely in modal
-  const R = S * 0.12; // Much smaller center circle (was 0.25)
+  const R = S * 0.09; // Much smaller center circle (was 0.25)
   modalCtx.beginPath();
   modalCtx.arc(cx, cy, R, 0, 2 * Math.PI);
 
@@ -263,7 +263,7 @@ function createModalRipple() {
   const S = 250;
   const cx = S / 2;
   const cy = S / 2;
-  const R = S * 0.12;
+  const R = S * 0.09;
   modalRipples.push({ x: cx, y: cy, radius: R, alpha: 1 });
 }
 
@@ -303,7 +303,7 @@ modalCanvas.addEventListener('click', async e => {
   // Drawing parameters (match drawModal exactly)
   const cx = S / 2;
   const cy = S / 2;
-  const R = S * 0.12;
+  const R = S * 0.09;
   const r = R * 0.3;
   const spacing = R + r * 2;
 
@@ -355,7 +355,7 @@ function updateTutorialUI() {
 
   // Update progress messaging
   if (selectedCount === 0) {
-    showTooltip('Click the empty circles to form your sequence', modalCanvas, 340);
+    showTooltip('Click the empty circles to form your sequence', modalCanvas);
   } else if (selectedCount < TUTORIAL_TARGET_COUNT) {
     const remaining = TUTORIAL_TARGET_COUNT - selectedCount;
     showTooltip(`Select ${remaining} more circle${remaining === 1 ? '' : 's'}`, modalCanvas);
