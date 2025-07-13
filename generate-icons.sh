@@ -1,20 +1,33 @@
 #!/bin/bash
 
 # Icon Generator Script for Click Rippler
-# This script helps convert your custom icon.png to the required Tauri icon formats
+# This script helps convert your custom icons to the required Tauri icon formats
 # including macOS, Windows, and Windows Store/UWP icons
 #
 # IMPORTANT: Tauri requires icons to be in RGBA format (not palette/colormap)
 # This script ensures all generated icons use the proper RGBA format to avoid
 # build errors like "icon is not RGBA"
+#
+# ICON MASKING STRATEGY:
+# - Uses icon_masked.png (with rounded corners) for most platforms
+# - Uses icon.png (unmasked) for platforms that apply their own corner radius:
+#   • iOS/Apple Touch (applies automatic corner radius)
+#   • macOS ICNS (dock handles corner radius)
+#   • Windows Store tiles (system applies corner radius)
 
 echo "🎨 Click Rippler Icon Generator"
 echo ""
 
-# Check if icon.png exists
+# Check if required icon files exist
 if [ ! -f "icon.png" ]; then
     echo "❌ icon.png not found in the current directory"
     echo "Please make sure you have an icon.png file in the project root"
+    exit 1
+fi
+
+if [ ! -f "icon_masked.png" ]; then
+    echo "❌ icon_masked.png not found in the current directory"
+    echo "Please create an icon_masked.png with rounded corners for platforms that don't handle their own masking"
     exit 1
 fi
 
@@ -55,27 +68,31 @@ mkdir -p public
 echo "🔄 Generating web favicon icons..."
 if [ "$USE_IMAGEMAGICK" = true ]; then
     # Web favicons with explicit RGBA format
-    $MAGICK_CMD icon.png -resize 96x96 -define png:color-type=6 public/favicon-96x96.png
+    # Use masked icon for web favicons (looks better in browsers)
+    $MAGICK_CMD icon_masked.png -resize 96x96 -define png:color-type=6 public/favicon-96x96.png
+    # Use unmasked icon for Apple Touch (iOS applies its own corner radius)
     $MAGICK_CMD icon.png -resize 180x180 -define png:color-type=6 public/apple-touch-icon.png
-    $MAGICK_CMD icon.png -resize 32x32 -define png:color-type=6 public/favicon.ico
+    $MAGICK_CMD icon_masked.png -resize 32x32 -define png:color-type=6 public/favicon.ico
 
     # Generate SVG favicon (convert to SVG if possible, otherwise copy original if it's SVG)
     if [ -f "icon.svg" ]; then
         cp icon.svg public/favicon.svg
         echo "✅ Copied icon.svg to public/favicon.svg"
     else
-        # Convert PNG to SVG (basic conversion)
-        $MAGICK_CMD icon.png -resize 32x32 public/favicon.svg 2>/dev/null || {
+        # Convert PNG to SVG (basic conversion) - use masked version
+        $MAGICK_CMD icon_masked.png -resize 32x32 public/favicon.svg 2>/dev/null || {
             echo "⚠️  SVG conversion failed, creating PNG-based favicon.svg"
-            $MAGICK_CMD icon.png -resize 32x32 -define png:color-type=6 public/favicon.png
+            $MAGICK_CMD icon_masked.png -resize 32x32 -define png:color-type=6 public/favicon.png
         }
     fi
 
 elif [ "$USE_SIPS" = true ]; then
     # Web favicons using sips
-    sips -z 96 96 icon.png --out public/favicon-96x96.png > /dev/null 2>&1
+    # Use masked icon for web favicons (looks better in browsers)
+    sips -z 96 96 icon_masked.png --out public/favicon-96x96.png > /dev/null 2>&1
+    # Use unmasked icon for Apple Touch (iOS applies its own corner radius)
     sips -z 180 180 icon.png --out public/apple-touch-icon.png > /dev/null 2>&1
-    sips -z 32 32 icon.png --out public/favicon.ico > /dev/null 2>&1
+    sips -z 32 32 icon_masked.png --out public/favicon.ico > /dev/null 2>&1
 
     # Handle SVG favicon
     if [ -f "icon.svg" ]; then
@@ -83,7 +100,7 @@ elif [ "$USE_SIPS" = true ]; then
         echo "✅ Copied icon.svg to public/favicon.svg"
     else
         echo "⚠️  No icon.svg found, using PNG for favicon.svg"
-        sips -z 32 32 icon.png --out public/favicon.svg > /dev/null 2>&1
+        sips -z 32 32 icon_masked.png --out public/favicon.svg > /dev/null 2>&1
     fi
 fi
 
@@ -119,26 +136,29 @@ echo "✅ Generated web manifest"
 # Generate PNG icons with explicit RGBA format for Tauri compatibility
 if [ "$USE_IMAGEMAGICK" = true ]; then
     # ImageMagick with explicit RGBA format
-    $MAGICK_CMD icon.png -resize 32x32 -define png:color-type=6 src-tauri/icons/32x32.png
-    $MAGICK_CMD icon.png -resize 128x128 -define png:color-type=6 src-tauri/icons/128x128.png
-    $MAGICK_CMD icon.png -resize 256x256 -define png:color-type=6 src-tauri/icons/128x128@2x.png
-    $MAGICK_CMD icon.png -resize 1024x1024 -define png:color-type=6 src-tauri/icons/icon.png
+    # Use masked icons for most Tauri/desktop icons
+    $MAGICK_CMD icon_masked.png -resize 32x32 -define png:color-type=6 src-tauri/icons/32x32.png
+    $MAGICK_CMD icon_masked.png -resize 128x128 -define png:color-type=6 src-tauri/icons/128x128.png
+    $MAGICK_CMD icon_masked.png -resize 256x256 -define png:color-type=6 src-tauri/icons/128x128@2x.png
+    $MAGICK_CMD icon_masked.png -resize 1024x1024 -define png:color-type=6 src-tauri/icons/icon.png
 elif [ "$USE_SIPS" = true ]; then
     # sips (macOS native) - generates RGBA by default
-    sips -z 32 32 icon.png --out src-tauri/icons/32x32.png > /dev/null 2>&1
-    sips -z 128 128 icon.png --out src-tauri/icons/128x128.png > /dev/null 2>&1
-    sips -z 256 256 icon.png --out src-tauri/icons/128x128@2x.png > /dev/null 2>&1
-    sips -z 1024 1024 icon.png --out src-tauri/icons/icon.png > /dev/null 2>&1
+    # Use masked icons for most Tauri/desktop icons
+    sips -z 32 32 icon_masked.png --out src-tauri/icons/32x32.png > /dev/null 2>&1
+    sips -z 128 128 icon_masked.png --out src-tauri/icons/128x128.png > /dev/null 2>&1
+    sips -z 256 256 icon_masked.png --out src-tauri/icons/128x128@2x.png > /dev/null 2>&1
+    sips -z 1024 1024 icon_masked.png --out src-tauri/icons/icon.png > /dev/null 2>&1
 fi
 
 echo "✅ Generated PNG icons"
 
 # Generate ICO for Windows (if we ever build for Windows)
 if [ "$USE_IMAGEMAGICK" = true ]; then
-    $MAGICK_CMD icon.png -resize 256x256 -define png:color-type=6 src-tauri/icons/icon.ico
+    # Use masked icon for Windows ICO
+    $MAGICK_CMD icon_masked.png -resize 256x256 -define png:color-type=6 src-tauri/icons/icon.ico
 elif [ "$USE_SIPS" = true ]; then
     # sips doesn't support ICO directly, use PNG as fallback
-    sips -z 256 256 icon.png --out src-tauri/icons/icon.ico.png > /dev/null 2>&1
+    sips -z 256 256 icon_masked.png --out src-tauri/icons/icon.ico.png > /dev/null 2>&1
     echo "⚠️  Generated icon.ico.png instead of .ico (sips limitation)"
 fi
 
@@ -147,7 +167,7 @@ echo "✅ Generated ICO icon"
 # Generate Windows Store/UWP icons
 echo "🔄 Generating Windows Store/UWP icons..."
 if [ "$USE_IMAGEMAGICK" = true ]; then
-    # Windows Store logos with explicit RGBA format
+    # Windows Store logos - use unmasked icon (Windows Store applies its own corner radius)
     $MAGICK_CMD icon.png -resize 30x30 -define png:color-type=6 src-tauri/icons/Square30x30Logo.png
     $MAGICK_CMD icon.png -resize 44x44 -define png:color-type=6 src-tauri/icons/Square44x44Logo.png
     $MAGICK_CMD icon.png -resize 71x71 -define png:color-type=6 src-tauri/icons/Square71x71Logo.png
@@ -159,7 +179,7 @@ if [ "$USE_IMAGEMAGICK" = true ]; then
     $MAGICK_CMD icon.png -resize 310x310 -define png:color-type=6 src-tauri/icons/Square310x310Logo.png
     $MAGICK_CMD icon.png -resize 50x50 -define png:color-type=6 src-tauri/icons/StoreLogo.png
 elif [ "$USE_SIPS" = true ]; then
-    # Windows Store logos using sips (generates RGBA by default)
+    # Windows Store logos - use unmasked icon (Windows Store applies its own corner radius)
     sips -z 30 30 icon.png --out src-tauri/icons/Square30x30Logo.png > /dev/null 2>&1
     sips -z 44 44 icon.png --out src-tauri/icons/Square44x44Logo.png > /dev/null 2>&1
     sips -z 71 71 icon.png --out src-tauri/icons/Square71x71Logo.png > /dev/null 2>&1
@@ -229,6 +249,11 @@ fi
 echo ""
 echo "🎉 Icon generation completed!"
 echo ""
+echo "📋 Icon Masking Strategy Applied:"
+echo "   ✅ Used icon_masked.png for: web favicons, desktop PNG icons, Windows ICO"
+echo "   ✅ Used icon.png (unmasked) for: Apple Touch, macOS ICNS, Windows Store tiles"
+echo "   ℹ️  This ensures optimal appearance across all platforms"
+echo ""
 echo "Generated Tauri icons in src-tauri/icons/:"
 ls -la src-tauri/icons/
 echo ""
@@ -257,5 +282,10 @@ echo ""
 echo "Your custom icons are now ready for both web and Tauri!"
 echo "• Web icons: public/ directory (favicons and manifest)"
 echo "• Tauri icons: src-tauri/icons/ directory (app icons)"
+echo ""
+echo "💡 To update icons in the future:"
+echo "   • Edit icon.png for the base unmasked version"
+echo "   • Edit icon_masked.png for the version with rounded corners"
+echo "   • Re-run this script to regenerate all platform-specific icons"
 echo ""
 echo "Run 'npm run dev' to test web icons or 'npm run tauri:build' to build with custom app icons!"
