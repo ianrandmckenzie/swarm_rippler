@@ -49,6 +49,72 @@ echo "🔄 Converting icon.png to required Tauri formats..."
 
 # Create icons directory if it doesn't exist
 mkdir -p src-tauri/icons
+mkdir -p public
+
+# Generate web favicon icons first
+echo "🔄 Generating web favicon icons..."
+if [ "$USE_IMAGEMAGICK" = true ]; then
+    # Web favicons with explicit RGBA format
+    $MAGICK_CMD icon.png -resize 96x96 -define png:color-type=6 public/favicon-96x96.png
+    $MAGICK_CMD icon.png -resize 180x180 -define png:color-type=6 public/apple-touch-icon.png
+    $MAGICK_CMD icon.png -resize 32x32 -define png:color-type=6 public/favicon.ico
+    
+    # Generate SVG favicon (convert to SVG if possible, otherwise copy original if it's SVG)
+    if [ -f "icon.svg" ]; then
+        cp icon.svg public/favicon.svg
+        echo "✅ Copied icon.svg to public/favicon.svg"
+    else
+        # Convert PNG to SVG (basic conversion)
+        $MAGICK_CMD icon.png -resize 32x32 public/favicon.svg 2>/dev/null || {
+            echo "⚠️  SVG conversion failed, creating PNG-based favicon.svg"
+            $MAGICK_CMD icon.png -resize 32x32 -define png:color-type=6 public/favicon.png
+        }
+    fi
+    
+elif [ "$USE_SIPS" = true ]; then
+    # Web favicons using sips
+    sips -z 96 96 icon.png --out public/favicon-96x96.png > /dev/null 2>&1
+    sips -z 180 180 icon.png --out public/apple-touch-icon.png > /dev/null 2>&1
+    sips -z 32 32 icon.png --out public/favicon.ico > /dev/null 2>&1
+    
+    # Handle SVG favicon
+    if [ -f "icon.svg" ]; then
+        cp icon.svg public/favicon.svg
+        echo "✅ Copied icon.svg to public/favicon.svg"
+    else
+        echo "⚠️  No icon.svg found, using PNG for favicon.svg"
+        sips -z 32 32 icon.png --out public/favicon.svg > /dev/null 2>&1
+    fi
+fi
+
+echo "✅ Generated web favicon icons"
+
+# Generate basic web manifest
+cat > public/site.webmanifest << EOF
+{
+    "name": "Click Ripple - Interactive Sound Grid",
+    "short_name": "Click Ripple",
+    "description": "Interactive sound grid for creating and learning clicking sounds and glossolalia",
+    "icons": [
+        {
+            "src": "/public/favicon-96x96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "/public/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#1F1F1F",
+    "background_color": "#1F1F1F",
+    "display": "standalone",
+    "start_url": "/"
+}
+EOF
+
+echo "✅ Generated web manifest"
 
 # Generate PNG icons with explicit RGBA format for Tauri compatibility
 if [ "$USE_IMAGEMAGICK" = true ]; then
@@ -163,8 +229,11 @@ fi
 echo ""
 echo "🎉 Icon generation completed!"
 echo ""
-echo "Generated icons in src-tauri/icons/:"
+echo "Generated Tauri icons in src-tauri/icons/:"
 ls -la src-tauri/icons/
+echo ""
+echo "Generated web icons in public/:"
+ls -la public/favicon* public/apple-touch-icon.png public/site.webmanifest 2>/dev/null || echo "  (Some web icons may not be present)"
 echo ""
 
 # Verify RGBA format for critical icons
@@ -185,4 +254,8 @@ else
 fi
 
 echo ""
-echo "Your custom icons are now ready. Run 'npm run tauri:build' to build with your custom icons!"
+echo "Your custom icons are now ready for both web and Tauri!"
+echo "• Web icons: public/ directory (favicons and manifest)"
+echo "• Tauri icons: src-tauri/icons/ directory (app icons)"
+echo ""
+echo "Run 'npm run dev' to test web icons or 'npm run tauri:build' to build with custom app icons!"
