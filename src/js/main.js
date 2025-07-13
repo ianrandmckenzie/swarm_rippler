@@ -14,6 +14,9 @@ function showTooltip(text, targetEl, offset = 0) {
   // Check if we're in a modal context
   const isInModal = targetEl.closest('#sequenceModal') !== null;
 
+  // Check if we're running in Tauri (desktop app)
+  const isTauri = window.__TAURI__ !== undefined;
+
   let left, top;
 
   if (isInModal || viewportWidth < 640) { // Small screens or modal context
@@ -47,9 +50,29 @@ function showTooltip(text, targetEl, offset = 0) {
     left = rect.left + (rect.width / 2) - (tooltipEl.offsetWidth / 2) + offset;
     top = rect.bottom + 16;
 
-    // Ensure tooltip doesn't go off screen
-    const tooltipWidth = tooltipEl.offsetWidth || 200;
-    left = Math.max(8, Math.min(left, viewportWidth - tooltipWidth - 8));
+    // Tauri-specific adjustment: In desktop app, ensure tooltip stays within bounds
+    if (isTauri) {
+      // In Tauri, be more conservative with positioning
+      const tooltipWidth = tooltipEl.offsetWidth || 200;
+      const tooltipHeight = tooltipEl.offsetHeight || 40;
+
+      // Keep tooltip well within viewport bounds
+      left = Math.max(16, Math.min(left, viewportWidth - tooltipWidth - 16));
+      top = Math.max(16, Math.min(top, viewportHeight - tooltipHeight - 16));
+
+      // If tooltip would be too far from target, position it closer
+      const targetCenterX = rect.left + (rect.width / 2);
+      const maxDistance = 100; // Maximum distance from target center
+
+      if (Math.abs(left + tooltipWidth/2 - targetCenterX) > maxDistance) {
+        left = targetCenterX - tooltipWidth/2;
+        left = Math.max(16, Math.min(left, viewportWidth - tooltipWidth - 16));
+      }
+    } else {
+      // Web browser positioning
+      const tooltipWidth = tooltipEl.offsetWidth || 200;
+      left = Math.max(8, Math.min(left, viewportWidth - tooltipWidth - 8));
+    }
   }
 
   tooltipEl.style.left = left + 'px';

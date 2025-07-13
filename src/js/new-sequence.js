@@ -498,6 +498,7 @@ function updateButtonStates() {
     } else {
       testBtn.disabled = true;
       testBtn.classList.remove('highlight-once');
+      hideTooltip();
     }
     // Save is only enabled after testing in tutorial mode
     updateTutorialUI();
@@ -585,6 +586,9 @@ loopToggle.addEventListener('change', () => {
   } else {
     loopIntervalControls.classList.add('opacity-50');
   }
+
+  // Don't call updateButtonStates() here as it can interfere with tutorial flow
+  // The loop toggle state doesn't affect button availability - only selection count does
 });
 
 // Save sequence and close modal
