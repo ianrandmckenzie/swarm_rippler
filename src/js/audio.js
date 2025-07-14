@@ -2,6 +2,7 @@
 // Handles playing saved sequences with proper timing and ripple effects
 import { smallCircles, ripples, canvas, dropletSound } from './main-canvas.js';
 import { loadAllSequences } from './storage.js';
+import { VisualFeedback, hapticFeedback } from './feedback.js';
 
 // Timing configuration for radial playback
 const RADIAN_TIMING = {
@@ -142,6 +143,9 @@ async function playSequence(sequenceIndices, options = {}) {
           // Play the audio
           audio.currentTime = 0;
           audio.play().catch(e => console.warn(`Failed to play audio for circle ${circleIndex}:`, e));
+
+          // Add haptic feedback for each radian
+          hapticFeedback.radianFeedback(radianNumber);
 
           // Highlight the corresponding circle on the main canvas
           if (window.canvasHighlight) {
@@ -320,6 +324,12 @@ function setupSequencePlayback() {
     // Find the clicked canvas thumbnail
     const canvas = e.target.closest('canvas');
     if (!canvas) return;
+
+    // Add visual feedback for thumbnail click
+    VisualFeedback.bounce(canvas, 1.1, 120);
+
+    // Add haptic feedback
+    hapticFeedback.trigger('light');
 
     // Get the sequence data from the canvas element (if available) or fallback to index lookup
     let sequenceData;

@@ -3,6 +3,9 @@ const canvas = document.getElementById('soundCanvas');
 const ctx = canvas.getContext('2d');
 const dpr = window.devicePixelRatio || 1;
 
+// Import feedback system
+import { VisualFeedback, hapticFeedback } from './feedback.js';
+
 // Highlighting system for sequence playback
 let highlightedCircles = new Map(); // Changed to Map to store timing info
 let highlightAnimations = [];
@@ -179,6 +182,12 @@ canvas.addEventListener('click', (e) => {
 
   // Check center circle click
   if ((x - cx) ** 2 + (y - cy) ** 2 <= R * R) {
+    // Add visual feedback
+    VisualFeedback.canvasRipple(canvas, x, y);
+
+    // Add haptic feedback
+    hapticFeedback.trigger('medium');
+
     ripples.push({ x: cx, y: cy, radius: R, alpha: 1 });
     dropletSound.currentTime = 0;
     dropletSound.play();
@@ -194,6 +203,12 @@ canvas.addEventListener('click', (e) => {
       const sx = cx + dirX * spacing * i;
       const sy = cy + dirY * spacing * i;
       if ((x - sx) ** 2 + (y - sy) ** 2 <= rSmall * rSmall) {
+        // Add visual feedback
+        VisualFeedback.canvasRipple(canvas, x, y);
+
+        // Add haptic feedback - lighter for small circles
+        hapticFeedback.trigger('light');
+
         audio.currentTime = 0;
         audio.play();
         return;

@@ -1,7 +1,8 @@
 // Modal and sequence creation functionality
 import { getSetting, setSetting, loadAllSequences, saveSequenceToDB, updateSequence } from './storage.js';
 import { addSequenceThumbnail } from './main.js';
-import { smallCircles, dpr } from './main-canvas.js'
+import { smallCircles, dpr } from './main-canvas.js';
+import { VisualFeedback, hapticFeedback } from './feedback.js';
 
 // Modal elements
 const createBtn = document.getElementById('createSequenceBtn');
@@ -32,6 +33,12 @@ class ModalManager {
   setupEventListeners() {
     // Create new sequence button
     createBtn.addEventListener('click', () => {
+      // Add visual feedback for button press
+      VisualFeedback.bounce(createBtn, 1.05, 150);
+
+      // Add haptic feedback
+      hapticFeedback.trigger('medium');
+
       this.openCreateMode();
     });
   }
@@ -469,6 +476,12 @@ modalCanvas.addEventListener('click', async e => {
         // Toggle the circle's clicked state
         circle.clicked = !circle.clicked;
 
+        // Add visual feedback for the interaction
+        VisualFeedback.canvasRipple(modalCanvas, clickX, clickY);
+
+        // Add haptic feedback
+        hapticFeedback.trigger(circle.clicked ? 'medium' : 'light');
+
         // Play sound only when selecting (not deselecting)
         if (circle.clicked) {
           circle.audio.currentTime = 0;
@@ -542,6 +555,12 @@ function updateTutorialUI() {
 
 // Test sequence
 testBtn.addEventListener('click', async e => {
+  // Add visual feedback for button press
+  VisualFeedback.press(testBtn, 0.95, 100);
+
+  // Add haptic feedback
+  hapticFeedback.trigger('medium');
+
   hideTooltip();
   testBtn.classList.remove('highlight-once');
   // Get the current sequence of clicked circles
@@ -593,6 +612,12 @@ loopToggle.addEventListener('change', () => {
 
 // Save sequence and close modal
 saveBtn.addEventListener('click', async () => {
+  // Add visual feedback for button press
+  VisualFeedback.press(saveBtn, 0.95, 100);
+
+  // Add haptic feedback
+  hapticFeedback.trigger('success');
+
   // Get sequence data
   const seq = modalCircles.map((c, index) => c.clicked ? index : null).filter(i => i !== null);
 
@@ -709,7 +734,13 @@ function closeModal() {
 
 // Close button event listener
 const closeBtn = document.getElementById('closeModalBtn');
-closeBtn.addEventListener('click', closeModal);
+closeBtn.addEventListener('click', () => {
+  // Add visual feedback
+  VisualFeedback.press(closeBtn, 0.9, 100);
+  hapticFeedback.trigger('light');
+
+  closeModal();
+});
 
 // Close modal when clicking on overlay (but not on modal content)
 modal.addEventListener('click', (e) => {

@@ -1,5 +1,6 @@
 // Theme management functionality
 import { getPreferences, savePreferences } from './storage.js';
+import { VisualFeedback, hapticFeedback } from './feedback.js';
 
 class ThemeManager {
   constructor() {
@@ -61,6 +62,11 @@ class ThemeManager {
       // Click handler
       button.addEventListener('click', (e) => {
         const clickedTheme = e.currentTarget.dataset.theme;
+
+        // Add visual and haptic feedback
+        VisualFeedback.bounce(button, 1.08, 150);
+        hapticFeedback.trigger('light');
+
         this.setTheme(clickedTheme);
 
         // Show mobile tooltip temporarily after selection

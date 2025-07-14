@@ -1,5 +1,6 @@
 // Sidenav management functionality
 import { setSetting } from './storage.js';
+import { VisualFeedback, hapticFeedback } from './feedback.js';
 
 class SidenavManager {
   constructor() {
@@ -23,26 +24,36 @@ class SidenavManager {
   setupEventListeners() {
     // Toggle button
     this.toggleBtn.addEventListener('click', () => {
+      VisualFeedback.bounce(this.toggleBtn, 1.1, 120);
+      hapticFeedback.trigger('light');
       this.toggle();
     });
 
     // Close button
     this.closeBtn.addEventListener('click', () => {
+      VisualFeedback.press(this.closeBtn, 0.9, 100);
+      hapticFeedback.trigger('light');
       this.close();
     });
 
     // Info button (opens app info modal)
     this.infoBtn.addEventListener('click', () => {
+      VisualFeedback.bounce(this.infoBtn, 1.1, 120);
+      hapticFeedback.trigger('light');
       this.openAppInfoModal();
     });
 
     // Reset tutorial button
     this.resetTutorialBtn.addEventListener('click', () => {
+      VisualFeedback.bounce(this.resetTutorialBtn, 1.1, 120);
+      hapticFeedback.trigger('medium');
       this.resetTutorial();
     });
 
     // App info modal close button
     this.closeAppInfoBtn.addEventListener('click', () => {
+      VisualFeedback.press(this.closeAppInfoBtn, 0.95, 100);
+      hapticFeedback.trigger('light');
       this.closeAppInfoModal();
     });
 

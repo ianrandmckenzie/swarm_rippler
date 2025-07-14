@@ -1,5 +1,6 @@
 // Context menu functionality for sequence thumbnails
 import { loadAllSequences, deleteSequence } from './storage.js';
+import { VisualFeedback, hapticFeedback } from './feedback.js';
 
 class ContextMenuManager {
   constructor() {
@@ -30,11 +31,19 @@ class ContextMenuManager {
 
     // Setup context menu actions
     document.getElementById('editSequence').addEventListener('click', () => {
+      // Add visual feedback
+      VisualFeedback.press(document.getElementById('editSequence'), 0.95, 100);
+      hapticFeedback.trigger('light');
+
       this.editSequence();
       this.hideContextMenu();
     });
 
     document.getElementById('deleteSequence').addEventListener('click', () => {
+      // Add visual feedback
+      VisualFeedback.press(document.getElementById('deleteSequence'), 0.95, 100);
+      hapticFeedback.trigger('medium');
+
       this.deleteSequence();
       this.hideContextMenu();
     });

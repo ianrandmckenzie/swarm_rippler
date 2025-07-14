@@ -140,3 +140,13 @@
     pointer-events: none;
   }
 }
+
+@media (max-height: 667px) {
+  #createSequenceBtn {
+    bottom: 1.5rem !important;
+  }
+
+  #content-container {
+    padding-top: 0 !important;
+  }
+}
