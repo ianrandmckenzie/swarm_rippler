@@ -4,6 +4,7 @@
 // Import core modules
 import './storage.js';
 import './theme.js';
+import './sidenav.js';
 import './main-canvas.js';
 import './audio.js';
 import './main.js';
