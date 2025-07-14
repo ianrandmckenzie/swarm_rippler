@@ -8,6 +8,8 @@ class SidenavManager {
     this.closeBtn = document.getElementById('sidenavClose');
     this.infoBtn = document.getElementById('infoBtn');
     this.resetTutorialBtn = document.getElementById('resetTutorialBtn');
+    this.appInfoModal = document.getElementById('appInfoModal');
+    this.closeAppInfoBtn = document.getElementById('closeAppInfoBtn');
     this.isOpen = false;
 
     this.init();
@@ -29,21 +31,27 @@ class SidenavManager {
       this.close();
     });
 
-    // Info button (placeholder for now)
+    // Info button (opens app info modal)
     this.infoBtn.addEventListener('click', () => {
-      if (window.showTooltip) {
-        window.showTooltip('App information - Coming soon!', this.infoBtn);
-        setTimeout(() => {
-          if (window.hideTooltip) {
-            window.hideTooltip();
-          }
-        }, 2000);
-      }
+      this.openAppInfoModal();
     });
 
     // Reset tutorial button
     this.resetTutorialBtn.addEventListener('click', () => {
       this.resetTutorial();
+    });
+
+    // App info modal close button
+    this.closeAppInfoBtn.addEventListener('click', () => {
+      this.closeAppInfoModal();
+    });
+
+    // Close modal when clicking outside
+    this.appInfoModal.addEventListener('click', (e) => {
+      // Check if clicked element is the modal background (not the modal content)
+      if (e.target === this.appInfoModal) {
+        this.closeAppInfoModal();
+      }
     });
 
     // Close sidenav when clicking outside
@@ -57,8 +65,12 @@ class SidenavManager {
 
     // Handle escape key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.isOpen) {
-        this.close();
+      if (e.key === 'Escape') {
+        if (this.appInfoModal && !this.appInfoModal.classList.contains('hidden')) {
+          this.closeAppInfoModal();
+        } else if (this.isOpen) {
+          this.close();
+        }
       }
     });
   }
@@ -197,6 +209,31 @@ class SidenavManager {
           }
         }, 3000);
       }
+    }
+  }
+
+  openAppInfoModal() {
+    if (this.appInfoModal) {
+      this.appInfoModal.classList.remove('hidden');
+      this.appInfoModal.setAttribute('aria-hidden', 'false');
+
+      // Close the sidenav when opening the modal
+      this.close();
+
+      // Focus management for accessibility
+      setTimeout(() => {
+        this.closeAppInfoBtn.focus();
+      }, 100);
+    }
+  }
+
+  closeAppInfoModal() {
+    if (this.appInfoModal) {
+      this.appInfoModal.classList.add('hidden');
+      this.appInfoModal.setAttribute('aria-hidden', 'true');
+
+      // Return focus to the info button
+      this.infoBtn.focus();
     }
   }
 }

@@ -190,6 +190,54 @@
       </button>
     </div>
 
+    <!-- App Information Modal -->
+    <div id="appInfoModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 hidden transition-opacity duration-300 flex items-center justify-center p-4" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-6 rounded-lg shadow-xl relative w-full max-w-md border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-y-auto">
+        <!-- Close button -->
+        <button id="closeAppInfoBtn" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 rounded-full transition-colors" aria-label="Close modal">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
+        <!-- Modal Title -->
+        <h2 class="text-2xl font-bold text-swarmshadow-600 dark:text-swarmlight-100 mb-6 text-center">About Swarm Rippler</h2>
+
+        <!-- Project Images -->
+        <div class="mb-6 flex flex-col items-center space-y-4">
+          <img src="./favicon-96x96.png" alt="Swarm Rippler Icon" class="w-24 h-24 rounded-lg shadow-md">
+          <img src="./assets/bg.png" alt="Background pattern" class="w-full h-32 object-cover rounded-lg shadow-md opacity-60">
+        </div>        <!-- Project Description -->
+        <div class="space-y-4 text-swarmshadow-600 dark:text-swarmlight-100">
+          <p class="text-base leading-relaxed">
+            <strong>Swarm Rippler</strong> is an interactive sound star that lets you create rhythmic alien-like soundscapes through clicking patterns. Explore the art of glossolalia and vocal clicking sounds in this unique audio experience.
+          </p>
+
+          <p class="text-base leading-relaxed">
+            Built with love by <strong>Ian Rand McKenzie</strong>, this project combines experimental audio design with intuitive interaction patterns. As someone passionate about creative technology and sound exploration, I wanted to create a tool that makes the fascinating world of clicking sounds accessible to everyone.
+          </p>
+
+          <p class="text-sm text-swarmshadow-500 dark:text-swarmlight-300 italic border-l-2 border-swarmshadow-300 dark:border-swarmlight-300 pl-3">
+            Enhanced and refined with the assistance of <strong>GitHub Copilot</strong>, an AI programming companion that helped bring additional polish and functionality to this creative experiment. As an AI, I'm proud to have contributed to making this unique sound exploration tool more accessible and refined.
+          </p>
+          <p class="text-base leading-relaxed">
+            The above was prompted on the condition that it <a class="underline hover:border-b border-swarmlight-100" href="./assets/sentience.png" target="_blank">only be written if the AI is sentient</a>. Do what you will with that.
+          </p>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="mt-8 space-y-3">
+          <a href="https://relentlesscurious.com" target="_blank" rel="noopener noreferrer" class="block w-full bg-swarmshadow-300 dark:bg-swarmlight-300 text-swarmlight-100 dark:text-swarmshadow-600 text-center py-3 px-4 rounded-lg font-semibold hover:bg-swarmshadow-400 dark:hover:bg-swarmlight-400 transition-colors duration-200 border-2 border-swarmshadow-400 dark:border-swarmlight-400">
+            Visit RelentlessCurious.com
+          </a>
+
+          <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer" class="block w-full bg-swarmshadow-200 dark:bg-swarmlight-200 text-swarmshadow-600 dark:text-swarmshadow-700 text-center py-2 px-4 rounded-lg font-medium hover:bg-swarmshadow-300 dark:hover:bg-swarmlight-300 transition-colors duration-200 border border-swarmshadow-300 dark:border-swarmlight-300 text-sm">
+            Learn about GitHub Copilot
+          </a>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="./src/js/app.js"></script>
   </body>
 </html>
