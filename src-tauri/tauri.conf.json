@@ -5,7 +5,7 @@
   "identifier": "com.clickrippler.desktop",
   "build": {
     "frontendDist": "../docs",
-    "devUrl": "http://localhost:8181",
+    "devUrl": "http://localhost:8080",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
   },

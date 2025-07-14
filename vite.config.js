@@ -9,7 +9,7 @@ export default defineConfig({
   },
   publicDir: 'public', // Ensure public files are copied
   server: {
-    port: 8181,
-    strictPort: true // Fail if port 8181 is not available
+    port: 8080,
+    strictPort: true // Fail if port 8080 is not available
   }
 })

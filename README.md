@@ -1,4 +1,4 @@
-# Click Sound Rippler
+# Swarm Rippler
 
 This is part of an project for supplementing my drawings with a more interactive experience. The basic premise is that there are 4 layers. The layers start on the inside and work their way outward. If there are multiple sounds in a layer, they happen simultaneously – something most humans are not capable of, creating somewhat of an alien cacophony.
 

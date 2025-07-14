@@ -1,7 +1,7 @@
 {
-  "name": "click-rippler",
+  "name": "swarm-rippler",
   "version": "1.0.0",
-  "description": "Interactive sound grid for creating and learning clicking sounds and glossolalia",
+  "description": "Interactive sound star for creating and learning clicking sounds and glossolalia",
   "main": "index.html",
   "scripts": {
     "dev": "vite",
@@ -19,12 +19,11 @@
     "clicking sounds",
     "glossolalia",
     "interactive",
-    "sound grid",
     "audio",
     "tauri",
     "desktop app"
   ],
-  "author": "Click Sound Rippler Project",
+  "author": "Swarm Rippler Project",
   "license": "ISC",
   "type": "module",
   "bugs": {

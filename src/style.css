@@ -2,9 +2,20 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-body {
-  background-image: url('../assets/bg.png');
-}
+/*
+ * Custom styles that cannot be replaced with Tailwind utilities:
+ * - Complex animations and keyframes
+ * - Browser-specific scrollbar styling
+ * - Specific z-index and pointer-events combinations
+ * - Custom animation timing and transforms
+ *
+ * Removed redundant styles that can be handled with Tailwind classes:
+ * - Basic positioning, colors, borders, padding, margins
+ * - Simple hover states and transitions
+ * - Basic layout properties
+ */
+
+/* Background image moved to inline class in HTML: bg-[url('../assets/bg.png')] */
 
 /* Custom scrollbar styles with swarm color palette */
 ::-webkit-scrollbar {
@@ -41,56 +52,7 @@ body {
   scrollbar-color: #1F1F1F #FFFDE7; /* swarmshadow-200 swarmlight-50 */
 }
 
-/* Alternative approach using @apply (will work when CSS is processed by Tailwind) */
-@layer components {
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-swarmlight-50 rounded;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-swarmshadow-200 rounded border border-swarmlight-200;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-swarmshadow-300;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:active {
-    @apply bg-swarmshadow-400;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-corner {
-    @apply bg-swarmlight-50;
-  }
-}
-
-/* Dark theme scrollbar styles */
-@layer components {
-  .dark .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-swarmshadow-50;
-  }
-
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-swarmlight-200 border-swarmshadow-200;
-  }
-
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-swarmlight-300;
-  }
-
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb:active {
-    @apply bg-swarmlight-400;
-  }
-
-  .dark .custom-scrollbar::-webkit-scrollbar-corner {
-    @apply bg-swarmshadow-50;
-  }
-}
+/* Custom scrollbar classes removed - use Tailwind scrollbar utilities instead */
 
 /* Highlight animation for tutorial button */
 @layer components {
@@ -133,7 +95,7 @@ body {
   }
 }
 
-/* Tutorial highlight overrides for buttons */
+/* Tutorial highlight overrides - simplified to only essential non-Tailwind properties */
 .highlight-once:not(:disabled) {
   opacity: 1 !important;
   transform: scale(1.05);
@@ -141,26 +103,10 @@ body {
 }
 
 .highlight-once:disabled {
-  /* Make sure disabled state doesn't interfere with highlight */
   opacity: 1 !important;
 }
 
-/* Tooltip styling */
-.tooltip {
-  position: absolute;
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 4px 8px;
-  border-radius: 4px;
-  z-index: 1100;
-}
-
-/* Dark theme tooltip */
-.dark .tooltip {
-  background: #202020; /* swarmshadow-100 */
-  border-color: #FFF176; /* swarmlight-300 */
-  color: #FFFBC2; /* swarmlight-100 */
-}
+/* Tooltip styling now handled by Tailwind classes in HTML */
 
 /* Tutorial overlay styles */
 .tutorial-active #tutorialOverlay {
@@ -182,7 +128,7 @@ body {
   }
 }
 
-/* Context menu positioning improvements */
+/* Context menu styles simplified - most properties can be handled with Tailwind classes */
 @layer components {
   #contextMenu {
     pointer-events: auto;
