@@ -93,6 +93,34 @@ window.hideTooltip = hideTooltip;
 window.showTooltip = showTooltip;
 window.hideTooltip = hideTooltip;
 
+// Robust theme detection helper function
+function getRobustCurrentTheme() {
+  // Method 1: Check theme manager if available
+  if (window.themeManager) {
+    const effectiveTheme = window.themeManager.getEffectiveTheme();
+    // Double-check that DOM state matches
+    const isDarkInDOM = document.documentElement.classList.contains('dark');
+    if ((effectiveTheme === 'dark' && isDarkInDOM) || (effectiveTheme === 'light' && !isDarkInDOM)) {
+      return effectiveTheme;
+    }
+  }
+
+  // Method 2: Check DOM classes directly
+  if (document.documentElement.classList.contains('dark')) {
+    return 'dark';
+  } else if (document.documentElement.classList.contains('light')) {
+    return 'light';
+  }
+
+  // Method 3: Check system preference as fallback
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+
+  // Final fallback
+  return 'light';
+}
+
 // Sequence thumbnails bar append
 async function addSequenceThumbnail(sequenceData) {
   const bar = document.getElementById('sequenceBar');
@@ -132,9 +160,18 @@ async function addSequenceThumbnail(sequenceData) {
   tctx.beginPath();
   tctx.arc(cx, cy, R, 0, 2 * Math.PI);
 
-  // Theme-aware center circle color
-  const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+  // Theme-aware center circle color with robust detection
+  const effectiveTheme = getRobustCurrentTheme();
   const centerColor = effectiveTheme === 'dark' ? '#fff' : '#000';
+
+  // Debug logging for theme detection
+  if (window.location.hostname === 'localhost') {
+    console.log('Thumbnail generation - Effective theme:', effectiveTheme, 'Center color:', centerColor,
+      'DOM dark class:', document.documentElement.classList.contains('dark'),
+      'Theme manager available:', !!window.themeManager,
+      'Theme manager theme:', window.themeManager?.getEffectiveTheme());
+  }
+
   tctx.fillStyle = centerColor;
   tctx.fill();
 
@@ -160,8 +197,8 @@ async function addSequenceThumbnail(sequenceData) {
         tctx.beginPath();
         tctx.arc(x, y, r, 0, 2 * Math.PI);
 
-        // Theme-aware small circle colors
-        const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+        // Theme-aware small circle colors with robust detection
+        const effectiveTheme = getRobustCurrentTheme();
         const circleColor = effectiveTheme === 'dark' ? '#fff' : '#000';
         const strokeColor = effectiveTheme === 'dark' ? '#000' : '#fff';
 
@@ -178,7 +215,8 @@ async function addSequenceThumbnail(sequenceData) {
 
   // Check if this sequence is currently looping and apply appropriate styling
   if (window.audioSystem && window.audioSystem.isSequenceLooping && window.audioSystem.isSequenceLooping(seq, thumb)) {
-    const isDark = document.documentElement.classList.contains('dark');
+    const effectiveTheme = getRobustCurrentTheme();
+    const isDark = effectiveTheme === 'dark';
     thumb.classList.add('rounded-full', 'transition-colors', 'duration-300', 'ease-in-out', 'p-2');
 
     if (isDark) {
@@ -219,23 +257,62 @@ function onThemeChange() {
 }
 
 // Listen for theme changes
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.themeManager) {
-    // Override the theme manager's setTheme method to include thumbnail updates
+function setupThemeChangeListener() {
+  if (window.themeManager && window.themeManager.initialized) {
+    // Theme manager is already ready, set up override
     const originalSetTheme = window.themeManager.setTheme.bind(window.themeManager);
     window.themeManager.setTheme = async function(theme) {
       await originalSetTheme(theme);
       onThemeChange();
     };
+  } else {
+    // Wait for theme manager to be ready
+    window.addEventListener('themeManagerReady', () => {
+      const originalSetTheme = window.themeManager.setTheme.bind(window.themeManager);
+      window.themeManager.setTheme = async function(theme) {
+        await originalSetTheme(theme);
+        onThemeChange();
+      };
+    }, { once: true });
   }
-});
+}
 
-// Initialize when DOM is ready and all scripts have loaded
+document.addEventListener('DOMContentLoaded', setupThemeChangeListener);
+
+// Initialize when DOM is ready and theme is properly loaded
+function waitForThemeAndInitialize() {
+  function checkThemeAndInit() {
+    if (window.themeManager && window.themeManager.initialized) {
+      // Double-check that the effective theme matches DOM state
+      const effectiveTheme = window.themeManager.getEffectiveTheme();
+      const hasDarkClass = document.documentElement.classList.contains('dark');
+      const hasLightClass = document.documentElement.classList.contains('light');
+
+      // Ensure DOM state matches the effective theme
+      if ((effectiveTheme === 'dark' && hasDarkClass) ||
+          (effectiveTheme === 'light' && (hasLightClass || (!hasDarkClass && !hasLightClass)))) {
+        // Theme state is consistent, proceed with initialization
+        initializeSequenceBar();
+      } else {
+        // Theme state is inconsistent, wait one more frame
+        requestAnimationFrame(checkThemeAndInit);
+      }
+    } else {
+      // Theme manager not ready yet
+      window.addEventListener('themeManagerReady', () => {
+        requestAnimationFrame(checkThemeAndInit);
+      }, { once: true });
+    }
+  }
+
+  checkThemeAndInit();
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeSequenceBar);
+  document.addEventListener('DOMContentLoaded', waitForThemeAndInitialize);
 } else {
   // DOM is already loaded
-  initializeSequenceBar();
+  waitForThemeAndInitialize();
 }
 
 // Export main functions
@@ -244,5 +321,6 @@ export {
   hideTooltip,
   addSequenceThumbnail,
   initializeSequenceBar,
-  onThemeChange
+  onThemeChange,
+  getRobustCurrentTheme
 };

@@ -23,6 +23,13 @@ class ThemeManager {
 
     // Update UI to reflect current theme
     this.updateThemeButtons();
+
+    // Wait a small amount to ensure all theme changes are applied
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // Signal that theme manager is fully initialized
+    this.initialized = true;
+    window.dispatchEvent(new CustomEvent('themeManagerReady'));
   }
 
   async loadThemePreference() {
