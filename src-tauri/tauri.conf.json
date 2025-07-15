@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Click Rippler",
+  "productName": "Swarm Rippler",
   "version": "0.1.0",
   "identifier": "com.clickrippler.desktop",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Click Rippler - Interactive Sound Grid",
+        "title": "Swarm Rippler - Interactive Sound Grid",
         "width": 1000,
         "height": 800,
         "resizable": true,

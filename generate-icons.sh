@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Icon Generator Script for Click Rippler
+# Icon Generator Script for Swarm Rippler
 # This script helps convert your custom icons to the required Tauri icon formats
 # including macOS, Windows, and Windows Store/UWP icons
 #
@@ -15,7 +15,7 @@
 #   • macOS ICNS (dock handles corner radius)
 #   • Windows Store tiles (system applies corner radius)
 
-echo "🎨 Click Rippler Icon Generator"
+echo "🎨 Swarm Rippler Icon Generator"
 echo ""
 
 # Check if required icon files exist
@@ -109,8 +109,8 @@ echo "✅ Generated web favicon icons"
 # Generate basic web manifest
 cat > public/site.webmanifest << EOF
 {
-    "name": "Click Ripple - Interactive Sound Grid",
-    "short_name": "Click Ripple",
+    "name": "Swarm Rippler - Interactive Sound Grid",
+    "short_name": "Swarm Rippler",
     "description": "Interactive sound grid for creating and learning clicking sounds and glossolalia",
     "icons": [
         {

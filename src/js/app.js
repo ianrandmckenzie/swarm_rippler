@@ -21,4 +21,4 @@ if (window.location.hostname === 'localhost' ||
   });
 }
 
-console.log('🎵 Click Ripple app initialized');
+console.log('🎵 Swarm Rippler app initialized');

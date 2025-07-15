@@ -113,7 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: 'Click Rippler ${{ github.ref_name }}'
+          releaseName: 'Swarm Rippler ${{ github.ref_name }}'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
@@ -234,9 +234,9 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          name: 'Click Rippler ${{ github.ref_name }}'
+          name: 'Swarm Rippler ${{ github.ref_name }}'
           body: |
-            ## Click Rippler ${{ github.ref_name }}
+            ## Swarm Rippler ${{ github.ref_name }}
 
             ### Desktop Applications
             - **Windows**: Download the `.msi` installer or `.exe` portable version
@@ -255,7 +255,7 @@ jobs:
             #### Desktop
             1. Download the appropriate file for your operating system
             2. Run the installer or extract the portable version
-            3. Launch Click Rippler from your applications menu
+            3. Launch Swarm Rippler from your applications menu
 
             #### Mobile
             - **iOS**: Requires Xcode or a signing service to install the .ipa file
