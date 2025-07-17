@@ -1,8 +1,9 @@
 // Modal and sequence creation functionality
 import { getSetting, setSetting, loadAllSequences, saveSequenceToDB, updateSequence } from './storage.js';
-import { addSequenceThumbnail } from './main.js';
+import { addSequenceThumbnail, hideTooltip } from './main.js';
 import { smallCircles, dpr } from './main-canvas.js';
 import { VisualFeedback, hapticFeedback } from './feedback.js';
+import { tutorialManager } from './tutorial.js';
 
 // Modal elements
 const createBtn = document.getElementById('createSequenceBtn');
@@ -56,14 +57,10 @@ class ModalManager {
 
     // Check if this is a first-time user for tutorial mode
     const tutorialSeen = await getSetting('tutorialSeen');
-    tutorialMode = !tutorialSeen;
-
-    if (tutorialMode) {
-      tutorialCounter.classList.remove('hidden');
-      targetCountEl.textContent = TUTORIAL_TARGET_COUNT;
-      selectedCountEl.textContent = '0';
+    if (!tutorialSeen) {
+      tutorialManager.enableTutorialMode();
     } else {
-      tutorialCounter.classList.add('hidden');
+      tutorialManager.disableTutorialMode();
     }
 
     // Reset modal state
@@ -71,7 +68,9 @@ class ModalManager {
 
     // Open modal
     this.showModal();
-  }  openEditMode(sequenceData, thumbnail) {
+  }
+
+  openEditMode(sequenceData, thumbnail) {
     this.isEditMode = true;
     this.editingThumbnail = thumbnail;
     this.originalSequenceData = JSON.parse(JSON.stringify(sequenceData)); // Deep copy
@@ -79,8 +78,7 @@ class ModalManager {
     modalTitle.textContent = 'Edit Sequence';
 
     // Hide tutorial in edit mode
-    tutorialMode = false;
-    tutorialCounter.classList.add('hidden');
+    tutorialManager.disableTutorialMode();
 
     // Reset modal state first
     this.resetModalState();
@@ -112,11 +110,8 @@ class ModalManager {
     modalHighlightedCircles.clear();
     modalRipples.length = 0;
 
-    // Hide inline instruction by default
-    const modalInstruction = document.getElementById('modalInstruction');
-    if (modalInstruction) {
-      modalInstruction.classList.add('hidden');
-    }
+    // Clean up tutorial state
+    tutorialManager.cleanupTutorialState();
   }
 
   loadSequenceIntoModal(sequenceData) {
@@ -153,8 +148,8 @@ class ModalManager {
     drawModal();
     animateModal();
 
-    if (tutorialMode) {
-      updateTutorialUI();
+    if (tutorialManager.isTutorialMode) {
+      tutorialManager.updateTutorialUI(0);
     }
 
     updateButtonStates();
@@ -214,9 +209,6 @@ function resizeModalCanvas() {
 }
 const testBtn = document.getElementById('testSequenceBtn');
 const saveBtn = document.getElementById('saveSequenceBtn');
-const tutorialCounter = document.getElementById('tutorialCounter');
-const targetCountEl = document.getElementById('targetCount');
-const selectedCountEl = document.getElementById('selectedCount');
 
 // Loop controls
 const loopToggle = document.getElementById('loopToggle');
@@ -224,28 +216,6 @@ const loopInterval = document.getElementById('loopInterval');
 const loopIntervalControls = document.getElementById('loopIntervalControls');
 
 let modalCircles = [];
-let tutorialMode = false;
-const TUTORIAL_TARGET_COUNT = 5;
-
-// Prepare tutorial state
-async function checkAndShowTutorial() {
-  try {
-    const tutorialSeen = await getSetting('tutorialSeen');
-    const savedSequences = await loadAllSequences();
-
-    // Show tutorial if never seen AND no sequences exist
-    if (!tutorialSeen && savedSequences.length === 0) {
-      document.body.classList.add('tutorial-active');
-      createBtn.classList.add('highlight-once');
-      showTooltip('Start playing by clicking New Sequence!', createBtn);
-    }
-  } catch (error) {
-    console.log('Could not check tutorial state:', error);
-  }
-}
-
-// Initialize tutorial check after a brief delay to ensure all dependencies are loaded
-setTimeout(checkAndShowTutorial, 100);
 
 // Create modal manager instance
 const modalManager = new ModalManager();
@@ -502,54 +472,18 @@ modalCanvas.addEventListener('click', async e => {
 function updateButtonStates() {
   const selectedCount = modalCircles.filter(c => c.clicked).length;
 
-  if (tutorialMode) {
-    // Tutorial mode: require specific count and testing
-    if (selectedCount === TUTORIAL_TARGET_COUNT) {
-      testBtn.disabled = false;
-      testBtn.classList.add('highlight-once');
-      showTooltip('Click Test to hear what your sequence sounds like!', testBtn);
-    } else {
-      testBtn.disabled = true;
-      testBtn.classList.remove('highlight-once');
-      hideTooltip();
-    }
-    // Save is only enabled after testing in tutorial mode
-    updateTutorialUI();
-  } else {
-    // Non-tutorial mode: enable both buttons when any circles are selected
-    if (selectedCount > 0) {
-      testBtn.disabled = false;
-      saveBtn.disabled = false; // Enable save directly without requiring test
-    } else {
-      testBtn.disabled = true;
-      saveBtn.disabled = true;
-    }
+  // Let tutorial manager handle tutorial mode button states
+  if (tutorialManager.updateButtonStates(selectedCount)) {
+    return; // Tutorial manager handled it
   }
-}
 
-// Helper function to update tutorial UI
-function updateTutorialUI() {
-  if (!tutorialMode) return;
-
-  const selectedCount = modalCircles.filter(c => c.clicked).length;
-  selectedCountEl.textContent = selectedCount;
-
-  const modalInstruction = document.getElementById('modalInstruction');
-
-  // Update progress messaging using inline instruction instead of floating tooltip
-  if (selectedCount === 0) {
-    modalInstruction.textContent = 'Click the empty circles to form your sequence';
-    modalInstruction.classList.remove('hidden');
-    hideTooltip(); // Hide any existing tooltip
-  } else if (selectedCount < TUTORIAL_TARGET_COUNT) {
-    const remaining = TUTORIAL_TARGET_COUNT - selectedCount;
-    modalInstruction.textContent = `Select ${remaining} more circle${remaining === 1 ? '' : 's'}`;
-    modalInstruction.classList.remove('hidden');
-    hideTooltip(); // Hide any existing tooltip
-  } else if (selectedCount === TUTORIAL_TARGET_COUNT) {
-    modalInstruction.classList.add('hidden');
-    hideTooltip(); // Hide any existing tooltip
-    // Button state is handled in updateButtonStates()
+  // Non-tutorial mode: enable both buttons when any circles are selected
+  if (selectedCount > 0) {
+    testBtn.disabled = false;
+    saveBtn.disabled = false; // Enable save directly without requiring test
+  } else {
+    testBtn.disabled = true;
+    saveBtn.disabled = true;
   }
 }
 
@@ -561,8 +495,9 @@ testBtn.addEventListener('click', async e => {
   // Add haptic feedback
   hapticFeedback.trigger('medium');
 
-  hideTooltip();
-  testBtn.classList.remove('highlight-once');
+  // Let tutorial manager handle tutorial-specific logic
+  const handledByTutorial = await tutorialManager.handleTestClick();
+
   // Get the current sequence of clicked circles
   const sequence = modalCircles.map((c, index) => c.clicked ? index : null).filter(i => i !== null);
 
@@ -575,20 +510,14 @@ testBtn.addEventListener('click', async e => {
         console.warn('Audio system not available, falling back to basic feedback');
       }
 
-      // Enable save button after testing (only needed in tutorial mode)
-      if (tutorialMode) {
+      // Enable save button after testing (only needed in non-tutorial mode now)
+      if (!tutorialManager.isTutorialMode) {
         saveBtn.disabled = false;
-      }
-
-      // Complete tutorial if in tutorial mode
-      if (tutorialMode) {
-        await setSetting('tutorialSeen', true);
-        tutorialMode = false;
       }
     } catch (error) {
       console.error('Error playing test sequence:', error);
-      // Fallback to just enabling save button in tutorial mode
-      if (tutorialMode) {
+      // Fallback to just enabling save button in non-tutorial mode
+      if (!tutorialManager.isTutorialMode) {
         saveBtn.disabled = false;
       }
     }
@@ -676,10 +605,8 @@ saveBtn.addEventListener('click', async () => {
       console.log('✅ New sequence saved successfully');
     }
 
-    // Complete tutorial if in tutorial mode
-    if (tutorialMode) {
-      await setSetting('tutorialSeen', true);
-    }
+    // Let tutorial manager handle tutorial completion
+    await tutorialManager.handleSaveClick();
 
     closeModal();
   } catch (error) {
@@ -708,14 +635,9 @@ function closeModal() {
   testBtn.disabled = true;
   testBtn.classList.remove('highlight-once');
   saveBtn.disabled = true;
-  tutorialCounter.classList.add('hidden');
-  tutorialMode = false;
 
-  // Hide inline instruction
-  const modalInstruction = document.getElementById('modalInstruction');
-  if (modalInstruction) {
-    modalInstruction.classList.add('hidden');
-  }
+  // Clean up tutorial state
+  tutorialManager.cleanupTutorialState();
 
   // Reset loop controls
   loopToggle.checked = false;

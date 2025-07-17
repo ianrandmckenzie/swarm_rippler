@@ -1,6 +1,7 @@
 // Sidenav management functionality
 import { setSetting } from './storage.js';
 import { VisualFeedback, hapticFeedback } from './feedback.js';
+import { tutorialManager } from './tutorial.js';
 
 class SidenavManager {
   constructor() {
@@ -189,26 +190,29 @@ class SidenavManager {
 
   async resetTutorial() {
     try {
-      await setSetting('tutorialSeen', false);
+      const success = await tutorialManager.resetTutorial();
 
-      // Show confirmation tooltip
-      if (window.showTooltip) {
-        window.showTooltip('Tutorial reset! Reload page to see tutorial.', this.resetTutorialBtn);
-        setTimeout(() => {
-          if (window.hideTooltip) {
-            window.hideTooltip();
-          }
-        }, 3000);
-      }
-
-      // Optional: Ask if user wants to reload
-      setTimeout(() => {
-        const shouldReload = confirm('Tutorial has been reset! Would you like to reload the page to see the tutorial?');
-        if (shouldReload) {
-          window.location.reload();
+      if (success) {
+        // Show confirmation tooltip
+        if (window.showTooltip) {
+          window.showTooltip('Tutorial reset! Reload page to see tutorial.', this.resetTutorialBtn);
+          setTimeout(() => {
+            if (window.hideTooltip) {
+              window.hideTooltip();
+            }
+          }, 3000);
         }
-      }, 500);
 
+        // Optional: Ask if user wants to reload
+        setTimeout(() => {
+          const shouldReload = confirm('Tutorial has been reset! Would you like to reload the page to see the tutorial?');
+          if (shouldReload) {
+            window.location.reload();
+          }
+        }, 500);
+      } else {
+        throw new Error('Failed to reset tutorial');
+      }
     } catch (error) {
       console.error('Error resetting tutorial:', error);
 

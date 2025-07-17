@@ -34,12 +34,17 @@ async function resetTutorial() {
   console.warn('🎓 Resetting tutorial state...');
 
   try {
-    await setSetting('tutorialSeen', false);
-    console.log('✅ Tutorial state reset - reload page to see tutorial');
+    const success = await window.tutorialManager.resetTutorial();
 
-    const shouldReload = confirm('Tutorial reset! Reload page to see tutorial?');
-    if (shouldReload) {
-      window.location.reload();
+    if (success) {
+      console.log('✅ Tutorial state reset - reload page to see tutorial');
+
+      const shouldReload = confirm('Tutorial reset! Reload page to see tutorial?');
+      if (shouldReload) {
+        window.location.reload();
+      }
+    } else {
+      throw new Error('Failed to reset tutorial');
     }
   } catch (error) {
     console.error('❌ Error resetting tutorial:', error);

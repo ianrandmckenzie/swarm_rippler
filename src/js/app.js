@@ -5,6 +5,7 @@
 import './storage.js';
 import './theme.js';
 import './feedback.js';
+import './tutorial.js';
 import './sidenav.js';
 import './main-canvas.js';
 import './audio.js';

@@ -29,7 +29,7 @@
     "tauri",
     "desktop app"
   ],
-  "author": "Swarm Rippler Project",
+  "author": "Ian Rand McKenzie",
   "license": "ISC",
   "type": "module",
   "bugs": {
