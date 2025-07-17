@@ -487,8 +487,16 @@ modalCanvas.addEventListener('click', async e => {
         // Toggle the circle's clicked state
         circle.clicked = !circle.clicked;
 
-        // Add visual feedback for the interaction
-        VisualFeedback.canvasRipple(modalCanvas, clickX, clickY);
+        // Add visual feedback for the interaction at the correct position
+        // Convert the clicked circle's position back to canvas coordinates for the ripple
+        // Need to account for canvas position within its container
+        const canvasRect = modalCanvas.getBoundingClientRect();
+        const container = modalCanvas.closest('[id*="container"]') || modalCanvas.parentElement;
+        const containerRect = container.getBoundingClientRect();
+
+        const rippleX = (circleX + offsetX) + (canvasRect.left - containerRect.left);
+        const rippleY = (circleY + offsetY) + (canvasRect.top - containerRect.top);
+        VisualFeedback.canvasRipple(modalCanvas, rippleX, rippleY);
 
         // Add haptic feedback
         hapticFeedback.trigger(circle.clicked ? 'medium' : 'light');
