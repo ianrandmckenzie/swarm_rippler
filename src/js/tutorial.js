@@ -21,6 +21,7 @@
 
 // Tutorial system for guiding first-time users
 import { getSetting, setSetting, loadAllSequences } from './storage.js';
+import { VisualFeedback, hapticFeedback } from './feedback.js';
 
 // Tutorial constants
 const TUTORIAL_TARGET_COUNT = 5;
@@ -30,7 +31,11 @@ class TutorialManager {
   constructor() {
     this.tutorialMode = false;
     this.isActive = false;
+    this.currentStep = 0; // For mobile swipe steps
     this.elements = this.initializeElements();
+
+    // Set up welcome modal event listener
+    this.setupWelcomeModal();
 
     // Initialize tutorial system after a brief delay to ensure all dependencies are loaded
     setTimeout(() => this.checkAndShowTutorial(), 100);
@@ -45,27 +50,201 @@ class TutorialManager {
       modalInstruction: document.getElementById('modalInstruction'),
       testBtn: document.getElementById('testSequenceBtn'),
       saveBtn: document.getElementById('saveSequenceBtn'),
-      tutorialOverlay: document.getElementById('tutorialOverlay')
+      tutorialOverlay: document.getElementById('tutorialOverlay'),
+      welcomeModal: document.getElementById('tutorialWelcomeModal'),
+      beginBtn: document.getElementById('beginTutorialBtn'),
+      beginBtnMobile: document.getElementById('beginTutorialBtnMobile'),
+      welcomeSteps: document.getElementById('welcomeSteps'),
+      welcomeStepsContainer: document.getElementById('welcomeStepsContainer'),
+      dots: [
+        document.getElementById('dot0'),
+        document.getElementById('dot1'),
+        document.getElementById('dot2')
+      ]
     };
+  }
+
+  // Set up welcome modal event listeners
+  setupWelcomeModal() {
+    // Desktop begin button
+    if (this.elements.beginBtn) {
+      this.elements.beginBtn.addEventListener('click', () => {
+        this.handleBeginClick(this.elements.beginBtn);
+      });
+    }
+
+    // Mobile begin button
+    if (this.elements.beginBtnMobile) {
+      this.elements.beginBtnMobile.addEventListener('click', () => {
+        this.handleBeginClick(this.elements.beginBtnMobile);
+      });
+    }
+
+    // Set up mobile swipe functionality
+    this.setupMobileSwipe();
+
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.isWelcomeModalOpen()) {
+        this.closeWelcomeModal();
+        this.startMainTutorial();
+      }
+    });
+  }
+
+  // Handle begin button click (both desktop and mobile)
+  handleBeginClick(button) {
+    // Add visual feedback for button press
+    VisualFeedback.press(button, 0.95, 150);
+
+    // Add haptic feedback
+    hapticFeedback.trigger('medium');
+
+    this.closeWelcomeModal();
+    this.startMainTutorial();
+  }
+
+  // Set up mobile swipe functionality
+  setupMobileSwipe() {
+    if (!this.elements.welcomeStepsContainer) return;
+
+    let startX = 0;
+    let startY = 0;
+    let isMoving = false;
+
+    const handleStart = (e) => {
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      isMoving = true;
+    };
+
+    const handleMove = (e) => {
+      if (!isMoving) return;
+      e.preventDefault();
+    };
+
+    const handleEnd = (e) => {
+      if (!isMoving) return;
+      isMoving = false;
+
+      const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+      const endY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+      const deltaX = startX - endX;
+      const deltaY = Math.abs(startY - endY);
+
+      // Only register horizontal swipes (ignore vertical)
+      if (Math.abs(deltaX) > 50 && deltaY < 100) {
+        if (deltaX > 0) {
+          // Swipe left (next step)
+          this.nextStep();
+        } else {
+          // Swipe right (previous step)
+          this.previousStep();
+        }
+      }
+    };
+
+    // Touch events
+    this.elements.welcomeStepsContainer.addEventListener('touchstart', handleStart, { passive: false });
+    this.elements.welcomeStepsContainer.addEventListener('touchmove', handleMove, { passive: false });
+    this.elements.welcomeStepsContainer.addEventListener('touchend', handleEnd, { passive: false });
+
+    // Mouse events for desktop testing
+    this.elements.welcomeStepsContainer.addEventListener('mousedown', handleStart);
+    this.elements.welcomeStepsContainer.addEventListener('mousemove', handleMove);
+    this.elements.welcomeStepsContainer.addEventListener('mouseup', handleEnd);
+  }
+
+  // Navigate to next step
+  nextStep() {
+    if (this.currentStep < 2) {
+      this.currentStep++;
+      this.updateStepDisplay();
+    }
+  }
+
+  // Navigate to previous step
+  previousStep() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+      this.updateStepDisplay();
+    }
+  }
+
+  // Update the step display and dots
+  updateStepDisplay() {
+    if (this.elements.welcomeSteps) {
+      const translateX = -this.currentStep * 100;
+      this.elements.welcomeSteps.style.transform = `translateX(${translateX}%)`;
+    }
+
+    // Update dot indicators
+    this.elements.dots.forEach((dot, index) => {
+      if (dot) {
+        if (index === this.currentStep) {
+          dot.classList.remove('opacity-50');
+          dot.classList.add('opacity-100');
+        } else {
+          dot.classList.remove('opacity-100');
+          dot.classList.add('opacity-50');
+        }
+      }
+    });
   }
 
   // Check if tutorial should be shown and initialize it
   async checkAndShowTutorial() {
     try {
       const tutorialSeen = await getSetting('tutorialSeen');
-      const savedSequences = await loadAllSequences();
-
-      // Show tutorial if never seen AND no sequences exist
+      const savedSequences = await loadAllSequences();      // Show tutorial if never seen AND no sequences exist
       if (!tutorialSeen && savedSequences.length === 0) {
-        this.startTutorial();
+        this.showWelcomeModal();
       }
     } catch (error) {
       console.log('Could not check tutorial state:', error);
     }
+  }  // Show the welcome modal
+  showWelcomeModal() {
+    if (this.elements.welcomeModal) {
+      this.elements.welcomeModal.classList.remove('hidden');
+      this.elements.welcomeModal.classList.add('flex');
+      this.elements.welcomeModal.setAttribute('aria-hidden', 'false');
+
+      // Reset mobile steps to beginning
+      this.currentStep = 0;
+      this.updateStepDisplay();
+
+      // Focus the appropriate begin button for accessibility
+      setTimeout(() => {
+        const isMobile = window.innerWidth < 640;
+        const targetButton = isMobile ? this.elements.beginBtnMobile : this.elements.beginBtn;
+        if (targetButton && this.currentStep === 2) {
+          targetButton.focus();
+        }
+      }, 100);
+    }
   }
 
-  // Start the tutorial experience
-  startTutorial() {
+  // Close the welcome modal
+  closeWelcomeModal() {
+    if (this.elements.welcomeModal) {
+      this.elements.welcomeModal.classList.add('hidden');
+      this.elements.welcomeModal.classList.remove('flex');
+      this.elements.welcomeModal.setAttribute('aria-hidden', 'true');
+
+      // Reset mobile steps
+      this.currentStep = 0;
+      this.updateStepDisplay();
+    }
+  }
+
+  // Check if welcome modal is open
+  isWelcomeModalOpen() {
+    return this.elements.welcomeModal && !this.elements.welcomeModal.classList.contains('hidden');
+  }
+
+  // Start the main tutorial experience (highlighting button)
+  startMainTutorial() {
     this.isActive = true;
     document.body.classList.add('tutorial-active');
     this.elements.createBtn.classList.add('highlight-once');
@@ -74,6 +253,11 @@ class TutorialManager {
     if (window.showTooltip) {
       window.showTooltip('Start playing by clicking New Sequence!', this.elements.createBtn);
     }
+  }
+
+  // Start the tutorial experience (now just shows welcome modal)
+  startTutorial() {
+    this.showWelcomeModal();
   }
 
   // Enable tutorial mode for the modal
@@ -193,6 +377,9 @@ class TutorialManager {
       if (this.elements.createBtn) {
         this.elements.createBtn.classList.remove('highlight-once');
       }
+
+      // Close welcome modal if still open
+      this.closeWelcomeModal();
     } catch (error) {
       console.error('Error completing tutorial:', error);
     }
@@ -212,10 +399,12 @@ class TutorialManager {
       }
       if (this.elements.tutorialCounter) {
         this.elements.tutorialCounter.classList.add('hidden');
-      }
-      if (this.elements.modalInstruction) {
+      }      if (this.elements.modalInstruction) {
         this.elements.modalInstruction.classList.add('hidden');
       }
+
+      // Close welcome modal if still open
+      this.closeWelcomeModal();
 
       console.log('✅ Tutorial state reset');
       return true;

@@ -230,6 +230,7 @@ class SidenavManager {
   openAppInfoModal() {
     if (this.appInfoModal) {
       this.appInfoModal.classList.remove('hidden');
+      this.appInfoModal.classList.add('flex');
       this.appInfoModal.setAttribute('aria-hidden', 'false');
 
       // Close the sidenav when opening the modal
@@ -245,6 +246,7 @@ class SidenavManager {
   closeAppInfoModal() {
     if (this.appInfoModal) {
       this.appInfoModal.classList.add('hidden');
+      this.appInfoModal.classList.remove('flex');
       this.appInfoModal.setAttribute('aria-hidden', 'true');
 
       // Return focus to the info button
