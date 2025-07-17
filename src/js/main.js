@@ -122,7 +122,7 @@ function getRobustCurrentTheme() {
 }
 
 // Sequence thumbnails bar append
-async function addSequenceThumbnail(sequenceData) {
+async function addSequenceThumbnail(sequenceData, sequenceIndex = null) {
   const bar = document.getElementById('sequenceBar');
   const size = 80;
   const thumb = document.createElement('canvas');
@@ -212,6 +212,7 @@ async function addSequenceThumbnail(sequenceData) {
 
   // Store sequence data on the canvas element for click handling
   thumb.sequenceData = { seq, isLoop, loopInterval };
+  thumb.sequenceIndex = sequenceIndex; // Store the index for editing/deleting
 
   // Check if this sequence is currently looping and apply appropriate styling
   if (window.audioSystem && window.audioSystem.isSequenceLooping && window.audioSystem.isSequenceLooping(seq, thumb)) {
@@ -234,7 +235,7 @@ async function addSequenceThumbnail(sequenceData) {
 // Populate sequence bar on initial load - wait for all dependencies
 function initializeSequenceBar() {
   loadAllSequences().then(seqs => {
-    seqs.forEach(sequenceData => addSequenceThumbnail(sequenceData));
+    seqs.forEach((sequenceData, index) => addSequenceThumbnail(sequenceData, index));
     console.log(`✅ Loaded ${seqs.length} saved sequences`);
   }).catch(error => {
     console.error('Failed to load sequences:', error);
@@ -250,7 +251,7 @@ function onThemeChange() {
 
   // Regenerate all thumbnails with new theme
   loadAllSequences().then(seqs => {
-    seqs.forEach(sequenceData => addSequenceThumbnail(sequenceData));
+    seqs.forEach((sequenceData, index) => addSequenceThumbnail(sequenceData, index));
   }).catch(error => {
     console.error('Failed to reload sequences after theme change:', error);
   });

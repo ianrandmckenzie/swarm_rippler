@@ -24,6 +24,7 @@ class ModalManager {
     this.isEditMode = false;
     this.editingThumbnail = null;
     this.originalSequenceData = null;
+    this.originalSequenceIndex = null;
     this.init();
   }
 
@@ -52,6 +53,7 @@ class ModalManager {
     this.isEditMode = false;
     this.editingThumbnail = null;
     this.originalSequenceData = null;
+    this.originalSequenceIndex = null;
 
     modalTitle.textContent = 'Create New Sequence';
 
@@ -74,6 +76,7 @@ class ModalManager {
     this.isEditMode = true;
     this.editingThumbnail = thumbnail;
     this.originalSequenceData = JSON.parse(JSON.stringify(sequenceData)); // Deep copy
+    this.originalSequenceIndex = thumbnail.sequenceIndex; // Store the index for updates
 
     modalTitle.textContent = 'Edit Sequence';
 
@@ -709,26 +712,17 @@ saveBtn.addEventListener('click', async () => {
 
   try {
     if (window.modalManager.isEditMode) {
-      // Edit mode: update existing sequence
-      const allSequences = await loadAllSequences();
-
-      // Get the original sequence properly
-      const originalSeq = Array.isArray(window.modalManager.originalSequenceData) ?
-                         window.modalManager.originalSequenceData :
-                         (window.modalManager.originalSequenceData.sequence || window.modalManager.originalSequenceData.seq);
-
-      // Find the sequence index
-      const sequenceIndex = allSequences.findIndex(seq => {
-        const seqData = Array.isArray(seq) ? seq : (seq.sequence || seq.seq);
-        return JSON.stringify(seqData) === JSON.stringify(originalSeq);
-      });
-
-      if (sequenceIndex !== -1) {
+      // Edit mode: update existing sequence using stored index
+      if (window.modalManager.originalSequenceIndex !== null) {
         // Update the sequence in storage
-        await updateSequence(sequenceIndex, sequenceData);
+        await updateSequence(window.modalManager.originalSequenceIndex, sequenceData);
 
         // Stop any active loop for the old sequence
         if (window.audioSystem && window.audioSystem.isSequenceLooping) {
+          const originalSeq = Array.isArray(window.modalManager.originalSequenceData) ?
+                             window.modalManager.originalSequenceData :
+                             (window.modalManager.originalSequenceData.sequence || window.modalManager.originalSequenceData.seq);
+
           if (window.audioSystem.isSequenceLooping(originalSeq, window.modalManager.editingThumbnail)) {
             const originalInterval = window.modalManager.originalSequenceData.loopInterval || 3;
             window.audioSystem.toggleLoopPlayback(originalSeq, originalInterval, window.modalManager.editingThumbnail);
@@ -738,16 +732,21 @@ saveBtn.addEventListener('click', async () => {
         // Remove editing attribute and update thumbnail
         window.modalManager.editingThumbnail.removeAttribute('data-editing');
         window.modalManager.editingThumbnail.remove();
-        addSequenceThumbnail(sequenceData);
+        addSequenceThumbnail(sequenceData, window.modalManager.originalSequenceIndex);
 
         console.log('✅ Sequence updated successfully');
       } else {
-        throw new Error('Original sequence not found in storage');
+        throw new Error('Original sequence index not available');
       }
     } else {
       // Create mode: save new sequence
       await saveSequenceToDB(sequenceData);
-      addSequenceThumbnail(sequenceData);
+
+      // Get the current sequence count to determine the index of the newly created sequence
+      const allSequences = await loadAllSequences();
+      const newSequenceIndex = allSequences.length - 1; // Last item in the array
+
+      addSequenceThumbnail(sequenceData, newSequenceIndex);
       console.log('✅ New sequence saved successfully');
     }
 
@@ -775,6 +774,7 @@ function closeModal() {
   window.modalManager.isEditMode = false;
   window.modalManager.editingThumbnail = null;
   window.modalManager.originalSequenceData = null;
+  window.modalManager.originalSequenceIndex = null;
 
   // Reset modal state
   modalCircles.forEach(circle => circle.clicked = false);
