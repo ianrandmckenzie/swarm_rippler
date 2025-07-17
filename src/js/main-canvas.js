@@ -6,6 +6,10 @@ const dpr = window.devicePixelRatio || 1;
 // Import feedback system
 import { VisualFeedback, hapticFeedback } from './feedback.js';
 
+// Accessibility: Current focused element for keyboard navigation
+let currentFocus = -1; // -1 = center, 0-23 = small circles (8 directions × 3 distances)
+const totalFocusableElements = 25; // 1 center + 24 small circles
+
 // Highlighting system for sequence playback
 let highlightedCircles = new Map(); // Changed to Map to store timing info
 let highlightAnimations = [];
@@ -99,16 +103,29 @@ function drawPattern() {
   }
   ctx.stroke();
 
-  // Directions: up, down, left, right, and diagonals
+  // Accessibility: Draw focus indicator for center circle
+  if (currentFocus === -1) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, R + r/2 + 4, 0, Math.PI * 2);
+    // Theme-aware focus color - dark yellow for light theme, bright yellow for dark theme
+    const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+    ctx.strokeStyle = effectiveTheme === 'dark' ? '#FFF176' : '#F57F17'; // Bright yellow for dark, dark yellow for light
+    ctx.lineWidth = 3;
+    ctx.setLineDash([5, 5]);
+    ctx.stroke();
+    ctx.setLineDash([]); // Reset line dash
+  }
+
+  // Directions: up, down, left, right, and diagonals (matching smallCircles order)
   const dirs = [
-    { x: 0, y: -1 }, // up
-    { x: 0, y: 1 },  // down
+    { x: 0, y: -1 }, // top
+    { x: 0, y: 1 },  // bottom
     { x: -1, y: 0 }, // left
     { x: 1, y: 0 },  // right
-    { x: 1/Math.SQRT2, y: -1/Math.SQRT2 }, // up-right
-    { x: -1/Math.SQRT2, y: -1/Math.SQRT2 },// up-left
-    { x: 1/Math.SQRT2, y: 1/Math.SQRT2 },  // down-right
-    { x: -1/Math.SQRT2, y: 1/Math.SQRT2 }  // down-left
+    { x: 1/Math.SQRT2, y: -1/Math.SQRT2 }, // top-right
+    { x: -1/Math.SQRT2, y: -1/Math.SQRT2 },// top-left
+    { x: -1/Math.SQRT2, y: 1/Math.SQRT2 }, // bottom-left
+    { x: 1/Math.SQRT2, y: 1/Math.SQRT2 }   // bottom-right
   ];
 
   // Draw small solid circles along each direction
@@ -153,6 +170,19 @@ function drawPattern() {
         const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
         ctx.fillStyle = effectiveTheme === 'dark' ? '#fff' : '#000';
         ctx.fill();
+      }
+
+      // Accessibility: Draw focus indicator for small circles
+      if (currentFocus === circleIndex) {
+        ctx.beginPath();
+        ctx.arc(x, y, r + 4, 0, Math.PI * 2);
+        // Theme-aware focus color - dark yellow for light theme, bright yellow for dark theme
+        const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+        ctx.strokeStyle = effectiveTheme === 'dark' ? '#FFF176' : '#F57F17'; // Bright yellow for dark, dark yellow for light
+        ctx.lineWidth = 3;
+        ctx.setLineDash([3, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]); // Reset line dash
       }
     }
   });
@@ -216,6 +246,123 @@ canvas.addEventListener('click', (e) => {
     }
   }
 });
+
+// Accessibility: Keyboard navigation support
+canvas.addEventListener('keydown', (e) => {
+  const announcements = document.getElementById('canvas-announcements');
+
+  switch(e.key) {
+    case 'ArrowUp':
+      e.preventDefault();
+      currentFocus = Math.max(-1, currentFocus - 8);
+      announceCurrentPosition();
+      drawPattern(); // Redraw to show focus
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      currentFocus = Math.min(23, currentFocus + 8);
+      announceCurrentPosition();
+      drawPattern(); // Redraw to show focus
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      if (currentFocus === -1) {
+        currentFocus = 21; // Bottom-left area
+      } else {
+        currentFocus = (currentFocus - 1 + 24) % 24;
+      }
+      announceCurrentPosition();
+      drawPattern(); // Redraw to show focus
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      if (currentFocus === -1) {
+        currentFocus = 0; // Top area
+      } else {
+        currentFocus = (currentFocus + 1) % 24;
+      }
+      announceCurrentPosition();
+      drawPattern(); // Redraw to show focus
+      break;
+    case ' ':
+    case 'Enter':
+      e.preventDefault();
+      activateCurrentSound();
+      break;
+    case 'Home':
+      e.preventDefault();
+      currentFocus = -1;
+      announceCurrentPosition();
+      drawPattern();
+      break;
+  }
+});
+
+// Accessibility: Announce current position to screen readers
+function announceCurrentPosition() {
+  const announcements = document.getElementById('canvas-announcements');
+  if (!announcements) return;
+
+  if (currentFocus === -1) {
+    announcements.textContent = 'Center circle selected. Press space or enter to play center sound.';
+  } else {
+    const direction = ['top', 'bottom', 'left', 'right', 'top-right', 'top-left', 'bottom-left', 'bottom-right'][currentFocus % 8];
+    const distance = Math.floor(currentFocus / 8) + 1;
+    announcements.textContent = `${direction} circle, ring ${distance} selected. Press space or enter to play sound.`;
+  }
+}
+
+// Accessibility: Activate currently focused sound
+function activateCurrentSound() {
+  if (currentFocus === -1) {
+    // Center circle
+    const size = Math.min(canvas.clientWidth, canvas.clientHeight);
+    const artworkScale = 0.4;
+    const R = size * 0.15 * artworkScale;
+    const cx = canvas.clientWidth / 2;
+    const cy = canvas.clientHeight / 2;
+
+    VisualFeedback.canvasRipple(canvas, cx, cy);
+    hapticFeedback.trigger('medium');
+    dropletSound.currentTime = 0;
+    dropletSound.play();
+
+    const announcements = document.getElementById('canvas-announcements');
+    if (announcements) {
+      announcements.textContent = 'Center circle activated. Water drop sound played.';
+    }
+  } else {
+    // Small circle
+    const directionIndex = currentFocus % 8;
+    // Map the dirs array index to the correct smallCircles index (same as modal)
+    const smallCirclesMapping = [0, 1, 2, 3, 4, 5, 7, 6]; // Fix the swap
+    const mappedIndex = smallCirclesMapping[directionIndex];
+    const { audio, dirX, dirY } = smallCircles[mappedIndex];
+
+    // Get position for visual feedback
+    const size = Math.min(canvas.clientWidth, canvas.clientHeight);
+    const artworkScale = 0.4;
+    const R = size * 0.15 * artworkScale;
+    const r = R * 0.40;
+    const spacing = R + r + (size * 0.12 * artworkScale);
+    const distance = Math.floor(currentFocus / 8) + 1;
+    const cx = canvas.clientWidth / 2;
+    const cy = canvas.clientHeight / 2;
+    const sx = cx + dirX * spacing * distance;
+    const sy = cy + dirY * spacing * distance;
+
+    VisualFeedback.canvasRipple(canvas, sx, sy);
+    hapticFeedback.trigger('light');
+    audio.currentTime = 0;
+    audio.play();
+
+    const announcements = document.getElementById('canvas-announcements');
+    if (announcements) {
+      const direction = ['top', 'bottom', 'left', 'right', 'top-right', 'top-left', 'bottom-left', 'bottom-right'][directionIndex];
+      announcements.textContent = `${direction} circle activated. Clicking sound played.`;
+    }
+  }
+}
 
 // Draw and update active ripples
 function drawRipples() {

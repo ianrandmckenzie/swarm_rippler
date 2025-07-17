@@ -12,6 +12,7 @@ import './audio.js';
 import './main.js';
 import './context-menu.js';
 import './new-sequence.js';
+import './accessibility.js';
 
 // Only import dev tools in development
 if (window.location.hostname === 'localhost' ||

@@ -142,6 +142,9 @@ class ModalManager {
     modal.classList.add('flex');
     modal.setAttribute('aria-hidden', 'false');
 
+    // Reset modal focus to center
+    modalCurrentFocus = -1;
+
     // Initialize modal circles
     this.initializeModalCircles();
 
@@ -153,6 +156,11 @@ class ModalManager {
     }
 
     updateButtonStates();
+
+    // Focus the modal canvas for keyboard accessibility
+    setTimeout(() => {
+      modalCanvas.focus();
+    }, 100);
   }
 
   initializeModalCircles() {
@@ -167,7 +175,7 @@ class ModalManager {
     const r = R * 0.3; // Match the drawing function
     const spacing = R + r * 2; // Match the drawing function
 
-    // Use same order as drawing and click detection
+    // Use same order as drawing and click detection (matching smallCircles order)
     const dirs = [
       { x: 0, y: -1 },     // top
       { x: 0, y: 1 },      // bottom
@@ -175,8 +183,8 @@ class ModalManager {
       { x: 1, y: 0 },      // right
       { x: 1/Math.SQRT2, y: -1/Math.SQRT2 },   // top-right
       { x: -1/Math.SQRT2, y: -1/Math.SQRT2 },  // top-left
-      { x: 1/Math.SQRT2, y: 1/Math.SQRT2 },    // bottom-right
-      { x: -1/Math.SQRT2, y: 1/Math.SQRT2 }    // bottom-left
+      { x: -1/Math.SQRT2, y: 1/Math.SQRT2 },   // bottom-left
+      { x: 1/Math.SQRT2, y: 1/Math.SQRT2 }     // bottom-right
     ];
 
     modalCircles = [];
@@ -216,6 +224,9 @@ const loopInterval = document.getElementById('loopInterval');
 const loopIntervalControls = document.getElementById('loopIntervalControls');
 
 let modalCircles = [];
+
+// Accessibility: Current focused element for modal keyboard navigation
+let modalCurrentFocus = -1; // -1 = center, 0-23 = small circles (8 directions × 3 distances)
 
 // Create modal manager instance
 const modalManager = new ModalManager();
@@ -269,18 +280,32 @@ function drawModal() {
     modalCtx.fillStyle = effectiveTheme === 'dark' ? '#fff' : '#000';
   }
   modalCtx.fill();
+
+  // Accessibility: Draw focus indicator for center circle
+  if (modalCurrentFocus === -1) {
+    modalCtx.beginPath();
+    modalCtx.arc(cx, cy, R + 4, 0, Math.PI * 2);
+    // Theme-aware focus color - dark yellow for light theme, bright yellow for dark theme
+    const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+    modalCtx.strokeStyle = effectiveTheme === 'dark' ? '#FFF176' : '#F57F17'; // Bright yellow for dark, dark yellow for light
+    modalCtx.lineWidth = 3;
+    modalCtx.setLineDash([3, 3]);
+    modalCtx.stroke();
+    modalCtx.setLineDash([]); // Reset line dash
+  }
+
   // Draw small circles (rings or filled) matching main pattern
   const r = R * 0.3; // Slightly larger relative to center for visibility
   const spacing = R + r * 2; // Very tight spacing
   const dirs = [
-    { x: 0, y: -1 },
-    { x: 0, y: 1 },
-    { x: -1, y: 0 },
-    { x: 1, y: 0 },
-    { x: 1/Math.SQRT2, y: -1/Math.SQRT2 },
-    { x: -1/Math.SQRT2, y: -1/Math.SQRT2 },
-    { x: 1/Math.SQRT2, y: 1/Math.SQRT2 },
-    { x: -1/Math.SQRT2, y: 1/Math.SQRT2 }
+    { x: 0, y: -1 },     // top
+    { x: 0, y: 1 },      // bottom
+    { x: -1, y: 0 },     // left
+    { x: 1, y: 0 },      // right
+    { x: 1/Math.SQRT2, y: -1/Math.SQRT2 },   // top-right
+    { x: -1/Math.SQRT2, y: -1/Math.SQRT2 },  // top-left
+    { x: -1/Math.SQRT2, y: 1/Math.SQRT2 },   // bottom-left
+    { x: 1/Math.SQRT2, y: 1/Math.SQRT2 }     // bottom-right
   ];
   dirs.forEach((dir, di) => {
     for (let i = 1; i <= 3; i++) {
@@ -339,6 +364,19 @@ function drawModal() {
           modalCtx.lineWidth = 2;
           modalCtx.stroke();
         }
+      }
+
+      // Accessibility: Draw focus indicator for small circles
+      if (modalCurrentFocus === circleIndex) {
+        modalCtx.beginPath();
+        modalCtx.arc(x, y, r + 3, 0, Math.PI * 2);
+        // Theme-aware focus color - dark yellow for light theme, bright yellow for dark theme
+        const effectiveTheme = window.themeManager ? window.themeManager.getEffectiveTheme() : 'light';
+        modalCtx.strokeStyle = effectiveTheme === 'dark' ? '#FFF176' : '#F57F17'; // Bright yellow for dark, dark yellow for light
+        modalCtx.lineWidth = 2;
+        modalCtx.setLineDash([2, 2]);
+        modalCtx.stroke();
+        modalCtx.setLineDash([]); // Reset line dash
       }
     }
   });
@@ -423,7 +461,7 @@ modalCanvas.addEventListener('click', async e => {
   const r = R * 0.3;
   const spacing = R + r * 2;
 
-  // Check each direction and ring position directly
+  // Check each direction and ring position directly (matching smallCircles order)
   const dirs = [
     { x: 0, y: -1 },     // top
     { x: 0, y: 1 },      // bottom
@@ -431,8 +469,8 @@ modalCanvas.addEventListener('click', async e => {
     { x: 1, y: 0 },      // right
     { x: 1/Math.SQRT2, y: -1/Math.SQRT2 },   // top-right
     { x: -1/Math.SQRT2, y: -1/Math.SQRT2 },  // top-left
-    { x: 1/Math.SQRT2, y: 1/Math.SQRT2 },    // bottom-right
-    { x: -1/Math.SQRT2, y: 1/Math.SQRT2 }    // bottom-left
+    { x: -1/Math.SQRT2, y: 1/Math.SQRT2 },   // bottom-left
+    { x: 1/Math.SQRT2, y: 1/Math.SQRT2 }     // bottom-right
   ];
 
   dirs.forEach((dir, di) => {
@@ -467,6 +505,114 @@ modalCanvas.addEventListener('click', async e => {
     }
   });
 });
+
+// Accessibility: Keyboard navigation support for modal canvas
+modalCanvas.addEventListener('keydown', (e) => {
+  // Only handle keyboard events when modal is visible
+  if (modal.classList.contains('hidden')) return;
+
+  switch(e.key) {
+    case 'ArrowUp':
+      e.preventDefault();
+      modalCurrentFocus = Math.max(-1, modalCurrentFocus - 8);
+      announceModalPosition();
+      drawModal();
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      modalCurrentFocus = Math.min(23, modalCurrentFocus + 8);
+      announceModalPosition();
+      drawModal();
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      if (modalCurrentFocus === -1) {
+        modalCurrentFocus = 21; // Bottom-left area
+      } else {
+        modalCurrentFocus = (modalCurrentFocus - 1 + 24) % 24;
+      }
+      announceModalPosition();
+      drawModal();
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      if (modalCurrentFocus === -1) {
+        modalCurrentFocus = 0; // Top area
+      } else {
+        modalCurrentFocus = (modalCurrentFocus + 1) % 24;
+      }
+      announceModalPosition();
+      drawModal();
+      break;
+    case ' ':
+    case 'Enter':
+      e.preventDefault();
+      activateModalCurrentSound();
+      break;
+    case 'Home':
+      e.preventDefault();
+      modalCurrentFocus = -1;
+      announceModalPosition();
+      drawModal();
+      break;
+  }
+});
+
+// Accessibility: Announce current position in modal to screen readers
+function announceModalPosition() {
+  const announcements = document.getElementById('canvas-announcements');
+  if (!announcements) return;
+
+  if (modalCurrentFocus === -1) {
+    announcements.textContent = 'Center circle selected in sequence editor. Press space or enter to select/deselect.';
+  } else {
+    const direction = ['top', 'bottom', 'left', 'right', 'top-right', 'top-left', 'bottom-left', 'bottom-right'][modalCurrentFocus % 8];
+    const distance = Math.floor(modalCurrentFocus / 8) + 1;
+    const circle = modalCircles[modalCurrentFocus];
+    const state = circle?.clicked ? 'selected' : 'unselected';
+    announcements.textContent = `${direction} circle, ring ${distance} - currently ${state}. Press space or enter to toggle.`;
+  }
+}
+
+// Accessibility: Activate currently focused sound in modal
+function activateModalCurrentSound() {
+  if (modalCurrentFocus === -1) {
+    // Center circle - don't do anything in modal
+    const announcements = document.getElementById('canvas-announcements');
+    if (announcements) {
+      announcements.textContent = 'Center circle cannot be selected in sequence editor.';
+    }
+  } else {
+    // Small circle
+    const circle = modalCircles[modalCurrentFocus];
+    if (circle) {
+      // Toggle selection
+      circle.clicked = !circle.clicked;
+
+      // Add haptic feedback
+      hapticFeedback.trigger(circle.clicked ? 'medium' : 'light');
+
+      // Play sound only when selecting
+      if (circle.clicked) {
+        circle.audio.currentTime = 0;
+        circle.audio.play();
+      }
+
+      // Update button states and redraw
+      updateButtonStates();
+      drawModal();
+
+      // Announce the change
+      const announcements = document.getElementById('canvas-announcements');
+      if (announcements) {
+        const direction = ['top', 'bottom', 'left', 'right', 'top-right', 'top-left', 'bottom-left', 'bottom-right'][modalCurrentFocus % 8];
+        const distance = Math.floor(modalCurrentFocus / 8) + 1;
+        const state = circle.clicked ? 'selected' : 'deselected';
+        announcements.textContent = `${direction} circle, ring ${distance} ${state}.`;
+      }
+    }
+  }
+}
 
 // Helper function to update button states based on current mode and selections
 function updateButtonStates() {
