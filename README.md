@@ -2,6 +2,23 @@
 
 This is part of an project for supplementing my drawings with a more interactive experience. The basic premise is that there are 4 layers. The layers start on the inside and work their way outward. If there are multiple sounds in a layer, they happen simultaneously – something most humans are not capable of, creating somewhat of an alien cacophony.
 
+## Security
+
+This project has been audited for security and implements multiple security measures:
+
+- **Content Security Policy (CSP)**: Strict CSP prevents XSS attacks
+- **HTTP Security Headers**: Additional headers prevent common web vulnerabilities
+- **Minimal Permissions**: Tauri app uses only essential permissions
+- **No External Dependencies**: App operates entirely offline
+- **Regular Security Audits**: Dependencies are regularly scanned for vulnerabilities
+
+For detailed security information, see [SECURITY.md](SECURITY.md).
+
+To run a security check:
+```bash
+./security-check.sh
+```
+
 ## Getting Started
 
 ### Web Version

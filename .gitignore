@@ -8,6 +8,18 @@ yarn-error.log*
 /src-tauri/target/
 /dist/
 
+# Security and sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+.env
+.env.local
+.env.production
+secrets.json
+config/secrets/*
+*.log
+
 # OS generated files
 .DS_Store
 .DS_Store?

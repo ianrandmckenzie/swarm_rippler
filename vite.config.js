@@ -11,6 +11,6 @@ export default defineConfig({
   server: {
     port: 8080,
     strictPort: true, // Fail if port 8080 is not available
-    allowedHosts: ['24e442f4997c.ngrok.app', 'localhost', '127.0.0.1']
+    host: 'localhost' // Only bind to localhost for security
   }
 })
