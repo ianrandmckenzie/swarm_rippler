@@ -55,7 +55,7 @@
     <link rel="dns-prefetch" href="//relentlesscurious.com">
     <link rel="dns-prefetch" href="//github.com">
 
-    <script type="module" crossorigin src="/assets/index-CVOqYefE.js"></script>
+    <script type="module" crossorigin src="/assets/index-C1LioPOS.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-XfVDAvCh.css">
   </head>
 
@@ -84,7 +84,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
         </button>
-        <button id="highContrastBtn" class="w-12 h-12 flex items-center justify-center rounded-lg transition-all duration-200 ease-in-out text-swarmshadow-400 hover:bg-swarmshadow-50 hover:text-swarmlight-600 dark:text-swarmlight-300 dark:hover:bg-swarmlight-500 dark:hover:text-swarmshadow-100" aria-label="Toggle high contrast mode" title="High contrast mode">
+        <button id="highContrastBtn" class="w-12 h-12 flex items-center justify-center rounded-lg transition-all duration-200 ease-in-out text-swarmshadow-400 hover:bg-swarmshadow-50 hover:text-swarmlight-600 dark:text-swarmlight-300 dark:hover:bg-swarmlight-500 dark:hover:text-swarmshadow-100" aria-label="Toggle high contrast mode" aria-pressed="false" title="High contrast mode">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
           </svg>
@@ -124,7 +124,7 @@
         </div>
 
         <div id="canvas-container" class="w-full my-8 max-w-[343px] sm:max-w-[600px] mx-auto aspect-square bg-swarmlight-200 dark:bg-swarmshadow-50 rounded-full border-2 border-swarmshadow-50 dark:border-swarmlight-100" role="application" aria-label="Sound grid interface for creating clicking sounds">
-          <canvas id="soundCanvas" class="w-full h-full" role="img" aria-label="Interactive sound grid with center circle and surrounding sound points. Use arrow keys to navigate, space or enter to activate sounds" tabindex="0"></canvas>
+          <canvas id="soundCanvas" class="w-full h-full" role="application" aria-label="Interactive sound grid with center circle and surrounding sound points. Use arrow keys to navigate, space or enter to activate sounds" tabindex="0"></canvas>
           <!-- Screen reader alternative for canvas interaction -->
           <div class="sr-only" aria-live="polite" id="canvas-announcements"></div>
         </div>
@@ -156,7 +156,7 @@
     </div>
 
     <!-- Sequence Modal -->
-    <div id="sequenceModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 items-center justify-center z-50 hidden transition-colors duration-300 p-4" aria-hidden="true" role="sequence-creator" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="sequenceModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 items-center justify-center z-50 hidden transition-colors duration-300 p-4" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div id="modalContent" class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-2 sm:p-6 rounded-lg shadow-xl relative text-center w-full max-w-sm sm:w-96 border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-y-auto">
         <!-- Close button -->
         <button id="closeModalBtn" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 rounded-full transition-colors" aria-label="Close sequence creation modal">
@@ -168,7 +168,7 @@
         <!-- Modal Title -->
         <h2 id="modalTitle" class="text-lg sm:text-xl font-semibold text-swarmshadow-600 dark:text-swarmlight-100 mb-2 sm:mb-4">Create New Sequence</h2>
 
-        <canvas id="sequenceCanvas" class="w-64 h-64 sm:w-80 sm:h-80 block mx-auto sm:mb-4" role="img" aria-label="Sequence creation grid. Click circles to add to sequence" tabindex="0"></canvas>
+        <canvas id="sequenceCanvas" class="w-64 h-64 sm:w-80 sm:h-80 block mx-auto sm:mb-4" role="application" aria-label="Sequence creation grid. Click circles to add to sequence" tabindex="0"></canvas>
 
         <!-- Inline tutorial instruction -->
         <div id="modalInstruction" class="text-center mb-3 text-sm text-swarmshadow-500 dark:text-swarmlight-200 italic hidden">
@@ -225,12 +225,12 @@
     </div>
 
     <!-- Tutorial Welcome Modal -->
-    <div id="tutorialWelcomeModal" class="fixed inset-0 bg-black/60 dark:bg-black/75 z-50 hidden transition-opacity duration-300 items-center justify-center p-4" aria-hidden="true" role="tutorial" aria-modal="true">
+    <div id="tutorialWelcomeModal" class="fixed inset-0 bg-black/60 dark:bg-black/75 z-50 hidden transition-opacity duration-300 items-center justify-center p-4" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="desktopWelcomeTitle welcomeTitle">
       <div class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-6 rounded-lg shadow-xl relative w-full max-w-2xl border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-hidden">
         <!-- Desktop Version (hidden on mobile) -->
         <div id="desktopWelcome" class="hidden sm:block">
           <!-- Modal Title -->
-          <h2 class="text-2xl sm:text-3xl font-bold text-swarmshadow-600 dark:text-swarmlight-100 mb-6 text-center">Welcome to Swarm Rippler</h2>
+          <h2 id="desktopWelcomeTitle" class="text-2xl sm:text-3xl font-bold text-swarmshadow-600 dark:text-swarmlight-100 mb-6 text-center">Welcome to Swarm Rippler</h2>
 
           <!-- Content Container -->
           <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
@@ -333,7 +333,7 @@
     </div>
 
     <!-- App Information Modal -->
-    <div id="appInfoModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 hidden transition-opacity duration-300 items-center justify-center p-4" aria-hidden="true" role="about-info" aria-modal="true" aria-labelledby="appInfoTitle">
+    <div id="appInfoModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 hidden transition-opacity duration-300 items-center justify-center p-4" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="appInfoTitle">
       <div class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-6 rounded-lg shadow-xl relative w-full max-w-md border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-y-auto">
         <!-- Close button -->
         <button id="closeAppInfoBtn" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 rounded-full transition-colors" aria-label="Close application information modal">

@@ -8,17 +8,20 @@ class AccessibilityManager {
   }
 
   init() {
-    // Initialize high contrast mode if enabled
-    if (this.highContrastMode) {
-      this.enableHighContrast();
-    }
-
     // Add event listener for high contrast button
     const highContrastBtn = document.getElementById('highContrastBtn');
     if (highContrastBtn) {
+      // Set initial aria-pressed state
+      highContrastBtn.setAttribute('aria-pressed', this.highContrastMode.toString());
+
       highContrastBtn.addEventListener('click', () => {
         this.toggleHighContrast();
       });
+    }
+
+    // Initialize high contrast mode if enabled
+    if (this.highContrastMode) {
+      this.enableHighContrast();
     }
 
     // Add keyboard shortcuts
