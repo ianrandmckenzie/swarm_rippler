@@ -89,10 +89,6 @@ function hideTooltip() {
 window.showTooltip = showTooltip;
 window.hideTooltip = hideTooltip;
 
-// Expose tooltip functions globally for use by other modules
-window.showTooltip = showTooltip;
-window.hideTooltip = hideTooltip;
-
 // Robust theme detection helper function
 function getRobustCurrentTheme() {
   // Method 1: Check theme manager if available

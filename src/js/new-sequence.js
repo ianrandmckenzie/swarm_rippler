@@ -1,5 +1,5 @@
 // Modal and sequence creation functionality
-import { getSetting, setSetting, loadAllSequences, saveSequenceToDB, updateSequence } from './storage.js';
+import { getSetting, loadAllSequences, saveSequenceToDB, updateSequence } from './storage.js';
 import { addSequenceThumbnail, hideTooltip } from './main.js';
 import { smallCircles, dpr } from './main-canvas.js';
 import { VisualFeedback, hapticFeedback } from './feedback.js';

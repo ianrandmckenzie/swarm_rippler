@@ -1,5 +1,4 @@
 // Sidenav management functionality
-import { setSetting } from './storage.js';
 import { VisualFeedback, hapticFeedback } from './feedback.js';
 import { tutorialManager } from './tutorial.js';
 

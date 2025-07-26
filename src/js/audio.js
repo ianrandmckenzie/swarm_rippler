@@ -411,8 +411,5 @@ export {
   updateLoopCounter,
   getRadianInfo,
   RADIAN_TIMING,
-  MAX_CONCURRENT_LOOPS,
-  getAudioForCircle,
-  createSequenceRipple,
-  setupSequencePlayback
+  MAX_CONCURRENT_LOOPS
 };

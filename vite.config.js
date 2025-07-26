@@ -6,6 +6,14 @@ export default defineConfig({
   build: {
     outDir: 'docs',
     emptyOutDir: false, // Don't empty the docs directory to preserve existing files like CNAME
+    minify: 'terser',
+    cssMinify: true,
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    }
   },
   publicDir: 'public', // Ensure public files are copied
   server: {

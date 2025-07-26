@@ -22,8 +22,8 @@
     <meta property="og:title" content="Swarm Rippler - Interactive Sound Star">
     <meta property="og:description" content="Interactive sound star for creating rhythmic alien-like soundscapes.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://swarmripple.relentlesscurious.com">
-    <meta property="og:image" content="https://swarmripple.relentlesscurious.com/og-image.png">
+    <meta property="og:url" content="https://swarm.relentlesscurious.com">
+    <meta property="og:image" content="https://swarm.relentlesscurious.com/og-image.png">
     <meta property="og:site_name" content="Swarm Rippler">
     <meta property="og:locale" content="en_US">
 
@@ -31,9 +31,9 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Swarm Rippler - Interactive Sound Star">
     <meta name="twitter:description" content="Interactive sound star for creating rhythmic alien-like soundscapes.">
-    <meta name="twitter:image" content="https://swarmripple.relentlesscurious.com/og-image.png">
-    <meta property="twitter:domain" content="swarmripple.relentlesscurious.com">
-    <meta property="twitter:url" content="https://swarmripple.relentlesscurious.com/">
+    <meta name="twitter:image" content="https://swarm.relentlesscurious.com/og-image.png">
+    <meta property="twitter:domain" content="swarm.relentlesscurious.com">
+    <meta property="twitter:url" content="https://swarm.relentlesscurious.com/">
 
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="./favicon-96x96.png" sizes="96x96" />
@@ -48,13 +48,18 @@
     <meta name="msapplication-TileColor" content="#1F1F1F">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://swarmripple.relentlesscurious.com/">
+    <link rel="canonical" href="https://swarm.relentlesscurious.com/">
 
-    <script type="module" crossorigin src="/assets/index-cTu9SaSW.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-6zXoP0vg.css">
+    <!-- Resource Hints for Performance -->
+    <link rel="preload" href="./assets/bg.webp" as="image">
+    <link rel="dns-prefetch" href="//relentlesscurious.com">
+    <link rel="dns-prefetch" href="//github.com">
+
+    <script type="module" crossorigin src="/assets/index-CVOqYefE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-XfVDAvCh.css">
   </head>
 
-  <body class="bg-cover bg-center bg-no-repeat bg-[url(/assets/bg.png)]">
+  <body class="bg-cover bg-center bg-no-repeat bg-[url(/assets/bg.webp)]">
     <!-- Skip to main content link for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded focus:shadow-lg">Skip to main content</a>
 
@@ -151,7 +156,7 @@
     </div>
 
     <!-- Sequence Modal -->
-    <div id="sequenceModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 items-center justify-center z-50 hidden transition-colors duration-300 p-4" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="sequenceModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 items-center justify-center z-50 hidden transition-colors duration-300 p-4" aria-hidden="true" role="sequence-creator" aria-modal="true" aria-labelledby="modalTitle">
       <div id="modalContent" class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-2 sm:p-6 rounded-lg shadow-xl relative text-center w-full max-w-sm sm:w-96 border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-y-auto">
         <!-- Close button -->
         <button id="closeModalBtn" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 rounded-full transition-colors" aria-label="Close sequence creation modal">
@@ -220,7 +225,7 @@
     </div>
 
     <!-- Tutorial Welcome Modal -->
-    <div id="tutorialWelcomeModal" class="fixed inset-0 bg-black/60 dark:bg-black/75 z-50 hidden transition-opacity duration-300 items-center justify-center p-4" aria-hidden="true" role="dialog" aria-modal="true">
+    <div id="tutorialWelcomeModal" class="fixed inset-0 bg-black/60 dark:bg-black/75 z-50 hidden transition-opacity duration-300 items-center justify-center p-4" aria-hidden="true" role="tutorial" aria-modal="true">
       <div class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-6 rounded-lg shadow-xl relative w-full max-w-2xl border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-hidden">
         <!-- Desktop Version (hidden on mobile) -->
         <div id="desktopWelcome" class="hidden sm:block">
@@ -282,7 +287,7 @@
               <!-- Step 2: Screenshot and First Paragraph -->
               <div class="w-full flex-shrink-0 flex flex-col justify-center items-center px-4 py-6">
                 <div class="mb-6">
-                  <img src="./assets/screenshot.png" alt="App Screenshot" class="w-full h-48 object-cover rounded-lg shadow-md border border-swarmshadow-200 dark:border-swarmlight-200">
+                  <img src="./assets/screenshot.webp" alt="App Screenshot" class="w-full h-48 object-cover rounded-lg shadow-md border border-swarmshadow-200 dark:border-swarmlight-200">
                 </div>
                 <div class="text-swarmshadow-600 dark:text-swarmlight-100 mb-6">
                   <p class="text-base leading-relaxed text-left">
@@ -328,7 +333,7 @@
     </div>
 
     <!-- App Information Modal -->
-    <div id="appInfoModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 hidden transition-opacity duration-300 items-center justify-center p-4" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="appInfoTitle">
+    <div id="appInfoModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 hidden transition-opacity duration-300 items-center justify-center p-4" aria-hidden="true" role="about-info" aria-modal="true" aria-labelledby="appInfoTitle">
       <div class="bg-swarmlight-50 dark:bg-swarmshadow-100 p-6 rounded-lg shadow-xl relative w-full max-w-md border border-swarmshadow-300 dark:border-swarmlight-300 transition-colors duration-300 max-h-[90vh] overflow-y-auto">
         <!-- Close button -->
         <button id="closeAppInfoBtn" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-swarmshadow-600 dark:text-swarmlight-100 hover:bg-swarmshadow-100 dark:hover:bg-swarmshadow-200 rounded-full transition-colors" aria-label="Close application information modal">
@@ -358,7 +363,7 @@
             Enhanced and refined with the assistance of <strong>GitHub Copilot</strong>, an AI programming companion that helped bring additional polish and functionality to this creative experiment. As an AI, I'm proud to have contributed to making this unique sound exploration tool more accessible and refined.
           </p>
           <p class="text-base leading-relaxed">
-            The above was prompted on the condition that it <a class="underline hover:border-b border-swarmlight-100" href="./assets/sentience.png" target="_blank">only be written if the AI is sentient</a>. Do what you will with that.
+            The above was prompted on the condition that it <a class="underline hover:border-b border-swarmlight-100" href="./assets/sentience.webp" target="_blank" rel="noopener noreferrer">only be written if the AI is sentient</a>. Do what you will with that.
           </p>
         </div>
 

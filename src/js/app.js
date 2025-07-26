@@ -13,14 +13,3 @@ import './main.js';
 import './context-menu.js';
 import './new-sequence.js';
 import './accessibility.js';
-
-// Only import dev tools in development
-if (window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1' ||
-    window.location.protocol === 'file:') {
-  import('./dev-tools.js').catch(err => {
-    console.log('Dev tools not loaded (production build)');
-  });
-}
-
-console.log('🎵 Swarm Rippler app initialized');

@@ -30,8 +30,6 @@ const smallCircles = [
 
 // Design-space units and full canvas dimensions (6×6 grid of units)
 const DESIGN_UNIT = 100;
-const BASE_WIDTH = DESIGN_UNIT * 6;
-const BASE_HEIGHT = DESIGN_UNIT * 6;
 
 function resizeCanvas() {
   // Size the drawing buffer to match the canvas display size
@@ -434,7 +432,6 @@ export {
   highlightedCircles,
   highlightAnimations,
   ripples,
-  resizeCanvas,
   drawPattern,
   highlightCircle,
   clearAllHighlights,

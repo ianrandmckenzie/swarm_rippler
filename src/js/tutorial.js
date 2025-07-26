@@ -458,8 +458,7 @@ const tutorialManager = new TutorialManager();
 // Export for use by other modules
 export {
   tutorialManager,
-  TutorialManager,
-  TUTORIAL_TARGET_COUNT
+  TutorialManager
 };
 
 // Make available globally for backward compatibility and dev tools
